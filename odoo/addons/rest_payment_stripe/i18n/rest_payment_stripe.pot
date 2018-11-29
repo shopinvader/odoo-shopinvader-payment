@@ -25,8 +25,8 @@ msgid "Unknown Event"
 msgstr ""
 
 #. module: rest_payment_stripe
-#: code:addons/rest_payment_stripe/services/stripe_services.py:40
-#: code:addons/rest_payment_stripe/services/stripe_services.py:103
+#: code:addons/rest_payment_stripe/services/stripe_services.py:38
+#: code:addons/rest_payment_stripe/services/webhook_services.py:43
 #, python-format
 msgid "Unknown transaction"
 msgstr ""
