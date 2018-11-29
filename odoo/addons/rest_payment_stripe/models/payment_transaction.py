@@ -61,6 +61,7 @@ class PaymentTransaction(models.Model):
             "source.chargeable": self._stripe_process_source_chargeable,
             "source.canceled": self._stripe_process_source_canceled,
             "source.failed": self._stripe_process_source_failed,
+            "charge.succeeded": self._stripe_process_charge_succeeded,
         }
 
     @api.multi
@@ -87,3 +88,8 @@ class PaymentTransaction(models.Model):
     @api.multi
     def _stripe_process_source_canceled(self, event):
         self.write({"state": "cancel"})
+
+    @api.multi
+    def _stripe_process_charge_succeeded(self, event):
+        """ Dummy event received after a source.chargeable """
+        pass
