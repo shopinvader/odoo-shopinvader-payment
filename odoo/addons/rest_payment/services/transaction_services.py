@@ -27,6 +27,7 @@ class TransactionService(AbstractComponent):
         return {
             "id": transaction.id,
             "state": transaction.state,
+            "acquirer": transaction.acquirer_id.id,
         }
 
     # In a component, not a model (super().create not existent)
@@ -63,6 +64,9 @@ class TransactionService(AbstractComponent):
             "state": {
                 'type': 'string',
             },
+            "acquirer": {
+                'type': 'integer',
+            },
         }
 
     def get(self, _id):
@@ -89,5 +93,8 @@ class TransactionService(AbstractComponent):
             },
             "state": {
                 'type': 'string',
+            },
+            "acquirer": {
+                'type': 'integer',
             },
         }
