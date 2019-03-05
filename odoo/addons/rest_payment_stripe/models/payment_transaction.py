@@ -92,4 +92,5 @@ class PaymentTransaction(models.Model):
     @api.multi
     def _stripe_process_charge_succeeded(self, event):
         """ Dummy event received after a source.chargeable """
+        # pylint: disable=unnecessary-pass
         pass
