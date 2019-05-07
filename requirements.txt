@@ -1,0 +1,10 @@
+slugify
+cerberus
+algoliasearch<2.0.0
+paypalrestsdk
+stripe
+unidecode
+requests_mock
+-e git://github.com/akretion/locomotivecms-python-client.git#egg=locomotivecms
+pyquerystring
+parse-accept-language
