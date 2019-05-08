@@ -1,0 +1,2 @@
+payment-gateway https://github.com/akretion/payment-gateway 10.0
+odoo-shopinvader https://github.com/shopinvader/odoo-shopinvader 10.0
