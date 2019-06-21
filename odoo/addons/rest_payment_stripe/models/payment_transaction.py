@@ -14,26 +14,28 @@ class PaymentTransaction(models.Model):
     _inherit = "payment.transaction"
 
     @api.multi
-    def _create_stripe_3d_secure(self, tokenid, email, return_url):
+    def _create_stripe_3d_secure(
+            self, payment_method_id=False, payment_intent_id=False,
+            version="2019-05-16"):
         self.ensure_one()
         stripe.api_key = self.acquirer_id.stripe_secret_key
-        source_data = stripe.Source.retrieve(tokenid)
-        if source_data["card"]["three_d_secure"] != "not_supported":
-            r = stripe.Source.create(
-                amount=int(
-                    self.amount
-                    if self.currency_id.name in INT_CURRENCIES
-                    else float_round(self.amount * 100, 2)
-                ),
+        if payment_method_id:
+            intent = stripe.PaymentIntent.create(
+                payment_method=payment_method_id,
+                amount=int(self.amount
+                           if self.currency_id.name in INT_CURRENCIES
+                           else float_round(self.amount * 100, 2)),
                 currency=self.currency_id.name,
-                type="three_d_secure",
-                three_d_secure={"card": tokenid},
-                redirect={"return_url": return_url},
-                metadata={"reference": self.reference},
+                confirmation_method='manual',
+                confirm=True,
+                stripe_version=version,
+                metadata={
+                    'reference': self.reference,
+                }
             )
-            if r.get("status") != "chargeable":
-                return r
-        return False
+        else:
+            intent = stripe.PaymentIntent.confirm(payment_intent_id)
+        return intent
 
     @api.multi
     def _stripe_s2s_validate_tree(self, tree):
