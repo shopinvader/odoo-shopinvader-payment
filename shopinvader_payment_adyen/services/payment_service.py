@@ -29,7 +29,7 @@ class PaymentServiceAdyen(Component):
         }
 
     def _execute_payment_action(
-        self, provider_name, transaction, target, params
+            self, provider_name, transaction, target, params
     ):
         """
 
@@ -40,22 +40,39 @@ class PaymentServiceAdyen(Component):
         :return: dict
         """
         if provider_name == "adyen" and transaction.url:
+            adyen_params = self._add_adyen_params(params, transaction)
             res = {
                 "data": {
                     "payment": {
-                        "adyen_params": {
-                            "MD": transaction.meta["MD"],
-                            "PaReq": transaction.meta["paRequest"],
-                            "TermUrl": params["return_url"],
-                            "IssuerUrl": transaction.url,
-                        }
+                        "adyen_params": adyen_params,
                     }
                 }
             }
             return res
-        return super(PaymentServiceAdyen, self)._execute_payment_action(
-            provider_name, transaction, target, params
-        )
+        #  .
+        # /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\
+        # As this Component could be at the end of the resolution order, it
+        # could have a super (or not).
+        # /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\
+        the_super = super(PaymentServiceAdyen, self)
+        if hasattr(the_super, "_execute_payment_action"):
+            return the_super._execute_payment_action(
+                provider_name, transaction, target, params)
+        return {}
+
+    def _add_adyen_params(self, params, transaction):
+        """
+
+        :param params: dict
+        :param transaction: gateway.transaction recordset
+        :return: dict
+        """
+        return {
+            "MD": transaction.meta["MD"],
+            "PaReq": transaction.meta["paRequest"],
+            "TermUrl": params["return_url"],
+            "IssuerUrl": transaction.url,
+        }
 
     def _add_params_from_header(self, params):
         """
