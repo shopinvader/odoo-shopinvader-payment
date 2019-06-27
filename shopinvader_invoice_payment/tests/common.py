@@ -88,10 +88,14 @@ class CommonCaseShopinvaderInvoice(CommonCase):
         super(CommonCaseShopinvaderInvoice, self).setUp(*args, **kwargs)
         self._load("account", "test", "account_minimal_test.xml")
         self.partner = self.env.ref("base.res_partner_1")
-        self.account_exp = self.env.ref(
-            "shopinvader_invoice_payment.a_expense"
+        expense_type = self.env.ref("account.data_account_type_expenses")
+        payable_type = self.env.ref("account.data_account_type_payable")
+        self.account_exp = self.env["account.account"].search(
+            [("user_type_id", "=", expense_type.id)], limit=1
         )
-        self.account_pay = self.env.ref("shopinvader_invoice_payment.a_pay")
+        self.account_pay = self.env["account.account"].search(
+            [("user_type_id", "=", payable_type.id)], limit=1
+        )
         self.account_payment_mode = self.env.ref(
             "shopinvader_payment.payment_method_check"
         )

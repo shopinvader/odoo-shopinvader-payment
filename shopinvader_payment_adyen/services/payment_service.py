@@ -29,7 +29,7 @@ class PaymentServiceAdyen(Component):
         }
 
     def _execute_payment_action(
-            self, provider_name, transaction, target, params
+        self, provider_name, transaction, target, params
     ):
         """
 
@@ -41,13 +41,7 @@ class PaymentServiceAdyen(Component):
         """
         if provider_name == "adyen" and transaction.url:
             adyen_params = self._add_adyen_params(params, transaction)
-            res = {
-                "data": {
-                    "payment": {
-                        "adyen_params": adyen_params,
-                    }
-                }
-            }
+            res = {"data": {"payment": {"adyen_params": adyen_params}}}
             return res
         #  .
         # /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\
@@ -57,7 +51,8 @@ class PaymentServiceAdyen(Component):
         the_super = super(PaymentServiceAdyen, self)
         if hasattr(the_super, "_execute_payment_action"):
             return the_super._execute_payment_action(
-                provider_name, transaction, target, params)
+                provider_name, transaction, target, params
+            )
         return {}
 
     def _add_adyen_params(self, params, transaction):
@@ -102,21 +97,15 @@ class PaymentServiceAdyen(Component):
             provider_name, target, params
         )
 
-    def check_payment(self, provider_name=None, **params):
+    def _fill_payment_params_adyen(self, params):
         """
-
-        :param provider_name: str
+        Fill specific parameters for Adyen
         :param params: dict
-        :return:
+        :return: dict
         """
-        if provider_name == "adyen":
-            self._add_params_from_header(params)
-            params.update(
-                {
-                    "md": params.pop("MD", None),
-                    "pares": params.pop("PaRes", None),
-                }
-            )
-        return super(PaymentServiceAdyen, self).check_payment(
-            provider_name=provider_name, **params
-        )
+        self._add_params_from_header(params)
+        keys = ["MD", "PaRes"]
+        for key in keys:
+            if params.get(key):
+                params.update({key.lower(): params.pop(key)})
+        return params

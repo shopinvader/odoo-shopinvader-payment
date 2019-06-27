@@ -25,10 +25,9 @@ class CartService(Component):
             provider_name, transaction, target, params
         )
         if provider_name == "adyen" and transaction.url:
-            cart = self._get()
+            cart = target
             result = self._to_json(cart)
-            data = result.get("data", {})
-            payment = data.get("payment", {})
+            payment = result.setdefault("data", {}).setdefault("payment", {})
             super_payment = values.get("data", {}).get("payment", {})
             if super_payment:
                 payment.update(super_payment)

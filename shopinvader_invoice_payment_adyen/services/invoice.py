@@ -4,6 +4,6 @@
 from odoo.addons.component.core import Component
 
 
-class ShopinvaderDonationService(Component):
+class ShopinvaderInvoiceService(Component):
     _inherit = ["shopinvader.invoice.service", "payment.service.adyen"]
     _name = "shopinvader.invoice.service"

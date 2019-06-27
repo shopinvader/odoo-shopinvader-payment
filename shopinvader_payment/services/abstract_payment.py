@@ -71,6 +71,10 @@ class AbstractPaymentService(AbstractComponent):
         return provider_payment_mode
 
     def check_payment(self, provider_name=None, **params):
+        # Fill params with specific values for the provider (if necessary)
+        check_payment_provider = "_fill_payment_params_%s" % provider_name
+        if hasattr(self, check_payment_provider):
+            params = getattr(self, check_payment_provider)(params)
         # in case of check_payment we do not have any context information
         # about the target so we need to determine the correct account to use
         # thanks to the payment mode available on the backend
@@ -84,9 +88,10 @@ class AbstractPaymentService(AbstractComponent):
         with transaction._get_provider(provider_name) as provider:
             transaction = provider.process_return(**params)
             if transaction.state in ["to_capture", "succeeded"]:
-                result = self.update(
-                    step={"next": self.shopinvader_backend.last_step_id.code}
-                )
+                result = {}
+                if hasattr(self, 'update'):
+                    step = {"next": self.shopinvader_backend.last_step_id.code}
+                    result = self.update(step=step)
                 result.update(
                     {"redirect_to": transaction.redirect_success_url}
                 )
@@ -189,7 +194,8 @@ class AbstractPaymentService(AbstractComponent):
         the_super = super(AbstractPaymentService, self)
         if hasattr(the_super, "_execute_payment_action"):
             values = the_super._execute_payment_action(
-                provider_name, transaction, target, params)
+                provider_name, transaction, target, params
+            )
         if transaction.url:
             values.update({"redirect_to": transaction.url})
             return values

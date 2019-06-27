@@ -23,6 +23,12 @@ REDIRECT_URL = {
     "redirect_success_url": "https://ThanksYou.com",
 }
 
+CLIENT_HEADER = {
+    "ACCEPT": ACCEPT_HEADER,
+    "USER_AGENT": USER_AGENT,
+    "IP": SHOPPER_IP,
+}
+
 
 class ShopinvaderAdyenCommonCase(AdyenCommonCase, CommonMixin):
     def setUp(self, *args, **kwargs):
@@ -41,7 +47,9 @@ class ShopinvaderAdyenCommonCase(AdyenCommonCase, CommonMixin):
             {"typology": "cart", "shopinvader_backend_id": self.backend.id}
         )
         with self.work_on_services(
-            partner=self.partner, shopinvader_session=self.shopinvader_session
+            partner=self.partner,
+            shopinvader_session=self.shopinvader_session,
+            client_header=CLIENT_HEADER,
         ) as work:
             self.service = work.component(usage="cart")
         self.cr.commit = Mock()  # Do not commit

@@ -27,3 +27,30 @@ class InvoiceService(Component):
         values = self._convert_one_target(invoice)
         values.update(super(InvoiceService, self)._to_json_invoice(invoice))
         return values
+
+    def _execute_payment_action(
+            self, provider_name, transaction, target, params
+    ):
+        """
+        Inherit to merge the result of the payment with the current invoice
+        :param provider_name: str
+        :param transaction: transaction recordset
+        :param target: recordset
+        :param params: dict
+        :return: dict
+        """
+        values = super(InvoiceService, self)._execute_payment_action(
+            provider_name, transaction, target, params
+        )
+        if provider_name == "adyen" and transaction.url:
+            invoice = target
+            invoice_json = self._to_json_invoice(invoice)
+            result = {
+                'data': invoice_json,
+            }
+            payment = invoice_json.setdefault("payment", {})
+            super_payment = values.get("data", {}).get("payment", {})
+            if super_payment:
+                payment.update(super_payment)
+            return result
+        return values
