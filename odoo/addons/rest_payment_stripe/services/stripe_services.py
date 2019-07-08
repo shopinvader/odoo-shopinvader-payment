@@ -45,17 +45,17 @@ class StripeService(AbstractComponent):
         if intent.status == 'requires_action' and \
                 intent.next_action.type == 'use_stripe_sdk':
             return {
-                "size": "aa",
-                "data": {
-                    "status": "requires_action",
-                    "payload": intent.client_secret,
-                }}
+                "status": "requires_action",
+                "payload": intent.client_secret,
+            }
         if intent.status == 'succeeded':
             _logger.info('Stripe: entering form_feedback with post data %s',
                          pprint.pformat(intent))
             request.env['payment.transaction'].sudo().with_context(
                 lang=None).form_feedback(intent, 'stripe')
-            return {"data": {"status": "success"}, "size": "aa"}
+            return {
+                "status": "success",
+            }
         raise ValidationError(_("Sorry, something gone wrong"))
 
     def _validator_create(self):
@@ -74,18 +74,13 @@ class StripeService(AbstractComponent):
 
     def _validator_return_create(self):
         return {
-            "data": {
-                "type": "dict",
-                "schema": {
-                    "status": {
-                        "type": "string",
-                    },
-                    "payload": {
-                        "type": "string",
-                    },
+            "type": "dict",
+            "schema": {
+                "status": {
+                    "type": "string",
                 },
-            },
-            "size": {  # DUMMY!!!
-                "type": "string",
+                "payload": {
+                    "type": "string",
+                },
             },
         }
