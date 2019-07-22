@@ -6,7 +6,7 @@ from odoo import api, models
 
 class PaymentAcquirer(models.Model):
 
-    _inherit = 'payment.acquirer'
+    _inherit = "payment.acquirer"
 
     @api.model
     def _get_default_acquirer(self):

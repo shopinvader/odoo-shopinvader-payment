@@ -7,8 +7,8 @@ from odoo.addons.component.core import AbstractComponent
 # the pylint error is disabled, a useless-suppression of the error is raised.
 # pylint: disable=consider-merging-classes-inherited,useless-suppression
 class TransactionService(AbstractComponent):
-    _inherit = 'base.rest.service'
-    _name = 'transaction.service'
+    _inherit = "base.rest.service"
+    _name = "transaction.service"
     _description = """
             transaction Services
         """
@@ -18,10 +18,7 @@ class TransactionService(AbstractComponent):
 
     def _get_transaction_values(self, acquirer, **post):
         # minimum overload: 'amount', 'currency_id', 'partner_id', 'reference'
-        return {
-            'acquirer_id': acquirer.id,
-            'type': 'form',
-        }
+        return {"acquirer_id": acquirer.id, "type": "form"}
 
     def _json_transaction(self, transaction):
         return {
@@ -50,23 +47,13 @@ class TransactionService(AbstractComponent):
         return self._json_transaction(tx)
 
     def _validator_create(self):
-        return {
-            "acquirer_id": {
-                "type": "integer",
-            }
-        }
+        return {"acquirer_id": {"type": "integer"}}
 
     def _validator_return_create(self):
         return {
-            "id": {
-                'type': 'integer',
-            },
-            "state": {
-                'type': 'string',
-            },
-            "acquirer": {
-                'type': 'integer',
-            },
+            "id": {"type": "integer"},
+            "state": {"type": "string"},
+            "acquirer": {"type": "integer"},
         }
 
     def get(self, _id):
@@ -79,22 +66,11 @@ class TransactionService(AbstractComponent):
         return self._json_transaction(pt.browse(int(_id)))
 
     def _validator_get(self):
-        return {
-            "_id": {
-                "coerce": int,
-                "type": "integer",
-            },
-        }
+        return {"_id": {"coerce": int, "type": "integer"}}
 
     def _validator_return_get(self):
         return {
-            "id": {
-                'type': 'integer',
-            },
-            "state": {
-                'type': 'string',
-            },
-            "acquirer": {
-                'type': 'integer',
-            },
+            "id": {"type": "integer"},
+            "state": {"type": "string"},
+            "acquirer": {"type": "integer"},
         }

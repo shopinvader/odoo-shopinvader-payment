@@ -1,11 +1,14 @@
 # Copyright 2018 ACSONE SA/NV
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 import logging
+
 from odoo import _
+from odoo.addons.base_rest.components.service import (
+    skip_secure_params,
+    skip_secure_response,
+)
 from odoo.addons.component.core import AbstractComponent
 from odoo.exceptions import MissingError
-from odoo.addons.base_rest.components.service import skip_secure_params, \
-    skip_secure_response
 
 _logger = logging.getLogger(__name__)
 
@@ -14,8 +17,8 @@ _logger = logging.getLogger(__name__)
 # the pylint error is disabled, a useless-suppression of the error is raised.
 # pylint: disable=consider-merging-classes-inherited,useless-suppression
 class WebhookService(AbstractComponent):
-    _inherit = 'base.rest.service'
-    _name = 'webhook.service'
+    _inherit = "base.rest.service"
+    _name = "webhook.service"
     _description = """
             Webhook for stripe
         """
@@ -32,15 +35,16 @@ class WebhookService(AbstractComponent):
         :param payload: stripe event value
         :return: nothing (stripe wait for HTTP 200)
         """
-        source = payload['data']['object']['metadata'].get('reference')
+        source = payload["data"]["object"]["metadata"].get("reference")
         if not source:
             _logger.info(
-                'Webhook of type %s without reference: ignored',
-                payload['type'])
+                "Webhook of type %s without reference: ignored",
+                payload["type"],
+            )
             return
-        transaction = self.env['payment.transaction'].search([
-            ('reference', '=', source),
-        ])
+        transaction = self.env["payment.transaction"].search(
+            [("reference", "=", source)]
+        )
 
         if transaction:
             transaction._stripe_process_webhook(payload)
@@ -49,10 +53,8 @@ class WebhookService(AbstractComponent):
 
     def _validator_create(self):
         # needed for swagger
-        return {
-        }
+        return {}
 
     def _validator_return_create(self):
         # needed for swagger
-        return {
-        }
+        return {}

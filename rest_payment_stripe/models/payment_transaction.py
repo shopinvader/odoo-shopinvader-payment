@@ -2,7 +2,6 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 import stripe
-
 from odoo import _, api, models
 from odoo.addons.payment_stripe.models.payment import INT_CURRENCIES
 from odoo.exceptions import MissingError
@@ -15,23 +14,26 @@ class PaymentTransaction(models.Model):
 
     @api.multi
     def _create_stripe_3d_secure(
-            self, payment_method_id=False, payment_intent_id=False,
-            version="2019-05-16"):
+        self,
+        payment_method_id=False,
+        payment_intent_id=False,
+        version="2019-05-16",
+    ):
         self.ensure_one()
         stripe.api_key = self.acquirer_id.stripe_secret_key
         if payment_method_id:
             intent = stripe.PaymentIntent.create(
                 payment_method=payment_method_id,
-                amount=int(self.amount
-                           if self.currency_id.name in INT_CURRENCIES
-                           else float_round(self.amount * 100, 2)),
+                amount=int(
+                    self.amount
+                    if self.currency_id.name in INT_CURRENCIES
+                    else float_round(self.amount * 100, 2)
+                ),
                 currency=self.currency_id.name,
-                confirmation_method='manual',
+                confirmation_method="manual",
                 confirm=True,
                 stripe_version=version,
-                metadata={
-                    'reference': self.reference,
-                }
+                metadata={"reference": self.reference},
             )
         else:
             intent = stripe.PaymentIntent.confirm(payment_intent_id)

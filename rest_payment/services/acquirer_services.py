@@ -4,8 +4,8 @@ from odoo.addons.component.core import AbstractComponent
 
 
 class AcquirerService(AbstractComponent):
-    _inherit = 'base.rest.service'
-    _name = 'acquirer.service'
+    _inherit = "base.rest.service"
+    _name = "acquirer.service"
     _description = """
             acquirer Services
         """
@@ -26,19 +26,10 @@ class AcquirerService(AbstractComponent):
         return {"name": acquirer.name}
 
     def _validator_search(self):
-        return {
-            "acquirer_id": {
-                "type": "integer",
-                "coerce": int,
-            }
-        }
+        return {"acquirer_id": {"type": "integer", "coerce": int}}
 
     def _validator_return_search(self):
-        return {
-            "name": {
-                "type": "string",
-            }
-        }
+        return {"name": {"type": "string"}}
 
     def _get_default_acquirer(self):
         return self.env["payment.acquirer"]._get_default_acquirer()

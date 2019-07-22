@@ -5,8 +5,8 @@ import pprint
 
 from odoo import _
 from odoo.addons.component.core import AbstractComponent
-from odoo.http import request
 from odoo.exceptions import MissingError, ValidationError
+from odoo.http import request
 
 _logger = logging.getLogger(__name__)
 
@@ -41,46 +41,39 @@ class StripeService(AbstractComponent):
 
         intent = tx._create_stripe_3d_secure(
             payment_method_id=payment_method_id,
-            payment_intent_id=payment_intent_id)
-        if intent.status == 'requires_action' and \
-                intent.next_action.type == 'use_stripe_sdk':
+            payment_intent_id=payment_intent_id,
+        )
+        if (
+            intent.status == "requires_action"
+            and intent.next_action.type == "use_stripe_sdk"
+        ):
             return {
                 "status": "requires_action",
                 "payload": intent.client_secret,
             }
-        if intent.status == 'succeeded':
-            _logger.info('Stripe: entering form_feedback with post data %s',
-                         pprint.pformat(intent))
-            request.env['payment.transaction'].sudo().with_context(
-                lang=None).form_feedback(intent, 'stripe')
-            return {
-                "status": "success",
-            }
+        if intent.status == "succeeded":
+            _logger.info(
+                "Stripe: entering form_feedback with post data %s",
+                pprint.pformat(intent),
+            )
+            request.env["payment.transaction"].sudo().with_context(
+                lang=None
+            ).form_feedback(intent, "stripe")
+            return {"status": "success"}
         raise ValidationError(_("Sorry, something gone wrong"))
 
     def _validator_create(self):
         return {
-            "tx_id": {
-                "type": "integer",
-                "coerce": int,
-            },
-            "payment_method_id": {
-                "type": "string",
-            },
-            "payment_intent_id": {
-                "type": "string",
-            },
+            "tx_id": {"type": "integer", "coerce": int},
+            "payment_method_id": {"type": "string"},
+            "payment_intent_id": {"type": "string"},
         }
 
     def _validator_return_create(self):
         return {
             "type": "dict",
             "schema": {
-                "status": {
-                    "type": "string",
-                },
-                "payload": {
-                    "type": "string",
-                },
+                "status": {"type": "string"},
+                "payload": {"type": "string"},
             },
         }

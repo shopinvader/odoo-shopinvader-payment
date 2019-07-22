@@ -5,12 +5,11 @@
     "name": "Rest Payment Stripe",
     "description": """
         Stripe payment with rest api""",
-    "version": "11.0.1.0.0",
+    "version": "12.0.1.0.0",
     "license": "AGPL-3",
+    "development_status": "Beta",
     "author": "ACSONE SA/NV",
-    "website": "https://acsone.eu/",
+    "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "depends": ["component", "base_rest", "payment_stripe", "rest_payment"],
-    "data": [],
-    "demo": [],
     "external_dependencies": {"python": ["stripe"]},
 }
