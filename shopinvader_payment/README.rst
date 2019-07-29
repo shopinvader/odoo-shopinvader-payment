@@ -17,7 +17,7 @@ Shopinvader Payment
     :target: https://github.com/shopinvader/odoo-shopinvader-payment/tree/10.0/shopinvader_payment
     :alt: shopinvader/odoo-shopinvader-payment
 
-|badge1| |badge2| |badge3| 
+|badge1| |badge2| |badge3|
 
 Add the payment information on the cart
 
@@ -48,6 +48,7 @@ Contributors
 ~~~~~~~~~~~~
 
 * Sebastien BEAU <sebastien.beau@akretion.com>
+* Denis Roussel <denis.roussel@acsone.eu>
 
 Maintainers
 ~~~~~~~~~~~

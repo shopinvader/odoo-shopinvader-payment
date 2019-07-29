@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2019 ACSONE SA/NV
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record model="ir.ui.view" id="account_payment_mode_form_view">
+        <field name="name">account.payment.mode.form (in shopinvader_payment)</field>
+        <field name="model">account.payment.mode</field>
+        <field name="inherit_id" ref="account_payment_mode.account_payment_mode_form"/>
+        <field name="arch" type="xml">
+            <field name="variable_journal_ids" position="after">
+                <field name="payment_acquirer_id"/>
+                <field name="provider"  attrs="{'invisible': [('payment_acquirer_id', '=', False)]}"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

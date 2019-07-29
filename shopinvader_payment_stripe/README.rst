@@ -17,7 +17,7 @@ Shopinvader Payment Stripe
     :target: https://github.com/shopinvader/odoo-shopinvader-payment/tree/10.0/shopinvader_payment_stripe
     :alt: shopinvader/odoo-shopinvader-payment
 
-|badge1| |badge2| |badge3| 
+|badge1| |badge2| |badge3|
 
 Implements Stripe payment
 
@@ -43,11 +43,13 @@ Authors
 ~~~~~~~
 
 * Akretion
+* ACSONE SA/NV
 
 Contributors
 ~~~~~~~~~~~~
 
 * Sebastien BEAU <sebastien.beau@akretion.com>
+* Denis Roussel <denis.roussel@acsone.eu>
 
 Maintainers
 ~~~~~~~~~~~
