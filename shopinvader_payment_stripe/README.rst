@@ -13,9 +13,9 @@ Shopinvader Payment Stripe
 .. |badge2| image:: https://img.shields.io/badge/licence-AGPL--3-blue.png
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
-.. |badge3| image:: https://img.shields.io/badge/github-akretion%2Fodoo--shopinvader-lightgray.png?logo=github
-    :target: https://github.com/akretion/odoo-shopinvader/tree/10.0/shopinvader_payment_stripe
-    :alt: akretion/odoo-shopinvader
+.. |badge3| image:: https://img.shields.io/badge/github-shopinvader%2Fodoo--shopinvader--payment-lightgray.png?logo=github
+    :target: https://github.com/shopinvader/odoo-shopinvader-payment/tree/12.0/shopinvader_payment_stripe
+    :alt: shopinvader/odoo-shopinvader-payment
 
 |badge1| |badge2| |badge3| 
 
@@ -29,10 +29,10 @@ Implements Stripe payment
 Bug Tracker
 ===========
 
-Bugs are tracked on `GitHub Issues <https://github.com/akretion/odoo-shopinvader/issues>`_.
+Bugs are tracked on `GitHub Issues <https://github.com/shopinvader/odoo-shopinvader-payment/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us smashing it by providing a detailed and welcomed
-`feedback <https://github.com/akretion/odoo-shopinvader/issues/new?body=module:%20shopinvader_payment_stripe%0Aversion:%2010.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/shopinvader/odoo-shopinvader-payment/issues/new?body=module:%20shopinvader_payment_stripe%0Aversion:%2012.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -43,18 +43,17 @@ Authors
 ~~~~~~~
 
 * Akretion
+* ACSONE SA/NV
 
 Contributors
 ~~~~~~~~~~~~
 
 * Sebastien BEAU <sebastien.beau@akretion.com>
+* Denis Roussel <denis.roussel@acsone.eu>
 
 Maintainers
 ~~~~~~~~~~~
 
-
-
-This module is part of the `akretion/odoo-shopinvader <https://github.com/akretion/odoo-shopinvader/tree/10.0/shopinvader_payment_stripe>`_ project on GitHub.
-
+This module is part of the `shopinvader/odoo-shopinvader-payment <https://github.com/shopinvader/odoo-shopinvader-payment/tree/12.0/shopinvader_payment_stripe>`_ project on GitHub.
 
 You are welcome to contribute.
