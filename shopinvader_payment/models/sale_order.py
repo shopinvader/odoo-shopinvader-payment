@@ -7,15 +7,7 @@ from odoo import api, models
 class SaleOrder(models.Model):
 
     _name = "sale.order"
-    _inherit = ["sale.order", "shopinvader.payable"]
-
-    def _get_target_provider(self):
-        """
-
-        :param target: payment recordset
-        :return: str
-        """
-        return self.payment_mode_id.provider
+    _inherit = ["sale.order", "invader.payable"]
 
     @api.multi
     def _get_transaction_to_capture_amount(self):
@@ -31,23 +23,14 @@ class SaleOrder(models.Model):
         :param payment_mode:
         :return: dict
         """
+        self.ensure_one()
+        # TODO is there no self.currency_id?
         currency = self.pricelist_id.currency_id
         partner = self.partner_id
         vals = {
             "amount": self._get_transaction_to_capture_amount(),
             "currency_id": currency.id,
             "partner_id": partner.id,
-            "sale_order_ids": [(6, 0, self.ids)],
+            "payment_mode_id": payment_mode.id,
         }
-        vals.update(self._get_shopinvader_payment_mode(payment_mode))
         return vals
-
-    def _attach_transaction(self, payment_transaction):
-        """
-        Attach the transaction to sale order
-        :param payment_transaction:
-        :return: bool
-        """
-        self.ensure_one()
-        self.transaction_ids |= payment_transaction
-        return True

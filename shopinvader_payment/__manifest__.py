@@ -18,6 +18,7 @@
         "shopinvader",
         "sale_automatic_workflow_payment_mode",
         "onchange_helper",
+        "invader_payment",
     ],
     "data": [
         "views/shopinvader_menu.xml",

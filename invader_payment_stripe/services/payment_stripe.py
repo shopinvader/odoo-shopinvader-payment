@@ -7,6 +7,7 @@ from odoo.addons.component.core import Component
 from odoo.addons.payment_stripe.models.payment import INT_CURRENCIES
 from odoo.tools.float_utils import float_round
 
+# map Stripe transaction statuses to Odoo payment.transaction statuses
 STRIPE_TRANSACTION_STATUSES = {
     "canceled": "cancel",
     "processing": "pending",
@@ -19,6 +20,8 @@ STRIPE_TRANSACTION_STATUSES = {
 }
 
 
+# TODO this sounds hyper dangerous, if we are in multithread-multi tenant mode
+# TODO this thing may mix API keys across customers
 class StripeKeyManager(object):
     def __enter__(self):
         pass
@@ -38,13 +41,6 @@ class PaymentServiceStripe(Component):
     _usage = "payment_stripe"
     _description = ""
 
-    def _allowed_payment_target(self):
-        """
-        Restrict service calls
-        :return: list
-        """
-        return ["current_cart"]
-
     def _validator_confirm_payment(self):
         """
         Validator of confirm_payment service
@@ -58,7 +54,7 @@ class PaymentServiceStripe(Component):
             "target": {
                 "type": "string",
                 "required": True,
-                "allowed": self._allowed_payment_target(),
+                "allowed": ["current_cart"],
             },
             "payment_mode": {"type": "string"},
             "stripe_payment_intent_id": {"type": "string"},
@@ -154,8 +150,10 @@ class PaymentServiceStripe(Component):
         :param stripe_payment_intent_id:
         :return:
         """
+        # TODO check payment_mode.acquirer is stripe
         transaction_obj = self.env["payment.transaction"]
-        target = self._find_target()
+        target = self.env["shopinvader.payable"]._find_target(target)
+        # TODO check payment mode is allowed for target
         intent = False
         error_message = ""
         tx_data = {}
@@ -190,8 +188,10 @@ class PaymentServiceStripe(Component):
 
             # Update Transaction and cart with intent state
             if tx and tx.state == "done":
+                # TODO nope! we must ask the target to confirm itself;
+                # TODO this method must not know about carts
                 cart_component = self.component(usage="cart")
-                cart_component._action_after_payment(target)
+                cart_component._confirm_cart(target)
         except (stripe.error.CardError, Exception) as e:
             error_message = "Transaction Error : {}".format(e)
 

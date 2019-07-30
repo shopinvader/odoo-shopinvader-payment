@@ -17,14 +17,6 @@ class ShopinvaderPayable(models.AbstractModel):
         """
         raise NotImplementedError
 
-    def _get_target_provider(self, target):
-        """
-
-        :param target: payment recordset
-        :return: str
-        """
-        raise NotImplementedError
-
     def _prepare_payment_transaction_data(self, payment_mode):
         """
         Implement this to fill in payment.transaction object data
@@ -97,23 +89,3 @@ class ShopinvaderPayable(models.AbstractModel):
                 if method.get("id") == self.payment_mode_id.id:
                     selected_method = method
         return selected_method
-
-    def _get_shopinvader_payment_mode(self, payment_mode):
-        """
-
-        :param target: payment recordset
-        :param params: dict
-        :return: str
-        """
-        payment_mode_obj = self.env["account.payment.mode"]
-        payment_mode_id = payment_mode_obj.browse(int(payment_mode))
-        available_payment_mode_ids = [
-            p.get("id") for p in self._get_shopinvader_available_payment_mode()
-        ]
-        if payment_mode_id.id not in available_payment_mode_ids:
-            raise UserError(_("Unsupported payment mode"))
-
-        return {
-            "payment_mode_id": payment_mode_id.id,
-            "acquirer_id": payment_mode_id.payment_acquirer_id.id,
-        }
