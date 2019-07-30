@@ -1,53 +1,32 @@
 # Copyright 2019 ACSONE SA/NV
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import api, models
+from odoo import models
 
 
 class SaleOrder(models.Model):
 
     _name = "sale.order"
-    _inherit = ["sale.order", "shopinvader.payable"]
+    _inherit = ["sale.order", "invader.payable"]
 
-    def _get_target_provider(self):
-        """
+    def _invader_get_available_payment_methods(self):
+        self.ensure_one()
+        return self.shopinvader_backend_id.payment_method_ids
 
-        :param target: payment recordset
-        :return: str
-        """
-        return self.payment_mode_id.provider
-
-    @api.multi
-    def _get_transaction_to_capture_amount(self):
-        """
-        Get the amount to capture of the transaction
-        :return: float
-        """
-        return self.amount_total
-
-    def _prepare_payment_transaction_data(self, payment_mode):
-        """
-        This returns the dict with all data for transaction from sale order
-        :param payment_mode:
-        :return: dict
-        """
-        currency = self.pricelist_id.currency_id
-        partner = self.partner_id
+    def _invader_prepare_payment_transaction_data(self, payment_mode):
+        self.ensure_one()
         vals = {
-            "amount": self._get_transaction_to_capture_amount(),
-            "currency_id": currency.id,
-            "partner_id": partner.id,
+            "amount": self.amount_total,
+            "currency_id": self.currency_id.id,
+            "partner_id": self.partner_id.id,
+            "acquirer_id": payment_mode.payment_acquirer_id.id,
             "sale_order_ids": [(6, 0, self.ids)],
         }
-        vals.update(self._get_shopinvader_payment_mode(payment_mode))
         return vals
 
-    def _attach_transaction(self, payment_transaction):
-        """
-        Attach the transaction to sale order
-        :param payment_transaction:
-        :return: bool
-        """
-        self.ensure_one()
-        self.transaction_ids |= payment_transaction
-        return True
+    def _invader_payment_start(self, transaction, payment_mode_id):
+        self.write({"payment_mode_id": payment_mode_id.id})
+
+    def _invader_payment_success(self, transaction, payment_mode_id):
+        res = self.action_confirm_cart()
+        return res

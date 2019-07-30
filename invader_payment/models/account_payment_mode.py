@@ -11,4 +11,3 @@ class AccountPaymentMode(models.Model):
     payment_acquirer_id = fields.Many2one(
         comodel_name="payment.acquirer", string="Payment Acquirer"
     )
-    provider = fields.Selection(related="payment_acquirer_id.provider")

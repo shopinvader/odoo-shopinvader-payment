@@ -11,7 +11,6 @@
         <field name="arch" type="xml">
             <field name="variable_journal_ids" position="after">
                 <field name="payment_acquirer_id"/>
-                <field name="provider"  attrs="{'invisible': [('payment_acquirer_id', '=', False)]}"/>
             </field>
         </field>
     </record>

@@ -3,8 +3,8 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
-    "name": "Shopinvader Payment Stripe",
-    "summary": "Shopinvader Stripe Payment",
+    "name": "Invader Payment Stripe",
+    "summary": "Invader Stripe Payment",
     "version": "12.0.1.0.0",
     "category": "e-commerce",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
@@ -14,5 +14,5 @@
     "installable": True,
     "auto_install": True,
     "external_dependencies": {"python": ["stripe"], "bin": []},
-    "depends": ["shopinvader_payment", "payment_stripe"],
+    "depends": ["invader_payment", "payment_stripe"],
 }

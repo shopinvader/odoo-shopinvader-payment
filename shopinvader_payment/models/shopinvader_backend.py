@@ -11,4 +11,3 @@ class ShopinvaderBackend(models.Model):
     payment_method_ids = fields.One2many(
         "shopinvader.payment", "backend_id", "Payment Method"
     )
-    location = fields.Char(required=True)
