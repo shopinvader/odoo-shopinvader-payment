@@ -164,7 +164,9 @@ class PaymentServiceStripe(Component):
             if intent.status == "succeeded":
                 transaction._set_transaction_done()
                 # TODO: Manage session_id/store_cache return
-                payable_target._invader_payment_success(transaction)
+                payable_target._invader_payment_success(
+                    transaction, payment_mode
+                )
             else:
                 transaction.write(
                     {"state": STRIPE_TRANSACTION_STATUSES[intent.status]}
