@@ -175,13 +175,14 @@ class PaymentServiceStripe(Component):
             return self._generate_stripe_response(intent)
 
         except Exception as e:
-            _logger.exception("Error confirming stripe payment")
-            error_message = _("Payment Error : {}").format(e)
+            _logger.error("Error confirming stripe payment", exc_info=True)
             if transaction:
                 # Odoo does not like to change not draft transaction to error
                 transaction.write({"state": "draft"})
-                transaction._set_transaction_error(error_message)
-            return {"error": error_message}
+                transaction._set_transaction_error(
+                    _("Exception: {}".format(e))
+                )
+            return {"error": _("Payment error")}
 
     def _prepare_stripe_intent(self, transaction, stripe_payment_method_id):
         """
