@@ -49,7 +49,7 @@ class CartService(Component):
                 {
                     "id": method.payment_mode_id.id,
                     "name": method.payment_mode_id.name,
-                    "provider": method.payment_mode_id.provider,
+                    "provider": method.payment_mode_id.payment_acquirer_id.provider,
                     "code": method.code,
                     "description": method.description,
                 }
