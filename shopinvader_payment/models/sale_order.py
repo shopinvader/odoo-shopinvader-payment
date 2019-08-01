@@ -32,7 +32,6 @@ class SaleOrder(models.Model):
             "currency_id": currency.id,
             "partner_id": partner.id,
             "acquirer_id": payment_mode.payment_acquirer_id.id,
-            # "reference": self.name,
             "sale_order_ids": [(6, 0, self.ids)],
         }
         return vals
@@ -86,3 +85,6 @@ class SaleOrder(models.Model):
     def _invader_after_payment(self, transaction):
         res = self.action_confirm_cart()
         return res
+
+    def _invader_attach_transaction(self, transaction, payment_mode):
+        self.write({"payment_mode_id": payment_mode.id})

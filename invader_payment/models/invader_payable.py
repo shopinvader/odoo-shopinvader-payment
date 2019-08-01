@@ -28,3 +28,14 @@ class InvaderPayable(models.AbstractModel):
         :return:
         """
         raise NotImplementedError
+
+    def _invader_attach_transaction(self, transaction, payment_mode):
+        raise NotImplementedError
+
+    def _invader_payment_start(self, transaction):
+        """ Called just after the transaction has been created. """
+        pass
+
+    def _invader_payment_success(self, transaction):
+        """ Called when the payment transaction succeeded. """
+        pass

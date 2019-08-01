@@ -50,18 +50,15 @@ class PaymentServiceStripe(Component):
         stripe_payment_method_id: The Stripe card created on client side
         :return: dict
         """
-        return {
-            "target": {
-                "type": "string",
-                "required": True,
-                "allowed": self.component(
-                    usage="payment"
-                )._invader_get_target_validator(),
-            },
-            "payment_mode": {"type": "string"},
-            "stripe_payment_intent_id": {"type": "string"},
-            "stripe_payment_method_id": {"type": "string"},
-        }
+        res = self.component(usage="payment")._invader_get_target_validator()
+        res.update(
+            {
+                "payment_mode": {"type": "string"},
+                "stripe_payment_intent_id": {"type": "string"},
+                "stripe_payment_method_id": {"type": "string"},
+            }
+        )
+        return res
 
     def _validator_return_confirm_payment(self):
         return {
@@ -102,19 +99,15 @@ class PaymentServiceStripe(Component):
         )
         return transaction
 
-    def _get_stripe_private_key(self, tx_data=False, tx=False):
+    def _get_stripe_private_key(self, transaction):
         """
         Return stripe private key depending on tx dict (before creation) or
         with payment.transaction recordset
-        :param tx_data: dict
-        :param tx: account.payment.mode
+        :param transacction: payment.transaction
         :return: string
         """
-        acquirer = self.env["payment.acquirer"]
-        if tx:
-            acquirer = tx.acquirer_id
-        if tx_data and "acquirer_id" in tx_data:
-            acquirer = acquirer.browse(tx_data.get("acquirer_id"))
+
+        acquirer = transaction.acquirer_id
         return acquirer.filtered(
             lambda a: a.provider == "stripe"
         ).stripe_secret_key
@@ -154,38 +147,46 @@ class PaymentServiceStripe(Component):
             payment_mode_id = self.env["account.payment.mode"].browse(
                 int(payment_mode)
             )
+        # Stripe part
         try:
             if stripe_payment_method_id:
+                # First step
                 tx_data = payable_target._invader_prepare_payment_transaction_data(
                     payment_mode_id
                 )
+                # Create transaction
+                transaction = transaction_obj.create(tx_data)
                 with StripeKeyManager(
-                    stripe, self._get_stripe_private_key(tx_data=tx_data)
+                    stripe, self._get_stripe_private_key(transaction)
                 ):
                     intent = self._prepare_stripe_intent(
-                        tx_data, stripe_payment_method_id
+                        transaction, stripe_payment_method_id
                     )
                 if intent:
                     self._update_transaction_with_stripe(intent, tx_data)
-                    tx = transaction_obj.create(tx_data)
+                    transaction.write(tx_data)
+                    payable_target._invader_attach_transaction(
+                        tx, payment_mode_id
+                    )
             elif stripe_payment_intent_id:
-                tx = self._get_stripe_transaction_from_intent(
+                # Second step if applicable
+                transaction = self._get_stripe_transaction_from_intent(
                     stripe_payment_intent_id
                 )
                 with StripeKeyManager(
-                    stripe, self._get_stripe_private_key(tx=tx)
+                    stripe, self._get_stripe_private_key(transaction)
                 ):
                     intent = self._confirm_stripe_intent(
                         stripe_payment_intent_id
                     )
                 self._update_transaction_with_stripe(intent, tx_data)
-                tx._set_transaction_done()
-                tx.write(tx_data)
+                transaction._set_transaction_done()
+                transaction.write(tx_data)
 
             # Update Transaction and cart with intent state
-            if tx and tx.state == "done":
+            if transaction and transaction.state == "done":
                 # TODO: Manage store_cache return
-                payable_target._invader_after_payment(tx)
+                payable_target._invader_after_payment(transaction)
         except (stripe.error.CardError, Exception) as e:
             error_message = "Transaction Error : {}".format(e)
 
@@ -199,21 +200,23 @@ class PaymentServiceStripe(Component):
 
             return self._generate_stripe_response(intent, error_message)
 
-    def _prepare_stripe_intent(self, tx_data, stripe_payment_method_id):
+    def _prepare_stripe_intent(self, transaction, stripe_payment_method_id):
         """
         Prepare a StripeIntent with payment.transaction data
         :param tx_data:
         :param stripe_payment_method_id:
         :return: StripeIntent
         """
-        currency_obj = self.env["res.currency"]
-        currency = currency_obj.browse(tx_data.get("currency_id"))
+        metadata = {"reference": transaction.reference}
+        currency = transaction.currency_id
         intent = stripe.PaymentIntent.create(
             payment_method=stripe_payment_method_id,
-            amount=self._get_formatted_amount(currency, tx_data.get("amount")),
+            amount=self._get_formatted_amount(currency, transaction.amount),
             currency=currency.name,
             confirmation_method="manual",
             confirm=True,
+            description=transaction.reference,
+            metadata=metadata,
         )
         return intent
 

@@ -24,5 +24,8 @@ class InvaderPaymentService(Component):
         :return:
         """
         res = super()._invader_get_target_validator()
-        res.append("current_cart")
+        target = res.get("target")
+        allowed = target.get("allowed", [])
+        allowed.append("current_cart")
+        target.update({"allowed": allowed})
         return res
