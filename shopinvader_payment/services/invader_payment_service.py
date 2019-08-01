@@ -16,3 +16,15 @@ class InvaderPaymentService(Component):
         res = super()._invader_get_target_validator()
         res["target"]["allowed"].append("current_cart")
         return res
+
+    def _invader_get_payment_success_reponse_data(self, target, **params):
+        res = super()._invader_get_payment_success_reponse_data(target, **params)
+        if target == "current_cart":
+            cart_service = self.component(usage="cart")
+            cart = cart_service._get()
+            res = cart_service._to_json(cart)
+            res.update({
+                "store_cache": {"last_sale": res["data"], "cart": {}},
+                "set_session": {"cart_id": 0},
+            })
+        return res
