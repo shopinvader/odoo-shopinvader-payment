@@ -16,7 +16,7 @@ class SaleOrder(models.Model):
     def _invader_prepare_payment_transaction_data(self, payment_mode):
         self.ensure_one()
         vals = {
-            "amount": self._get_transaction_to_capture_amount(),
+            "amount": self.amount_total,
             "currency_id": self.currency_id.id,
             "partner_id": self.partner_id.id,
             "acquirer_id": payment_mode.payment_acquirer_id.id,
