@@ -21,18 +21,10 @@ class InvaderPayable(models.AbstractModel):
         """
         raise NotImplementedError
 
-    def _invader_after_payment(self, transaction):
-        """
-
-        :param transaction:
-        :return:
-        """
-        raise NotImplementedError
-
     def _invader_attach_transaction(self, transaction, payment_mode):
         raise NotImplementedError
 
-    def _invader_payment_start(self, transaction):
+    def _invader_payment_start(self, transaction, payment_mode_id):
         """ Called just after the transaction has been created. """
         pass
 

@@ -86,5 +86,5 @@ class SaleOrder(models.Model):
         res = self.action_confirm_cart()
         return res
 
-    def _invader_attach_transaction(self, transaction, payment_mode):
-        self.write({"payment_mode_id": payment_mode.id})
+    def _invader_payment_start(self, transaction, payment_mode_id):
+        self.write({"payment_mode_id": payment_mode_id.id})

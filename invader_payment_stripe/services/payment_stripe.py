@@ -20,20 +20,6 @@ STRIPE_TRANSACTION_STATUSES = {
 }
 
 
-# TODO this sounds hyper dangerous, if we are in multithread-multi tenant mode
-# TODO this thing may mix API keys across customers
-class StripeKeyManager(object):
-    def __enter__(self):
-        pass
-
-    def __init__(self, stripe, api_key):
-        stripe.api_key = api_key
-
-    # pylint: disable=redefined-builtin
-    def __exit__(self, type, value, traceback):
-        stripe.api_key = ""
-
-
 class PaymentServiceStripe(Component):
 
     _name = "payment.service.stripe"
@@ -101,9 +87,8 @@ class PaymentServiceStripe(Component):
 
     def _get_stripe_private_key(self, transaction):
         """
-        Return stripe private key depending on tx dict (before creation) or
-        with payment.transaction recordset
-        :param transacction: payment.transaction
+        Return stripe private key depending on payment.transaction recordset
+        :param transaction: payment.transaction
         :return: string
         """
 
@@ -156,29 +141,24 @@ class PaymentServiceStripe(Component):
                 )
                 # Create transaction
                 transaction = transaction_obj.create(tx_data)
-                with StripeKeyManager(
-                    stripe, self._get_stripe_private_key(transaction)
-                ):
-                    intent = self._prepare_stripe_intent(
-                        transaction, stripe_payment_method_id
-                    )
+                payable_target._invader_payment_start(
+                    transaction, payment_mode_id
+                )
+                intent = self._prepare_stripe_intent(
+                    transaction, stripe_payment_method_id
+                )
                 if intent:
                     self._update_transaction_with_stripe(intent, tx_data)
                     transaction.write(tx_data)
-                    payable_target._invader_attach_transaction(
-                        tx, payment_mode_id
-                    )
+
             elif stripe_payment_intent_id:
                 # Second step if applicable
                 transaction = self._get_stripe_transaction_from_intent(
                     stripe_payment_intent_id
                 )
-                with StripeKeyManager(
-                    stripe, self._get_stripe_private_key(transaction)
-                ):
-                    intent = self._confirm_stripe_intent(
-                        stripe_payment_intent_id
-                    )
+                intent = self._confirm_stripe_intent(
+                    transaction, stripe_payment_intent_id
+                )
                 self._update_transaction_with_stripe(intent, tx_data)
                 transaction._set_transaction_done()
                 transaction.write(tx_data)
@@ -186,7 +166,7 @@ class PaymentServiceStripe(Component):
             # Update Transaction and cart with intent state
             if transaction and transaction.state == "done":
                 # TODO: Manage store_cache return
-                payable_target._invader_after_payment(transaction)
+                payable_target._invader_payment_success(transaction)
         except (stripe.error.CardError, Exception) as e:
             error_message = "Transaction Error : {}".format(e)
 
@@ -217,6 +197,7 @@ class PaymentServiceStripe(Component):
             confirm=True,
             description=transaction.reference,
             metadata=metadata,
+            api_key=self._get_stripe_private_key(transaction),
         )
         return intent
 
@@ -234,13 +215,16 @@ class PaymentServiceStripe(Component):
             }
         )
 
-    def _confirm_stripe_intent(self, stripe_payment_intent_id):
+    def _confirm_stripe_intent(self, transaction, stripe_payment_intent_id):
         """
         Confirm the Stripe Intent and return it
         :param stripe_payment_intent_id:
         :return: StripeIntent
         """
-        return stripe.PaymentIntent.confirm(stripe_payment_intent_id)
+        return stripe.PaymentIntent.confirm(
+            stripe_payment_intent_id,
+            api_key=self._get_stripe_private_key(transaction),
+        )
 
     def _generate_stripe_response(self, intent=False, error_message=""):
         """
