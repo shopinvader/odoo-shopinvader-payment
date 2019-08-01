@@ -6,6 +6,7 @@ import logging
 
 import stripe
 
+from odoo import _
 from odoo.addons.component.core import Component
 from odoo.addons.payment_stripe.models.payment import INT_CURRENCIES
 from odoo.tools.float_utils import float_round
@@ -175,7 +176,7 @@ class PaymentServiceStripe(Component):
 
         except Exception as e:
             _logger.exception("Error confirming stripe payment")
-            error_message = "Transaction Error : {}".format(e)
+            error_message = _("Payment Error : {}").format(e)
             if transaction:
                 # Odoo does not like to change not draft transaction to error
                 transaction.write({"state": "draft"})
@@ -234,6 +235,8 @@ class PaymentServiceStripe(Component):
             # The payment didn’t need any additional actions and completed!
             # Handle post-payment fulfillment
             return {"success": True}
+        elif intent.status == "canceled":
+            return {"error": _("Payment canceled.")}
         else:
             # Invalid status
-            return {"error": "Invalid PaymentIntent status"}
+            return {"error": _("Invalid Stripe PaymentIntent status.")}
