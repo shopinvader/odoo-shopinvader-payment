@@ -4,6 +4,7 @@
 
 <odoo>
 
+    <!-- TODO move to invader_payment -->
     <record model="ir.ui.view" id="account_payment_mode_form_view">
         <field name="name">account.payment.mode.form (in shopinvader_payment)</field>
         <field name="model">account.payment.mode</field>
@@ -11,7 +12,6 @@
         <field name="arch" type="xml">
             <field name="variable_journal_ids" position="after">
                 <field name="payment_acquirer_id"/>
-                <field name="provider"  attrs="{'invisible': [('payment_acquirer_id', '=', False)]}"/>
             </field>
         </field>
     </record>

@@ -6,12 +6,12 @@ from odoo.addons.component.core import Component
 class InvaderPaymentService(Component):
 
     _name = "invader.payment.service"
-    _inherit = "base.rest.service"
-    _usage = "payment"
+    _usage = "invader.payment"
 
     def _invader_find_payable(self, target, **params):
         """
-        # returns invader.payable
+        Find an invader.payable from a target parameter.
+
         :param params:
         :return:
         """
