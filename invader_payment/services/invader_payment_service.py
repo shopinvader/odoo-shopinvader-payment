@@ -19,8 +19,11 @@ class InvaderPaymentService(Component):
 
     def _invader_get_target_validator(self):
         """
-        # returns a list of strings
-        # used to add in the validator
-        :return:
+        Return a cerberus validator schema fragment that specifies the
+        target being paid. Implementations must extend it by populating
+        the "allowed" field (eg with strings such as 'current_cart') and
+        possibly adding other fields.
         """
-        return []
+        return {
+            "target": {"type": "string", "required": True, "allowed": []}
+        }
