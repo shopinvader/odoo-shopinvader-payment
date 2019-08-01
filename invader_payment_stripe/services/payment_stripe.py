@@ -37,7 +37,7 @@ class StripeKeyManager(object):
 class PaymentServiceStripe(Component):
 
     _name = "payment.service.stripe"
-    _inherit = "base.shopinvader.service"
+    _inherit = "base.rest.service"
     _usage = "payment_stripe"
     _description = ""
 
@@ -54,7 +54,9 @@ class PaymentServiceStripe(Component):
             "target": {
                 "type": "string",
                 "required": True,
-                "allowed": ["current_cart"],
+                "allowed": self.component(
+                    usage="payment"
+                )._invader_get_target_validator(),
             },
             "payment_mode": {"type": "string"},
             "stripe_payment_intent_id": {"type": "string"},
@@ -67,18 +69,10 @@ class PaymentServiceStripe(Component):
             "payment_intent_client_secret": {"type": "string"},
             "success": {"type": "boolean"},
             "error": {"type": "string"},
+            "data": {"type": "string"},
+            "set_session": {"type": "string"},
+            "store_cache": {"type": "string"},
         }
-
-    def _find_target(self):
-        """
-        Find the target object from a payment request dict
-        supported targets: current_cart
-        the returned object implements shopinvader.payable
-        :return: recordset
-        """
-        cart_component = self.component(usage="cart")
-        cart = cart_component._get()
-        return cart
 
     def _get_formatted_amount(self, currency, amount):
         """
@@ -119,19 +113,13 @@ class PaymentServiceStripe(Component):
         acquirer = self.env["payment.acquirer"]
         if tx:
             acquirer = tx.acquirer_id
-        if tx_data and "payment_mode_id" in tx_data:
+        if tx_data and "acquirer_id" in tx_data:
             acquirer = acquirer.browse(tx_data.get("acquirer_id"))
         return acquirer.filtered(
             lambda a: a.provider == "stripe"
         ).stripe_secret_key
 
-    def confirm_payment(
-        self,
-        target,
-        payment_mode=False,
-        stripe_payment_method_id=False,
-        stripe_payment_intent_id=False,
-    ):
+    def confirm_payment(self, target, **params):
         """
         This is the rest service exposed to locomotive and called on
         payment confirmation.
@@ -150,17 +138,26 @@ class PaymentServiceStripe(Component):
         :param stripe_payment_intent_id:
         :return:
         """
-        # TODO check payment_mode.acquirer is stripe
+        payment_mode = params.get("payment_mode")
+        stripe_payment_method_id = params.get("stripe_payment_method_id")
+        stripe_payment_intent_id = params.get("stripe_payment_intent_id")
         transaction_obj = self.env["payment.transaction"]
-        target = self.env["shopinvader.payable"]._find_target(target)
-        # TODO check payment mode is allowed for target
+        payable_target = self.component(usage="payment")._invader_find_payable(
+            target, **params
+        )
+        # Init some data
         intent = False
         error_message = ""
         tx_data = {}
+        tx = self.env["payment.transaction"].browse()
+        if payment_mode:
+            payment_mode_id = self.env["account.payment.mode"].browse(
+                int(payment_mode)
+            )
         try:
             if stripe_payment_method_id:
-                tx_data = target._prepare_payment_transaction_data(
-                    payment_mode
+                tx_data = payable_target._invader_prepare_payment_transaction_data(
+                    payment_mode_id
                 )
                 with StripeKeyManager(
                     stripe, self._get_stripe_private_key(tx_data=tx_data)
@@ -171,7 +168,6 @@ class PaymentServiceStripe(Component):
                 if intent:
                     self._update_transaction_with_stripe(intent, tx_data)
                     tx = transaction_obj.create(tx_data)
-                    target._attach_transaction(tx)
             elif stripe_payment_intent_id:
                 tx = self._get_stripe_transaction_from_intent(
                     stripe_payment_intent_id
@@ -188,10 +184,8 @@ class PaymentServiceStripe(Component):
 
             # Update Transaction and cart with intent state
             if tx and tx.state == "done":
-                # TODO nope! we must ask the target to confirm itself;
-                # TODO this method must not know about carts
-                cart_component = self.component(usage="cart")
-                cart_component._confirm_cart(target)
+                # TODO: Manage store_cache return
+                payable_target._invader_after_payment(tx)
         except (stripe.error.CardError, Exception) as e:
             error_message = "Transaction Error : {}".format(e)
 

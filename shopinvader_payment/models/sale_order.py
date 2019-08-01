@@ -31,7 +31,9 @@ class SaleOrder(models.Model):
             "amount": self._get_transaction_to_capture_amount(),
             "currency_id": currency.id,
             "partner_id": partner.id,
-            "payment_mode_id": payment_mode.id,
+            "acquirer_id": payment_mode.payment_acquirer_id.id,
+            # "reference": self.name,
+            "sale_order_ids": [(6, 0, self.ids)],
         }
         return vals
 
@@ -79,4 +81,8 @@ class SaleOrder(models.Model):
                     "description": method.description,
                 }
             )
+        return res
+
+    def _invader_after_payment(self, transaction):
+        res = self.action_confirm_cart()
         return res

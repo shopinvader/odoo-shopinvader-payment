@@ -20,3 +20,11 @@ class InvaderPayable(models.AbstractModel):
         :return: recordset (account.payment.method)
         """
         raise NotImplementedError
+
+    def _invader_after_payment(self, transaction):
+        """
+
+        :param transaction:
+        :return:
+        """
+        raise NotImplementedError
