@@ -15,6 +15,7 @@
     "external_dependencies": {"python": ["cerberus", "unidecode"], "bin": []},
     "depends": [
         "account_payment_mode",
+        "account_payment_sale",
         "shopinvader",
         "sale_automatic_workflow_payment_mode",
         "onchange_helper",
