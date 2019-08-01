@@ -27,3 +27,17 @@ class InvaderPaymentService(Component):
         return {
             "target": {"type": "string", "required": True, "allowed": []}
         }
+
+    def _invader_get_payment_error_reponse_data(self, target, **params):
+        """
+        This is mostly used by ShopInvader to manipulate session and
+        store_cache after payment error.
+        """
+        return {}
+
+    def _invader_get_payment_sucess_reponse_data(self, target, **params):
+        """
+        This is mostly used by ShopInvader to manipulate session and
+        store_cache after payment success.
+        """
+        return {}
