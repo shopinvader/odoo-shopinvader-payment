@@ -41,7 +41,9 @@ class PaymentServiceStripe(Component):
         stripe_payment_method_id: The Stripe card created on client side
         :return: dict
         """
-        res = self.component(usage="payment")._invader_get_target_validator()
+        res = self.component(
+            usage="invader.payment"
+        )._invader_get_target_validator()
         res.update(
             {
                 "payment_mode": {"type": "integer"},

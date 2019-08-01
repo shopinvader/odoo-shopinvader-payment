@@ -4,7 +4,6 @@
 
 <odoo>
 
-    <!-- TODO move to invader_payment -->
     <record model="ir.ui.view" id="account_payment_mode_form_view">
         <field name="name">account.payment.mode.form (in shopinvader_payment)</field>
         <field name="model">account.payment.mode</field>
