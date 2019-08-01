@@ -46,7 +46,9 @@ class PaymentServiceStripe(Component):
         )._invader_get_target_validator()
         res.update(
             {
-                "payment_mode": {"type": "integer"},
+                # payment_mode cannot be integer here, because
+                # it can be an empty string from the form
+                "payment_mode": {"type": "string"},
                 "stripe_payment_intent_id": {"type": "string"},
                 "stripe_payment_method_id": {"type": "string"},
             }
@@ -119,7 +121,7 @@ class PaymentServiceStripe(Component):
             * The stripe_payment_intent_id is passed
             * The intent state is 'succeeded'
         :param target: string (authorized value is checked by service)
-        :param payment_mode: int (The Odoo payment mode)
+        :param payment_mode: string (The Odoo payment mode id)
         :param stripe_payment_method_id:
         :param stripe_payment_intent_id:
         :return:
