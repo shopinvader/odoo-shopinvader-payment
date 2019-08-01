@@ -35,7 +35,7 @@ class InvaderPaymentService(Component):
         """
         return {}
 
-    def _invader_get_payment_sucess_reponse_data(self, target, **params):
+    def _invader_get_payment_success_reponse_data(self, target, **params):
         """
         This is mostly used by ShopInvader to manipulate session and
         store_cache after payment success.

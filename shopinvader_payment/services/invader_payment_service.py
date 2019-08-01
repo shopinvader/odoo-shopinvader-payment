@@ -17,8 +17,8 @@ class InvaderPaymentService(Component):
         res["target"]["allowed"].append("current_cart")
         return res
 
-    def _invader_get_payment_sucess_reponse_data(self, target, **params):
-        res = super()._invader_get_payment_sucess_reponse_data(target, **params)
+    def _invader_get_payment_success_reponse_data(self, target, **params):
+        res = super()._invader_get_payment_success_reponse_data(target, **params)
         if target == "current_cart":
             cart_service = self.component(usage="cart")
             cart = cart_service._get()
