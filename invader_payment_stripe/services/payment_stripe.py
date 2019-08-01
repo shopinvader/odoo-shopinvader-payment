@@ -4,6 +4,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 import logging
 
+from cerberus import Validator
 import stripe
 
 from odoo import _
@@ -57,16 +58,16 @@ class PaymentServiceStripe(Component):
         return res
 
     def _validator_return_confirm_payment(self):
-        return {
-            "requires_action": {"type": "boolean"},
-            "payment_intent_client_secret": {"type": "string"},
-            "success": {"type": "boolean"},
-            "error": {"type": "string"},
-            "data": {"type": "string"},
-            # TODO these two must go away
-            "set_session": {"type": "string"},
-            "store_cache": {"type": "string"},
-        }
+        return Validator(
+            {
+                "requires_action": {"type": "boolean"},
+                "payment_intent_client_secret": {"type": "string"},
+                "success": {"type": "boolean"},
+                "error": {"type": "string"},
+                "data": {"type": "string"},
+            },
+            allow_unknown=True,
+        )
 
     def _get_formatted_amount(self, currency, amount):
         """
@@ -131,7 +132,7 @@ class PaymentServiceStripe(Component):
         stripe_payment_method_id = params.get("stripe_payment_method_id")
         stripe_payment_intent_id = params.get("stripe_payment_intent_id")
         transaction_obj = self.env["payment.transaction"]
-        payable_target = self.component(
+        payable = self.component(
             usage="invader.payment"
         )._invader_find_payable(target, **params)
         # Stripe part
@@ -143,13 +144,11 @@ class PaymentServiceStripe(Component):
                     int(payment_mode)
                 )
                 transaction = transaction_obj.create(
-                    payable_target._invader_prepare_payment_transaction_data(
+                    payable._invader_prepare_payment_transaction_data(
                         payment_mode_id
                     )
                 )
-                payable_target._invader_payment_start(
-                    transaction, payment_mode_id
-                )
+                payable._invader_payment_start(transaction, payment_mode_id)
                 intent = self._prepare_stripe_intent(
                     transaction, stripe_payment_method_id
                 )
@@ -163,16 +162,14 @@ class PaymentServiceStripe(Component):
                     transaction, stripe_payment_intent_id
                 )
             if intent.status == "succeeded":
+                # Handle post-payment fulfillment
                 transaction._set_transaction_done()
-                # TODO: Manage session_id/store_cache return
-                payable_target._invader_payment_success(
-                    transaction, payment_mode
-                )
+                payable._invader_payment_success(transaction, payment_mode)
             else:
                 transaction.write(
                     {"state": STRIPE_TRANSACTION_STATUSES[intent.status]}
                 )
-            return self._generate_stripe_response(intent)
+            return self._generate_stripe_response(intent, target, **params)
 
         except Exception as e:
             _logger.error("Error confirming stripe payment", exc_info=True)
@@ -182,7 +179,7 @@ class PaymentServiceStripe(Component):
                 transaction._set_transaction_error(
                     _("Exception: {}".format(e))
                 )
-            return {"error": _("Payment error")}
+            return self._generate_stripe_error_response(target, **params)
 
     def _prepare_stripe_intent(self, transaction, stripe_payment_method_id):
         """
@@ -216,28 +213,49 @@ class PaymentServiceStripe(Component):
             api_key=self._get_stripe_private_key(transaction),
         )
 
-    def _generate_stripe_response(self, intent):
+    def _generate_stripe_response(self, intent, target, **params):
         """
         This is the message returned to client
-        :param intent: StripeIntent
-        :param error_message: string
+        :param intent: StripeIntent (None means error)
         :return: dict
         """
-        if (
-            intent.status == "requires_action"
-            and intent.next_action.type == "use_stripe_sdk"
-        ):
-            # Tell the client to handle the action
-            return {
-                "requires_action": True,
-                "payment_intent_client_secret": intent.client_secret,
-            }
-        elif intent.status == "succeeded":
-            # The payment didn’t need any additional actions and completed!
-            # Handle post-payment fulfillment
-            return {"success": True}
-        elif intent.status == "canceled":
-            return {"error": _("Payment canceled.")}
+        if intent:
+            if (
+                intent.status == "requires_action"
+                and intent.next_action.type == "use_stripe_sdk"
+            ):
+                # Tell the client to handle the action
+                res = {
+                    "requires_action": True,
+                    "payment_intent_client_secret": intent.client_secret,
+                }
+            elif intent.status == "succeeded":
+                # The payment didn’t need any additional actions and completed!
+                res = {"success": True}
+            elif intent.status == "canceled":
+                res = {"error": _("Payment canceled.")}
+            else:
+                _logger.error("Unexpected intent status: %s", intent)
+                res = {"error": _("Payment Error")}
         else:
-            # Invalid status
-            return {"error": _("Invalid Stripe PaymentIntent status.")}
+            res = {"error": _("Payment Error")}
+
+        # enrich the response with additional data
+        # (necessary for ShopInvader's weird way to manipulate session data)
+        if res.get("error"):
+            res.update(
+                self.component(
+                    usage="invader.payment"
+                )._invader_get_payment_error_reponse_data(target, **params)
+            )
+        elif res.get("success"):
+            res.update(
+                additional_data=self.component(
+                    usage="invader.payment"
+                )._invader_payment_get_sucess_reponse_data(target, **params)
+            )
+
+        return res
+
+    def _generate_stripe_error_response(self, target, **params):
+        return self._generate_stripe_response(None, target, **params)
