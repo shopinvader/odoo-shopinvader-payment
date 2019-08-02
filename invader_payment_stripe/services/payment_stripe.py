@@ -4,9 +4,8 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 import logging
 
-from cerberus import Validator
 import stripe
-
+from cerberus import Validator
 from odoo import _
 from odoo.addons.component.core import Component
 from odoo.addons.payment_stripe.models.payment import INT_CURRENCIES
@@ -64,7 +63,6 @@ class PaymentServiceStripe(Component):
                 "payment_intent_client_secret": {"type": "string"},
                 "success": {"type": "boolean"},
                 "error": {"type": "string"},
-                "data": {"type": "string"},
             },
             allow_unknown=True,
         )
@@ -236,9 +234,11 @@ class PaymentServiceStripe(Component):
                 # (necessary for ShopInvader's weird way to
                 # manipulate session data)
                 res.update(
-                    additional_data=self.component(
+                    self.component(
                         usage="invader.payment"
-                    )._invader_payment_get_sucess_reponse_data(target, **params)
+                    )._invader_get_payment_success_reponse_data(
+                        target, **params
+                    )
                 )
                 return res
             elif intent.status == "canceled":
