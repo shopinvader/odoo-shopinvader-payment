@@ -17,14 +17,12 @@ class InvaderPaymentService(Component):
         res["target"]["allowed"].append("current_cart")
         return res
 
-    def _invader_get_payment_success_reponse_data(self, target, **params):
+    def _invader_get_payment_success_reponse_data(self, payable, target, **params):
         res = super()._invader_get_payment_success_reponse_data(
-            target, **params
+            payable, target, **params
         )
         if target == "current_cart":
-            cart_service = self.component(usage="cart")
-            cart = cart_service._get()
-            res = cart_service._to_json(cart)
+            res = self.component(usage="cart")._to_json(payable)
             res.update(
                 {
                     "store_cache": {

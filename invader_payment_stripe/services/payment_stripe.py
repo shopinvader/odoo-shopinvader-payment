@@ -167,7 +167,9 @@ class PaymentServiceStripe(Component):
                 transaction.write(
                     {"state": STRIPE_TRANSACTION_STATUSES[intent.status]}
                 )
-            return self._generate_stripe_response(intent, target, **params)
+            return self._generate_stripe_response(
+                intent, payable, target, **params
+            )
 
         except Exception as e:
             _logger.error("Error confirming stripe payment", exc_info=True)
@@ -211,10 +213,11 @@ class PaymentServiceStripe(Component):
             api_key=self._get_stripe_private_key(transaction),
         )
 
-    def _generate_stripe_response(self, intent, target, **params):
+    def _generate_stripe_response(self, intent, payable, target, **params):
         """
         This is the message returned to client
         :param intent: StripeIntent (None means error)
+        :param payable: invader.payable record
         :return: dict
         """
         if intent:
@@ -237,7 +240,7 @@ class PaymentServiceStripe(Component):
                     self.component(
                         usage="invader.payment"
                     )._invader_get_payment_success_reponse_data(
-                        target, **params
+                        payable, target, **params
                     )
                 )
                 return res
@@ -248,4 +251,4 @@ class PaymentServiceStripe(Component):
         return {"error": _("Payment Error")}
 
     def _generate_stripe_error_response(self, target, **params):
-        return self._generate_stripe_response(None, target, **params)
+        return self._generate_stripe_response(None, None, target, **params)

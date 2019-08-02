@@ -24,11 +24,11 @@ class InvaderPaymentService(Component):
         the "allowed" field (eg with strings such as 'current_cart') and
         possibly adding other fields.
         """
-        return {
-            "target": {"type": "string", "required": True, "allowed": []}
-        }
+        return {"target": {"type": "string", "required": True, "allowed": []}}
 
-    def _invader_get_payment_success_reponse_data(self, target, **params):
+    def _invader_get_payment_success_reponse_data(
+        self, payable, target, **params
+    ):
         """
         This is mostly used by ShopInvader to manipulate session and
         store_cache after payment success.
