@@ -225,37 +225,27 @@ class PaymentServiceStripe(Component):
                 and intent.next_action.type == "use_stripe_sdk"
             ):
                 # Tell the client to handle the action
-                res = {
+                return {
                     "requires_action": True,
                     "payment_intent_client_secret": intent.client_secret,
                 }
             elif intent.status == "succeeded":
                 # The payment didn’t need any additional actions and completed!
                 res = {"success": True}
+                # enrich the response with additional data
+                # (necessary for ShopInvader's weird way to
+                # manipulate session data)
+                res.update(
+                    additional_data=self.component(
+                        usage="invader.payment"
+                    )._invader_payment_get_sucess_reponse_data(target, **params)
+                )
+                return res
             elif intent.status == "canceled":
-                res = {"error": _("Payment canceled.")}
+                return {"error": _("Payment canceled.")}
             else:
                 _logger.error("Unexpected intent status: %s", intent)
-                res = {"error": _("Payment Error")}
-        else:
-            res = {"error": _("Payment Error")}
-
-        # enrich the response with additional data
-        # (necessary for ShopInvader's weird way to manipulate session data)
-        if res.get("error"):
-            res.update(
-                self.component(
-                    usage="invader.payment"
-                )._invader_get_payment_error_reponse_data(target, **params)
-            )
-        elif res.get("success"):
-            res.update(
-                additional_data=self.component(
-                    usage="invader.payment"
-                )._invader_payment_get_sucess_reponse_data(target, **params)
-            )
-
-        return res
+        return {"error": _("Payment Error")}
 
     def _generate_stripe_error_response(self, target, **params):
         return self._generate_stripe_response(None, target, **params)
