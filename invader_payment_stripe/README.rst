@@ -42,7 +42,6 @@ Credits
 Authors
 ~~~~~~~
 
-* Akretion
 * ACSONE SA/NV
 
 Contributors
