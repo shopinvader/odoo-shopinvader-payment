@@ -131,7 +131,7 @@ class PaymentServiceStripe(AbstractComponent):
         transaction_obj = self.env["payment.transaction"]
         payable = self.component(
             usage="invader.payment"
-        )._invader_find_payable(target, **params)
+        )._invader_find_payable_from_target(target, **params)
         # Stripe part
         transaction = None
         try:
@@ -161,7 +161,7 @@ class PaymentServiceStripe(AbstractComponent):
             if intent.status == "succeeded":
                 # Handle post-payment fulfillment
                 transaction._set_transaction_done()
-                payable._invader_payment_success(transaction, payment_mode)
+                payable._invader_payment_success(transaction)
             else:
                 transaction.write(
                     {"state": STRIPE_TRANSACTION_STATUSES[intent.status]}
