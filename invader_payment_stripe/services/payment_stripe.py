@@ -1,13 +1,12 @@
-# Copyright 2017 Akretion (http://www.akretion.com).
 # Copyright 2019 ACSONE SA/NV (http://acsone.eu).
-# @author Sébastien BEAU <sebastien.beau@akretion.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+
 import logging
 
 import stripe
 from cerberus import Validator
 from odoo import _
-from odoo.addons.component.core import Component
+from odoo.addons.component.core import AbstractComponent
 from odoo.addons.payment_stripe.models.payment import INT_CURRENCIES
 from odoo.tools.float_utils import float_round
 
@@ -26,12 +25,12 @@ STRIPE_TRANSACTION_STATUSES = {
 }
 
 
-class PaymentServiceStripe(Component):
+class PaymentServiceStripe(AbstractComponent):
 
     _name = "payment.service.stripe"
     _inherit = "base.rest.service"
     _usage = "payment_stripe"
-    _description = ""
+    _description = "REST Services for Stripe payments"
 
     def _validator_confirm_payment(self):
         """
