@@ -8,14 +8,20 @@ class InvaderPaymentService(Component):
     _name = "invader.payment.service"
     _usage = "invader.payment"
 
-    def _invader_find_payable(self, target, **params):
+    def _invader_find_payable_from_target(self, target, **params):
         """
         Find an invader.payable from a target parameter.
 
         :param params:
         :return:
         """
-        raise NotImplementedError
+        raise NotImplementedError()
+
+    def _invader_find_payable_from_transaction(self, transaction):
+        """
+        Find then invader.payble linked to a payment.transaction.
+        """
+        raise NotImplementedError()
 
     def _invader_get_target_validator(self):
         """

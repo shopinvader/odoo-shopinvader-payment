@@ -10,13 +10,14 @@ class InvaderPayable(models.AbstractModel):
 
     def _invader_prepare_payment_transaction_data(self, payment_mode):
         """
-
+        Prepare a dictionary to create a payment.transaction for the
+        correct amount and linked to the payable object.
         :return:
         """
 
     def _invader_get_available_payment_methods(self):
         """
-        Should be implemented on payable models level
+        Should be implemented on payable models level.
         :return: recordset (account.payment.method)
         """
         raise NotImplementedError
@@ -25,6 +26,6 @@ class InvaderPayable(models.AbstractModel):
         """ Called just after the transaction has been created. """
         pass
 
-    def _invader_payment_success(self, transaction, payment_mode_id):
+    def _invader_payment_success(self, transaction):
         """ Called when the payment transaction succeeded. """
         pass
