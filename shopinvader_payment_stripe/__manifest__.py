@@ -11,4 +11,5 @@
     "category": "e-commerce",
     "depends": ["shopinvader_payment", "invader_payment_stripe"],
     "autoinstall": True,
+    "installable": False,
 }
