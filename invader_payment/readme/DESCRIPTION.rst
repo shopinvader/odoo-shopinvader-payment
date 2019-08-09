@@ -10,7 +10,7 @@ invader.payment.service(Component):
         # returns a list of strings
         # used to add in the validator
 
-   
+
 invader.payable(AbstractModel):
 
     def _invader_prepare_payment_transaction_data
