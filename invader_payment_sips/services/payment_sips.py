@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2019 ACSONE SA/NV (http://acsone.eu).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -5,9 +6,9 @@ import logging
 from hashlib import sha256
 
 from cerberus import Validator
-from odoo import _, fields
-from odoo.addons.component.core import AbstractComponent
-from odoo.exceptions import UserError
+from openerp import _, fields
+from openerp.addons.component.core import AbstractComponent
+from openerp.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 

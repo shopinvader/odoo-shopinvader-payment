@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2017 Akretion (http://www.akretion.com)
 # Sébastien BEAU <sebastien.beau@akretion.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
@@ -5,7 +6,7 @@
 {
     "name": "Shopinvader Payment",
     "summary": "Payment integration for Shopinvader",
-    "version": "12.0.1.0.0",
+    "version": "9.0.1.0.0",
     "category": "e-commerce",
     "website": "https://akretion.com",
     "author": "Akretion",
@@ -20,6 +21,7 @@
         "sale_automatic_workflow_payment_mode",
         "onchange_helper",
         "invader_payment",
+        "invader_sale_payment",  # backport model defs from 12.0
     ],
     "data": [
         "views/shopinvader_menu.xml",
