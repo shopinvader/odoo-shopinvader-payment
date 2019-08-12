@@ -10,6 +10,7 @@
     "license": "AGPL-3",
     "category": "e-commerce",
     "depends": ["invader_payment", "payment_sips"],
+    "external_dependencies": {"python": ["cerberus"]},
     "data": [],
     "demo": [],
 }
