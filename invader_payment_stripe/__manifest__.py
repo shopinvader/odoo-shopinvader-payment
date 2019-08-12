@@ -9,6 +9,6 @@
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "author": "ACSONE SA/NV",
     "license": "AGPL-3",
-    "external_dependencies": {"python": ["stripe"], "bin": []},
+    "external_dependencies": {"python": ["cerberus", "stripe"], "bin": []},
     "depends": ["invader_payment", "payment_stripe"],
 }
