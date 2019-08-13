@@ -4,7 +4,7 @@
 
 # TO REMOVE IN V12...  provided by sale addon
 
-from openerp import api, fields, models
+from openerp import _, api, fields, models
 
 
 class PaymentTransaction(models.Model):
@@ -65,3 +65,20 @@ class PaymentTransaction(models.Model):
         if not vals.get("reference"):
             vals["reference"] = self._compute_reference(values=vals)
         return super(PaymentTransaction, self).create(vals)
+
+    @api.multi
+    def action_view_sales_orders(self):
+        action = {
+            "name": _("Sales Order(s)"),
+            "type": "ir.actions.act_window",
+            "res_model": "sale.order",
+            "target": "current",
+        }
+        sale_order_ids = self.sale_order_ids.ids
+        if len(sale_order_ids) == 1:
+            action["res_id"] = sale_order_ids[0]
+            action["view_mode"] = "form"
+        else:
+            action["view_mode"] = "tree,form"
+            action["domain"] = [("id", "in", sale_order_ids)]
+        return action
