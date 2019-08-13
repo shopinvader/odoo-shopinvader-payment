@@ -202,7 +202,7 @@ class PaymentServiceSips(AbstractComponent):
             tx_data = {
                 # XXX better field for acquirer_reference?
                 "acquirer_reference": data_o.get("transactionReference"),
-                "date": data_o.get(
+                "date_validate": data_o.get(
                     "transactionDateTime", fields.Datetime.now()
                 ),
                 "state_message": "SIPS response_code {}".format(response_code),

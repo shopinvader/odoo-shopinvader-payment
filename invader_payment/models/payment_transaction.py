@@ -99,7 +99,7 @@ class PaymentTransaction(models.Model):
         self.write(
             {
                 "state": "pending",
-                "date": datetime.now().strftime(
+                "date_validate": datetime.now().strftime(
                     DEFAULT_SERVER_DATETIME_FORMAT
                 ),
             }
@@ -117,7 +117,7 @@ class PaymentTransaction(models.Model):
         self.write(
             {
                 "state": "authorized",
-                "date": datetime.now().strftime(
+                "date_validate": datetime.now().strftime(
                     DEFAULT_SERVER_DATETIME_FORMAT
                 ),
             }
@@ -135,7 +135,7 @@ class PaymentTransaction(models.Model):
         self.write(
             {
                 "state": "cancel",
-                "date": datetime.now().strftime(
+                "date_validate": datetime.now().strftime(
                     DEFAULT_SERVER_DATETIME_FORMAT
                 ),
             }
@@ -154,7 +154,7 @@ class PaymentTransaction(models.Model):
         self.write(
             {
                 "state": "error",
-                "date": datetime.now().strftime(
+                "date_validate": datetime.now().strftime(
                     DEFAULT_SERVER_DATETIME_FORMAT
                 ),
                 "state_message": msg,
@@ -175,7 +175,7 @@ class PaymentTransaction(models.Model):
         self.write(
             {
                 "state": "done",
-                "date": datetime.now().strftime(
+                "date_validate": datetime.now().strftime(
                     DEFAULT_SERVER_DATETIME_FORMAT
                 ),
             }
