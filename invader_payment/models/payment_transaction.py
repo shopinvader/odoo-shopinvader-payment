@@ -132,9 +132,6 @@ class PaymentTransaction(models.Model):
                 _("Only draft/authorized transaction can be cancelled.")
             )
 
-        # Cancel the existing payments.
-        self.mapped("payment_id").cancel()
-
         self.write(
             {
                 "state": "cancel",
