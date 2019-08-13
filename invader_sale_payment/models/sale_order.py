@@ -43,6 +43,7 @@ class SaleOrder(models.Model):
         for rec in self:
             rec.payment_transaction_count = len(rec.transaction_ids)
 
+    @api.multi
     def action_view_transaction(self):
         action = {
             "type": "ir.actions.act_window",
