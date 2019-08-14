@@ -4,13 +4,17 @@
 
 from datetime import datetime
 
-from openerp import _, api, models
+from openerp import _, api, fields, models
 from openerp.exceptions import ValidationError
 from openerp.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class PaymentTransaction(models.Model):
     _inherit = "payment.transaction"
+
+    provider = fields.Selection(
+        string="Provider", related="acquirer_id.provider", readonly=True
+    )
 
     @api.model
     def _compute_reference_prefix(self, values):
