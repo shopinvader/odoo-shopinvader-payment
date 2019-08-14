@@ -6,7 +6,7 @@ from datetime import datetime
 
 from openerp import _, api, fields, models
 from openerp.exceptions import ValidationError
-from openerp.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT
+from openerp.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT, formatLang
 
 
 class PaymentTransaction(models.Model):
@@ -14,6 +14,15 @@ class PaymentTransaction(models.Model):
 
     provider = fields.Selection(
         string="Provider", related="acquirer_id.provider", readonly=True
+    )
+    invoice_ids = fields.Many2many(
+        "account.invoice",
+        "account_invoice_transaction_rel",
+        "transaction_id",
+        "invoice_id",
+        string="Invoices",
+        copy=False,
+        readonly=True,
     )
 
     @api.model
@@ -64,6 +73,63 @@ class PaymentTransaction(models.Model):
             suffix = "1"
 
         return "{}-{}".format(prefix, suffix)
+
+    @api.multi
+    def _get_payment_transaction_sent_message(self):
+        self.ensure_one()
+        if self.payment_token_id:
+            message = _(
+                "A transaction %s with %s initiated using %s credit card."
+            )
+            message_vals = (
+                self.reference,
+                self.acquirer_id.name,
+                self.payment_token_id.name,
+            )
+        elif self.provider in ("manual", "transfer"):
+            message = _("The customer has selected %s to pay this document.")
+            message_vals = self.acquirer_id.name
+        else:
+            message = _("A transaction %s with %s initiated.")
+            message_vals = (self.reference, self.acquirer_id.name)
+        if self.provider not in ("manual", "transfer"):
+            message += " " + _("Waiting for payment confirmation...")
+        return message % message_vals
+
+    @api.multi
+    def _get_payment_transaction_received_message(self):
+        self.ensure_one()
+        amount = formatLang(
+            self.env, self.amount, currency_obj=self.currency_id
+        )
+        message_vals = [self.reference, self.acquirer_id.name, amount]
+        if self.state == "pending":
+            message = _("The transaction %s with %s for %s is pending.")
+        elif self.state == "authorized":
+            message = _(
+                "The transaction %s with %s for %s has been authorized. "
+                "Waiting for capture..."
+            )
+        elif self.state == "done":
+            message = _(
+                "The transaction %s with %s for %s has been confirmed. "
+                "The related payment is posted: %s"
+            )
+            message_vals.append(
+                "<a href=# data-oe-model=account.payment data-oe-id=%d>%s</a>"
+                % (self.payment_id.id, self.payment_id.name)
+            )
+        elif self.state == "cancel" and self.state_message:
+            message = _(
+                "The transaction %s with %s for %s has been cancelled with "
+                "the following message: %s"
+            )
+            message_vals.append(self.state_message)
+        else:
+            message = _(
+                "The transaction %s with %s for %s has been cancelled."
+            )
+        return message % tuple(message_vals)
 
     @api.multi
     def _log_payment_transaction_sent(self):
