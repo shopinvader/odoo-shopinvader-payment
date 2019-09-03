@@ -11,4 +11,5 @@
     "license": "AGPL-3",
     "external_dependencies": {"python": ["cerberus", "stripe"], "bin": []},
     "depends": ["invader_payment", "payment_stripe"],
+    "demo": ["demo/payment_demo.xml"],
 }
