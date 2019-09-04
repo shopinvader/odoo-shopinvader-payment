@@ -210,7 +210,7 @@ class PaymentServiceSips(AbstractComponent):
             transaction.write(tx_data)
             if success:
                 transaction._set_transaction_done()
-                payable._invader_payment_success(transaction)
+                payable._invader_payment_accepted(transaction)
             else:
                 # XXX we may need to handle pending state?
                 transaction._set_transaction_cancel()

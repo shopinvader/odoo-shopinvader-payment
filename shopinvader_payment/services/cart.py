@@ -29,7 +29,7 @@ class CartService(Component):
         * The amount
         :return:
         """
-        payment_methods = sale._invader_get_available_payment_methods()
+        payment_methods = sale.shopinvader_backend_id.payment_method_ids
         selected_method = payment_methods.filtered(
             lambda m: m.payment_mode_id == sale.payment_mode_id
         )

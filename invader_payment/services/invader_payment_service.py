@@ -1,26 +1,36 @@
 # -*- coding: utf-8 -*-
 # Copyright 2019 ACSONE SA/NV
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-from odoo.addons.component.core import Component
+from odoo.addons.component.core import AbstractComponent
 
 
-class InvaderPaymentService(Component):
+class InvaderPaymentService(AbstractComponent):
 
     _name = "invader.payment.service"
     _usage = "invader.payment"
 
     def _invader_find_payable_from_target(self, target, **params):
         """
-        Find an invader.payable from a target parameter.
+        Find an invader.payable from a target parameter (e.g. current cart).
 
-        :param params:
-        :return:
+        target and params comply with the schema returned by
+        ``_invader_get_target_validator``.
         """
         raise NotImplementedError()
 
     def _invader_find_payable_from_transaction(self, transaction):
         """
-        Find then invader.payble linked to a payment.transaction.
+        Find the invader.payble linked to a payment.transaction.
+
+        This method is used to inform the payable when a transaction was
+        accepted, in situations where we are informed of payment success
+        through a webhook call from the payment acquirer.
+
+        TODO: in a future refactoring, we should eliminate
+        ``_invader_payment_accepted`` which is possible if the payable "listens"
+        for state change events on its associated ``payment.transaction``.
+        In that case ``_invader_find_payable_from_transaction`` can be
+        removed too.
         """
         raise NotImplementedError()
 
@@ -39,5 +49,8 @@ class InvaderPaymentService(Component):
         """
         This is mostly used by ShopInvader to manipulate session and
         store_cache after payment success.
+
+        TODO: this method will go away when a better mechanism for Shopinvader
+        session management is in place.
         """
         return {}

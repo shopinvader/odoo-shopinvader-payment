@@ -11,10 +11,6 @@ class SaleOrder(models.Model):
     _name = "sale.order"
     _inherit = ["sale.order", "invader.payable"]
 
-    def _invader_get_available_payment_methods(self):
-        self.ensure_one()
-        return self.shopinvader_backend_id.payment_method_ids
-
     def _invader_prepare_payment_transaction_data(self, payment_mode):
         self.ensure_one()
         vals = {
@@ -33,6 +29,6 @@ class SaleOrder(models.Model):
         vals.update(newvals)
         self.write(vals)
 
-    def _invader_payment_success(self, transaction):
+    def _invader_payment_accepted(self, transaction):
         res = self.action_confirm_cart()
         return res
