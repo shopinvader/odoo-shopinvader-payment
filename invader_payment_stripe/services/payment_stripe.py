@@ -161,7 +161,7 @@ class PaymentServiceStripe(AbstractComponent):
             if intent.status == "succeeded":
                 # Handle post-payment fulfillment
                 transaction._set_transaction_done()
-                payable._invader_payment_success(transaction)
+                payable._invader_payment_accepted(transaction)
             else:
                 transaction.write(
                     {"state": STRIPE_TRANSACTION_STATUSES[intent.status]}
