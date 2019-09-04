@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<openerp>
-    <data noupdate="1">
+<odoo noupdate="1">
 
 <record id="payment_method_banktransfert" model="account.payment.mode">
     <field name="name">Bank Transfert</field>
@@ -30,5 +29,4 @@
     <field name="notification">cart_confirmation_and_sale_confirmation</field>
 </record>
 
-    </data>
-</openerp>
+</odoo>

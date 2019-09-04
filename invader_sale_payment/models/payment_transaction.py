@@ -4,7 +4,7 @@
 
 # TO REMOVE IN V12...  provided by sale addon
 
-from openerp import _, api, fields, models
+from odoo import _, api, fields, models
 
 
 class PaymentTransaction(models.Model):

@@ -4,9 +4,9 @@
 
 from datetime import datetime
 
-from openerp import _, api, fields, models
-from openerp.exceptions import ValidationError
-from openerp.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT, formatLang
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
+from odoo.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT, formatLang
 
 
 class PaymentTransaction(models.Model):

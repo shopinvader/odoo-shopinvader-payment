@@ -2,7 +2,7 @@
 
 # BACKPORT FROM 12.0 TO BE REMOVED!!!!!!!
 
-from openerp import fields, models
+from odoo import fields, models
 
 
 class PaymentAcquirer(models.Model):

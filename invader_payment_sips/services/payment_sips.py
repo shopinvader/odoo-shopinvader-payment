@@ -6,9 +6,9 @@ import logging
 from hashlib import sha256
 
 from cerberus import Validator
-from openerp import _, fields
-from openerp.addons.component.core import AbstractComponent
-from openerp.exceptions import UserError
+from odoo import _, fields
+from odoo.addons.component.core import AbstractComponent
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 

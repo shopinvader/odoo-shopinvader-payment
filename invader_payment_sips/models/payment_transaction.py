@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*-
+ -*- coding: utf-8 -*-
 
 # BACKPORT FROM 12.0 TO BE REMOVED!!!!!!!
 
 import re
 import time
 
-from openerp import api, models
+from odoo import api, models
 
 
 class PaymentTransaction(models.Model):
