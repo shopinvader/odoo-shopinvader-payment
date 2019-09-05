@@ -9,5 +9,5 @@
     "license": "AGPL-3",
     "author": "ACSONE SA/NV",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
-    "depends": ["invader_payment"],
+    "depends": ["invader_payment", "base_rest"],
 }
