@@ -9,7 +9,7 @@
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "license": "AGPL-3",
     "category": "e-commerce",
-    "depends": ["invader_payment", "payment_sips"],
+    "depends": ["invader_payment", "payment_sips", "base_rest"],
     "external_dependencies": {"python": ["cerberus"]},
     "data": [],
     "demo": [],
