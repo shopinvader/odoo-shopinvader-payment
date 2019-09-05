@@ -19,23 +19,6 @@ class InvaderPaymentService(Component):
         """
         raise NotImplementedError()
 
-    def _invader_find_payable_from_transaction(self, transaction):
-        """
-        Find the invader.payble linked to a payment.transaction.
-
-        This method is used to inform the payable when a transaction was
-        accepted, in situations where we are informed of payment success
-        through a webhook call from the payment acquirer.
-
-        TODO: in a future refactoring, we should eliminate
-        ``_invader_payment_accepted`` which is possible if the payable
-        "listens" for state change events on its associated
-        ``payment.transaction``.
-        In that case ``_invader_find_payable_from_transaction`` can be
-        removed too.
-        """
-        raise NotImplementedError()
-
     def _invader_get_target_validator(self):
         """
         Return a cerberus validator schema fragment that specifies the
@@ -44,18 +27,6 @@ class InvaderPaymentService(Component):
         possibly adding other fields.
         """
         return {"target": {"type": "string", "required": True, "allowed": []}}
-
-    def _invader_get_payment_success_reponse_data(
-        self, payable, target, **params
-    ):
-        """
-        This is mostly used by ShopInvader to manipulate session and
-        store_cache after payment success.
-
-        TODO: this method will go away when a better mechanism for Shopinvader
-        session management is in place.
-        """
-        return {}
 
     def _check_acquirer(self, payment_mode, provider):
         """Check that the payment mode have the correct provider

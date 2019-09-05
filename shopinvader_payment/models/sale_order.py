@@ -34,7 +34,3 @@ class SaleOrder(models.Model):
         newvals = self.play_onchanges(vals, ["payment_mode_id"])
         vals.update(newvals)
         self.write(vals)
-
-    def _invader_payment_accepted(self, transaction):
-        res = self.action_confirm_cart()
-        return res

@@ -195,9 +195,6 @@ class PaymentServiceSips(AbstractComponent):
                 data,
             )
             raise UserError(INVALID_DATA)
-        payable = self.payment_service._invader_find_payable_from_transaction(
-            transaction
-        )
         if transaction.state == "draft":
             # if transaction is not draft, it means it has already been
             # processed by automatic_response or normal_return
@@ -214,11 +211,10 @@ class PaymentServiceSips(AbstractComponent):
             transaction.write(tx_data)
             if success:
                 transaction._set_transaction_done()
-                payable._invader_payment_accepted(transaction)
             else:
                 # XXX we may need to handle pending state?
                 transaction._set_transaction_cancel()
-        return payable, transaction
+        return transaction
 
     def automatic_response(self, **params):
         """
@@ -253,15 +249,10 @@ class PaymentServiceSips(AbstractComponent):
         to the success or cancel url depending on transaction outcome.
         """
         _logger.info("SIPS normal_return: %s", params)
-        payable, transaction = self._process_response(**params)
+        transaction = self._process_response(**params)
         res = {}
         if transaction.state == "done":
             res["redirect_to"] = success_redirect
-            res.update(
-                self.payment_service._invader_get_payment_success_reponse_data(
-                    payable, target, **params
-                )
-            )
         else:
             res["redirect_to"] = cancel_redirect
         return res

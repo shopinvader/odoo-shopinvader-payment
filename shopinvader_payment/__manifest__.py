@@ -20,6 +20,7 @@
         "sale_automatic_workflow_payment_mode",
         "onchange_helper",
         "invader_payment",
+        "component_event",
     ],
     "data": [
         "views/shopinvader_menu.xml",
