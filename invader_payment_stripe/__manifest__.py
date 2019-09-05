@@ -10,7 +10,7 @@
     "author": "ACSONE SA/NV",
     "license": "AGPL-3",
     "external_dependencies": {"python": ["cerberus", "stripe"], "bin": []},
-    "depends": ["invader_payment", "payment_stripe"],
     "installable": True,
+    "depends": ["invader_payment", "payment_stripe", "base_rest"],
     "demo": ["demo/payment_demo.xml"],
 }
