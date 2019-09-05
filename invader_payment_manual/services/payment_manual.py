@@ -52,8 +52,4 @@ class PaymentManual(AbstractComponent):
         )
         payable._invader_payment_start(transaction, payment_mode)
         transaction.write({"state": "pending"})
-        payable._invader_payment_accepted(transaction)
-        res = self.payment_service._invader_get_payment_success_reponse_data(
-            payable, target, **params
-        )
-        return res
+        return {}

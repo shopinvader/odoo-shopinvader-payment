@@ -22,15 +22,3 @@ class InvaderPayable(models.AbstractModel):
         Called just after the transaction has been created.
         """
         pass
-
-    def _invader_payment_accepted(self, transaction):
-        """
-        Called when the payment transaction has been accepted.
-
-        This can be when the acquirer confirmed payment success, or
-        in case of bank transfer or cheque, immediatelly after
-        _invader_payment_start. This not necessarily mean that the
-        payment is confirmed, but rather to signal that the front-end tunnel
-        was successful.
-        """
-        pass

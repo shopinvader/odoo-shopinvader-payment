@@ -167,7 +167,6 @@ class PaymentServiceStripe(AbstractComponent):
             if intent.status == "succeeded":
                 # Handle post-payment fulfillment
                 transaction._set_transaction_done()
-                payable._invader_payment_accepted(transaction)
             else:
                 transaction.write(
                     {"state": STRIPE_TRANSACTION_STATUSES[intent.status]}
@@ -237,19 +236,7 @@ class PaymentServiceStripe(AbstractComponent):
                 }
             elif intent.status == "succeeded":
                 # The payment didn’t need any additional actions and completed!
-                res = {"success": True}
-                # enrich the response with additional data
-                # (necessary for ShopInvader's weird way to
-                # manipulate session data)
-                # fmt: off
-                res.update(
-                    self.payment_service
-                        ._invader_get_payment_success_reponse_data(
-                            payable, target, **params
-                        )
-                )
-                # fmt: on
-                return res
+                return {"success": True}
             elif intent.status == "canceled":
                 return {"error": _("Payment canceled.")}
             else:

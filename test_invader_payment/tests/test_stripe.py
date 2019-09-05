@@ -24,6 +24,7 @@ class TestInvaderPayment(VCRMixin, TestCommonPayment):
         acquirer = self.env.ref("payment.payment_acquirer_stripe")
         acquirer.write({"stripe_secret_key": stripe_secret_key})
         self.service = self._get_service("payment_stripe")
+        self.demo_partner = self.env.ref("base.res_partner_1")
 
     def _get_vcr_kwargs(self, **kwargs):
         return {
@@ -50,6 +51,10 @@ class TestInvaderPayment(VCRMixin, TestCommonPayment):
             },
         )
         self.assertEqual(result, {"success": True})
+        self.assertDictEqual(
+            {"partner_id": self.demo_partner.id, "payment_state": "done"},
+            self.shopinvader_response.session,
+        )
 
     def test_confirm_payment_two_step(self):
         result = self.service.dispatch(
