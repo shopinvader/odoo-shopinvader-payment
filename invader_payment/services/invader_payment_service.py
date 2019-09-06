@@ -26,8 +26,9 @@ class InvaderPaymentService(Component):
         through a webhook call from the payment acquirer.
 
         TODO: in a future refactoring, we should eliminate
-        ``_invader_payment_accepted`` which is possible if the payable "listens"
-        for state change events on its associated ``payment.transaction``.
+        ``_invader_payment_accepted`` which is possible if the payable
+        "listens" for state change events on its associated
+        ``payment.transaction``.
         In that case ``_invader_find_payable_from_transaction`` can be
         removed too.
         """
