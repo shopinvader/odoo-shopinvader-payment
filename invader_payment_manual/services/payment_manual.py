@@ -9,12 +9,14 @@ from openerp.addons.component.core import AbstractComponent
 _logger = logging.getLogger(__name__)
 
 
-class PaymentBankTransfer(AbstractComponent):
+class PaymentManual(AbstractComponent):
 
-    _name = "payment.service.bank_transfer"
+    _name = "payment.service.manual"
     _inherit = "base.rest.service"
-    _usage = "payment_bank_transfer"
-    _description = "REST Services for bank transfer payments"
+    _usage = "payment_manual"
+    _description = (
+        "REST Services for manual payments (bank transfer, check...)"
+    )
 
     def _validator_add_payment(self):
         schema = {"payment_mode": {"type": "string"}}
@@ -31,14 +33,18 @@ class PaymentBankTransfer(AbstractComponent):
 
     def add_payment(self, target, payment_mode, **params):
         """ Prepare data for SIPS payment submission """
+        transaction_obj = self.env["payment.transaction"]
         payable = self.component(
             usage="invader.payment"
         )._invader_find_payable_from_target(target, **params)
         payment_mode = self.env["account.payment.mode"].browse(
             int(payment_mode)
         )
-        transaction = self.env["payment.transaction"].browse()
+        transaction = transaction_obj.create(
+            payable._invader_prepare_payment_transaction_data(payment_mode)
+        )
         payable._invader_payment_start(transaction, payment_mode)
+        transaction.write({"state": "pending"})
         payable._invader_payment_accepted(transaction)
         res = self.component(
             usage="invader.payment"
