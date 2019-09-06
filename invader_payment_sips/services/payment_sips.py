@@ -172,7 +172,8 @@ class PaymentServiceSips(AbstractComponent):
         )
         if len(transaction) != 1:
             _logger.warning(
-                "transaction with reference '%s' not found in SIPS automatic response",
+                "transaction with reference '%s' not found in "
+                "SIPS automatic response",
                 reference,
             )
             raise UserError(INVALID_DATA)
