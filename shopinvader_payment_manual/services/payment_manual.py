@@ -5,11 +5,11 @@
 from openerp.addons.component.core import Component
 
 
-class PaymentServiceBankTransferShopinvader(Component):
+class PaymentServiceManualShopinvader(Component):
 
     # expose bank transfer payment service under /shopinvader
 
-    _name = "payment.service.bank_transfer.shopinvader"
-    _inherit = ["payment.service.bank_transfer", "base.shopinvader.service"]
-    _usage = "payment_bank_transfer"
+    _name = "payment.service.manual.shopinvader"
+    _inherit = ["payment.service.manual", "base.shopinvader.service"]
+    _usage = "payment_manual"
     _collection = "shopinvader.backend"

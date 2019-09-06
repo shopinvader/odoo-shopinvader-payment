@@ -2,14 +2,18 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 {
-    "name": "Shopinvader Payment Bank Transfer",
+    "name": "Shopinvader Payment Manual",
     "description": """
-        REST Services for bank transfer payment""",
+        REST Services for manual payment (like bank transfer, check...)""",
     "version": "12.0.1.0.0",
     "license": "AGPL-3",
     "author": "ACSONE SA/NV",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
-    "depends": ["invader_payment_bank_transfer", "shopinvader_payment"],
+    "depends": [
+        "invader_payment_manual",
+        "shopinvader_payment",
+        "payment_transfer",
+    ],
     "autoinstall": True,
     "installable": True,
 }
