@@ -13,5 +13,5 @@ class CartService(Component):
     def _get_available_payment_mode(self, cart):
         for line in cart.order_line:
             if line.product_id.only_quotation:
-                return []
+                return self.env["shopinvader.payment"].browse(False)
         return super(CartService, self)._get_available_payment_mode(cart)

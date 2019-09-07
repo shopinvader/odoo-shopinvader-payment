@@ -5,14 +5,14 @@
     <field name="name">Bank Transfert</field>
     <field name="bank_account_link">variable</field>
     <field name="payment_method_id" ref="account.account_payment_method_manual_out"/>
-    <field name="acquired_id" ref="payment_transfer.payment_acquirer_transfer"/>
+    <field name="payment_acquirer_id" ref="payment.payment_acquirer_transfer"/>
 </record>
 
 <record id="payment_method_check" model="account.payment.mode">
     <field name="name">Check</field>
     <field name="bank_account_link">variable</field>
     <field name="payment_method_id" ref="account.account_payment_method_manual_out"/>
-    <field name="acquired_id" ref="invader_payment_manual.payment_acquirer_check"/>
+    <field name="payment_acquirer_id" ref="payment_acquirer_check"/>
 </record>
 
 </odoo>

@@ -22,14 +22,19 @@ class ShopinvaderCartNoPaymentCase(CommonConnectedCartCase):
 class ShopinvaderQuotationPaymentCase(CommonConnectedQuotationCase):
     def setUp(self, *args, **kwargs):
         super(ShopinvaderQuotationPaymentCase, self).setUp(*args, **kwargs)
-        self.account_payment_mode = self.env.ref(
-            "shopinvader_payment.payment_method_check"
-        )
-        self.cart.write({"payment_mode_id": self.account_payment_mode.id})
+        self.payment_mode = self.env.ref(
+            "shopinvader_payment_manual.shopinvader_payment_check"
+        ).payment_mode_id
+        with self.work_on_services(
+            partner=self.partner, shopinvader_session=self.shopinvader_session
+        ) as work:
+            self.payment_service = work.component(usage="payment_manual")
 
     def test_get_cart_payment_info(self):
-        self.cart.order_line[0].product_id.only_quotation = True
-        response = self.service.dispatch("search", params={"id": self.cart.id})
+        self.quotation.order_line[0].product_id.only_quotation = True
+        response = self.service.dispatch(
+            "search", params={"id": self.quotation.id}
+        )
         self.assertIn("available_methods", response["data"][0]["payment"])
         self.assertEqual(
             response["data"][0]["payment"]["available_methods"]["count"],
@@ -37,25 +42,27 @@ class ShopinvaderQuotationPaymentCase(CommonConnectedQuotationCase):
         )
 
     def test_wrong_state_payment(self):
-        self.assertEqual(self.cart.typology, "quotation")
+        self.assertEqual(self.quotation.typology, "quotation")
         with self.assertRaises(UserError):
-            self.service.dispatch(
+            self.payment_service.dispatch(
                 "add_payment",
-                self.cart.id,
-                params={"payment_mode": {"id": self.account_payment_mode.id}},
+                params={
+                    "target": "quotation",
+                    "quotation_id": self.quotation.id,
+                    "payment_mode": self.payment_mode.id,
+                },
             )
-        self.assertEqual(self.cart.typology, "quotation")
+        self.assertEqual(self.quotation.typology, "quotation")
 
     def test_add_check_payment(self):
-        self.assertEqual(self.cart.typology, "quotation")
-        self.cart.state = "sent"
-        self.service.dispatch(
+        self.assertEqual(self.quotation.typology, "quotation")
+        self.quotation.state = "sent"
+        self.payment_service.dispatch(
             "add_payment",
-            self.cart.id,
-            params={"payment_mode": {"id": self.account_payment_mode.id}},
+            params={
+                "target": "quotation",
+                "quotation_id": self.quotation.id,
+                "payment_mode": self.payment_mode.id,
+            },
         )
-        self.assertEqual(
-            self.cart.workflow_process_id,
-            self.account_payment_mode.workflow_process_id,
-        )
-        self.assertEqual(self.cart.typology, "sale")
+        self.assertEqual(self.quotation.typology, "sale")

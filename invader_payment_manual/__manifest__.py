@@ -11,5 +11,6 @@
     "author": "ACSONE SA/NV",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "depends": ["invader_payment", "base_rest", "payment_transfer"],
+    "data": ["data/payment_acquirer_data.xml"],
     "demo": ["demo/payment_demo.xml"],
 }

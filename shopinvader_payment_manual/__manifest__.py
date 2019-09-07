@@ -14,6 +14,7 @@
         "shopinvader_payment",
         "payment_transfer",
     ],
+    "demo": ["demo/payment_demo.xml"],
     "autoinstall": True,
     "installable": True,
 }

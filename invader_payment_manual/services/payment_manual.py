@@ -4,7 +4,8 @@
 import logging
 
 from cerberus import Validator
-from openerp.addons.component.core import AbstractComponent
+from odoo.addons.base_rest.components.service import to_int
+from odoo.addons.component.core import AbstractComponent
 
 _logger = logging.getLogger(__name__)
 
@@ -19,7 +20,7 @@ class PaymentManual(AbstractComponent):
     )
 
     def _validator_add_payment(self):
-        schema = {"payment_mode": {"type": "string"}}
+        schema = {"payment_mode": {"coerce": to_int, "type": "integer"}}
         schema.update(
             self.component(
                 usage="invader.payment"
@@ -32,7 +33,7 @@ class PaymentManual(AbstractComponent):
         return Validator(schema, allow_unknown=True)
 
     def add_payment(self, target, payment_mode, **params):
-        """ Prepare data for SIPS payment submission """
+        """ Prepare data for Manual payment submission """
         transaction_obj = self.env["payment.transaction"]
         payable = self.component(
             usage="invader.payment"

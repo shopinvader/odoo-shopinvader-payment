@@ -5,39 +5,20 @@
 
 
 from odoo.addons.component.core import Component
-from odoo.exceptions import UserError
-from odoo.tools.translate import _
 
 
 class QuotationService(Component):
     _inherit = [
-        "shopinvader.abstract.payment.service",
+        "shopinvader.abstract.payable.sale.service",
         "shopinvader.quotation.service",
     ]
     _name = "shopinvader.quotation.service"
 
-    def _load_target(self, params):
+    def _convert_one_sale(self, sale):
         """
-
-        :param params: dict
-        :return: exposed model recordset
+        Add Payment information into cart
+        :return:
         """
-        _id = params.get("_id")
-        return self._get(_id=_id)
-
-    def _add_payment(self, quotation, params):
-        if not quotation:
-            raise UserError(_("There is not quotation"))
-        elif quotation.state != "sent":
-            raise UserError(_("The quotation is not validated"))
-        return super(QuotationService, self)._add_payment(quotation, params)
-
-    def _action_after_payment(self, target):
-        """
-        Confirm the cart after the payment
-        :param target: payment recordset
-        :return: dict
-        """
-        values = super(QuotationService, self)._action_after_payment(target)
-        values.update(self._confirm_cart(target))
+        values = super()._convert_one_sale(sale)
+        values.update({"payment": self._get_shopinvader_payment_data(sale)})
         return values

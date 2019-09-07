@@ -4,21 +4,15 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 
-from odoo.addons.component.core import Component
+from odoo.addons.component.core import AbstractComponent, Component
 
 
-class CartService(Component):
+class AbstractPayableSaleService(AbstractComponent):
+    _inherit = "base.shopinvader.service"
+    _name = "shopinvader.abstract.payable.sale.service"
 
-    _inherit = "shopinvader.cart.service"
-
-    def _convert_one_sale(self, sale):
-        """
-        Add Payment information into cart
-        :return:
-        """
-        values = super(CartService, self)._convert_one_sale(sale)
-        values.update({"payment": self._get_shopinvader_payment_data(sale)})
-        return values
+    def _get_available_payment_mode(self, sale):
+        return sale.shopinvader_backend_id.payment_method_ids
 
     def _get_shopinvader_payment_data(self, sale):
         """
@@ -29,7 +23,7 @@ class CartService(Component):
         * The amount
         :return:
         """
-        payment_methods = sale.shopinvader_backend_id.payment_method_ids
+        payment_methods = self._get_available_payment_mode(sale)
         selected_method = payment_methods.filtered(
             lambda m: m.payment_mode_id == sale.payment_mode_id
         )
@@ -56,3 +50,21 @@ class CartService(Component):
                 }
             )
         return res
+
+
+class CartService(Component):
+
+    _inherit = [
+        "shopinvader.cart.service",
+        "shopinvader.abstract.payable.sale.service",
+    ]
+    _name = "shopinvader.cart.service"
+
+    def _convert_one_sale(self, sale):
+        """
+        Add Payment information into cart
+        :return:
+        """
+        values = super(CartService, self)._convert_one_sale(sale)
+        values.update({"payment": self._get_shopinvader_payment_data(sale)})
+        return values
