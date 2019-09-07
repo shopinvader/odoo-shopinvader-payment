@@ -2,8 +2,8 @@
 # @author Sébastien BEAU <sebastien.beau@akretion.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 {
-    "name": "Test invader payment",
-    "summary": "Test Invader payment",
+    "name": "Test shopinvader payment",
+    "summary": "Test shopinvader payment",
     "version": "12.0.1.0.0",
     "category": "Shopinvader",
     "website": "www.akretion.com",
@@ -12,7 +12,7 @@
     "application": False,
     "installable": True,
     "external_dependencies": {"python": [], "bin": []},
-    "depends": ["invader_payment_stripe"],
+    "depends": ["shopinvader_payment_manual", "shopinvader_quotation_payment"],
     "data": [],
     "demo": [],
     "qweb": [],
