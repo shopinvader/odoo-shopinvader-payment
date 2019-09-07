@@ -3,7 +3,7 @@
 
 {
     "name": "Shopinvader Payment Manual",
-    "description": """
+    "summary": """
         REST Services for manual payment (like bank transfer, check...)""",
     "version": "12.0.1.0.0",
     "license": "AGPL-3",
@@ -14,6 +14,7 @@
         "shopinvader_payment",
         "payment_transfer",
     ],
+    "demo": ["demo/payment_demo.xml"],
     "autoinstall": True,
     "installable": True,
 }

@@ -27,6 +27,5 @@
         "views/backend_view.xml",
         "security/ir.model.access.csv",
     ],
-    "demo": ["demo/payment_demo.xml"],
     "qweb": [],
 }
