@@ -11,7 +11,7 @@ class TestInvaderPaymentManual(TestCommonPayment):
     def setUp(self):
         super().setUp()
         self.payment_mode = self.env.ref(
-            "invader_payment_manual.payment_method_check"
+            "invader_payment_manual.payment_mode_check"
         )
         self.service = self._get_service("payment_manual")
 
@@ -37,7 +37,7 @@ class TestInvaderPaymentManual(TestCommonPayment):
 
     def test_wrong_provider_add_payment(self):
         self.payment_mode = self.env.ref(
-            "invader_payment_stripe.payment_method_stripe"
+            "invader_payment_stripe.payment_mode_stripe"
         )
         with self.assertRaises(UserError) as m:
             self.service.dispatch(
