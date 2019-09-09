@@ -1,6 +1,5 @@
 # Copyright 2019 ACSONE SA/NV
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-from odoo.addons.base_rest.components.service import to_int
 from odoo.addons.component.core import Component
 
 
@@ -35,9 +34,6 @@ class InvaderPaymentService(Component):
         """
         raise NotImplementedError()
 
-    def _invader_restrict_payment_mode_ids(self):
-        return []
-
     def _invader_get_target_validator(self):
         """
         Return a cerberus validator schema fragment that specifies the
@@ -45,18 +41,7 @@ class InvaderPaymentService(Component):
         the "allowed" field (eg with strings such as 'current_cart') and
         possibly adding other fields.
         """
-        validator = {
-            "target": {"type": "string", "required": True, "allowed": []},
-            "payment_mode_id": {
-                "coerce": to_int,
-                "type": "integer",
-                "required": True,
-            },
-        }
-        ids = self._invader_restrict_payment_mode_ids()
-        if ids:
-            validator["payment_mode_id"]["allowed"] = ids
-        return validator
+        return {"target": {"type": "string", "required": True, "allowed": []}}
 
     def _invader_get_payment_success_reponse_data(
         self, payable, target, **params
