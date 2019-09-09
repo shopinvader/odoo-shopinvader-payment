@@ -12,5 +12,5 @@
     "depends": ["invader_payment", "payment_sips", "base_rest"],
     "external_dependencies": {"python": ["cerberus"]},
     "data": [],
-    "demo": [],
+    "demo": ["demo/payment_demo.xml"],
 }
