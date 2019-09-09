@@ -4,8 +4,10 @@
 import logging
 
 from cerberus import Validator
+from odoo import _
 from odoo.addons.base_rest.components.service import to_int
 from odoo.addons.component.core import AbstractComponent
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -45,6 +47,11 @@ class PaymentManual(AbstractComponent):
             usage="invader.payment"
         )._invader_find_payable_from_target(target, **params)
         payment_mode = self.env["account.payment.mode"].browse(payment_mode_id)
+
+        acquirer = payment_mode.payment_acquirer_id.sudo()
+        if acquirer.provider != "transfer":
+            raise UserError(_("Payment mode acquirer mismatch."))
+
         transaction = transaction_obj.create(
             payable._invader_prepare_payment_transaction_data(payment_mode)
         )

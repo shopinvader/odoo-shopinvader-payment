@@ -5,6 +5,7 @@
 
 import json
 
+from odoo.exceptions import UserError
 from vcr_unittest import VCRMixin
 
 from .common import TestCommonPayment
@@ -17,7 +18,7 @@ stripe_secret_key = "sk_test_4eC39HqLyjWDarjtT1zdp7dc"
 class TestInvaderPayment(VCRMixin, TestCommonPayment):
     def setUp(self):
         super(TestInvaderPayment, self).setUp()
-        self.stripe_method = self.env.ref(
+        self.payment_mode = self.env.ref(
             "invader_payment_stripe.payment_method_stripe"
         )
         acquirer = self.env.ref("payment.payment_acquirer_stripe")
@@ -44,7 +45,7 @@ class TestInvaderPayment(VCRMixin, TestCommonPayment):
             "confirm_payment",
             params={
                 "target": "demo_partner",
-                "payment_mode_id": self.stripe_method.id,
+                "payment_mode_id": self.payment_mode.id,
                 "stripe_payment_method_id": "pm_card_visa",
             },
         )
@@ -55,7 +56,7 @@ class TestInvaderPayment(VCRMixin, TestCommonPayment):
             "confirm_payment",
             params={
                 "target": "demo_partner",
-                "payment_mode_id": self.stripe_method.id,
+                "payment_mode_id": self.payment_mode.id,
                 "stripe_payment_method_id": "pm_card_threeDSecure2Required",
             },
         )
@@ -76,8 +77,23 @@ class TestInvaderPayment(VCRMixin, TestCommonPayment):
             "confirm_payment",
             params={
                 "target": "demo_partner",
-                "payment_mode_id": self.stripe_method.id,
+                "payment_mode_id": self.payment_mode.id,
                 "stripe_payment_intent_id": stripe_payment_intent_id,
             },
         )
         self.assertEqual(result, {"success": True})
+
+    def test_wrong_provider_confirm(self):
+        self.payment_mode = self.env.ref(
+            "invader_payment_manual.payment_method_check"
+        )
+        with self.assertRaises(UserError) as m:
+            self.service.dispatch(
+                "confirm_payment",
+                params={
+                    "target": "demo_partner",
+                    "payment_mode_id": self.payment_mode.id,
+                    "stripe_payment_method_id": "pm_card_visa",
+                },
+            )
+        self.assertEqual(m.exception.name, "Payment mode acquirer mismatch.")
