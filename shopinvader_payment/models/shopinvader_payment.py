@@ -11,7 +11,12 @@ class ShopinvaderPayment(models.Model):
     _description = "Shopinvader Payment"
     _order = "sequence"
 
-    payment_mode_id = fields.Many2one("account.payment.mode", "Payment Mode")
+    payment_mode_id = fields.Many2one(
+        "account.payment.mode",
+        "Payment Mode",
+        required="True",
+        ondelete="cascade",
+    )
     sequence = fields.Integer()
     backend_id = fields.Many2one(
         "shopinvader.backend", "Backend", required=True, ondelete="cascade"

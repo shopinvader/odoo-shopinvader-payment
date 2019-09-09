@@ -48,7 +48,7 @@ class ShopinvaderQuotationPaymentCase(CommonConnectedQuotationCase):
                 params={
                     "target": "quotation",
                     "quotation_id": self.quotation.id,
-                    "payment_mode": self.payment_mode.id,
+                    "payment_mode_id": self.payment_mode.id,
                 },
             )
         self.assertEqual(self.quotation.typology, "quotation")
@@ -61,7 +61,7 @@ class ShopinvaderQuotationPaymentCase(CommonConnectedQuotationCase):
             params={
                 "target": "quotation",
                 "quotation_id": self.quotation.id,
-                "payment_mode": self.payment_mode.id,
+                "payment_mode_id": self.payment_mode.id,
             },
         )
         self.assertEqual(self.quotation.typology, "sale")
