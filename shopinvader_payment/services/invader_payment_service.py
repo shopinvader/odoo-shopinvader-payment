@@ -5,8 +5,9 @@ from odoo.addons.component.core import Component
 
 
 class InvaderPaymentService(Component):
-
     _inherit = "invader.payment.service"
+    _name = "shopinvader.payment.service"
+    _collection = "shopinvader.backend"
 
     def _invader_find_payable_from_target(self, target, **params):
         if target == "current_cart":
@@ -21,6 +22,11 @@ class InvaderPaymentService(Component):
         return super(
             InvaderPaymentService, self
         )._invader_find_payable_from_transaction(transaction)
+
+    def _invader_restrict_payment_mode_ids(self):
+        return self.work.shopinvader_backend.mapped(
+            "payment_method_ids.payment_mode_id.id"
+        )
 
     def _invader_get_target_validator(self):
         res = super(
