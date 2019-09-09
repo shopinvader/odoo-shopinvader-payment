@@ -9,6 +9,7 @@ from odoo import _
 from odoo.addons.base_rest.components.service import to_int
 from odoo.addons.component.core import AbstractComponent
 from odoo.addons.payment_stripe.models.payment import INT_CURRENCIES
+from odoo.exceptions import UserError
 from odoo.tools.float_utils import float_round
 
 _logger = logging.getLogger(__name__)
@@ -135,14 +136,18 @@ class PaymentServiceStripe(AbstractComponent):
         payable = self.component(
             usage="invader.payment"
         )._invader_find_payable_from_target(target, **params)
+
         # Stripe part
         transaction = None
+        payment_mode = self.env["account.payment.mode"].browse(payment_mode_id)
+
+        acquirer = payment_mode.payment_acquirer_id.sudo()
+        if acquirer.provider != "stripe":
+            raise UserError(_("Payment mode acquirer mismatch."))
+
         try:
             if stripe_payment_method_id:
                 # First step
-                payment_mode = self.env["account.payment.mode"].browse(
-                    payment_mode_id
-                )
                 transaction = transaction_obj.create(
                     payable._invader_prepare_payment_transaction_data(
                         payment_mode
