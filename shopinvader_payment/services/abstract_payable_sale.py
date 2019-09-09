@@ -10,7 +10,7 @@ class AbstractPayableSaleService(AbstractComponent):
     _inherit = "base.shopinvader.service"
     _name = "shopinvader.abstract.payable.sale.service"
 
-    def _get_available_payment_mode(self, sale):
+    def _get_available_payment_method(self, sale):
         return sale.shopinvader_backend_id.payment_method_ids
 
     def _get_shopinvader_payment_data(self, sale):
@@ -22,7 +22,7 @@ class AbstractPayableSaleService(AbstractComponent):
         * The amount
         :return:
         """
-        payment_methods = self._get_available_payment_mode(sale)
+        payment_methods = self._get_available_payment_method(sale)
         selected_method = payment_methods.filtered(
             lambda m: m.payment_mode_id == sale.payment_mode_id
         )

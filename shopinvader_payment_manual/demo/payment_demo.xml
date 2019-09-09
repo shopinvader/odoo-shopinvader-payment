@@ -3,14 +3,14 @@
 
 <record id="shopinvader_payment_banktransfer" model="shopinvader.payment">
     <field name="sequence">30</field>
-    <field name="payment_mode_id" ref="invader_payment_manual.payment_method_banktransfer"/>
+    <field name="payment_mode_id" ref="invader_payment_manual.payment_mode_banktransfer"/>
     <field name="backend_id" ref="shopinvader.backend_1"/>
     <field name="notification">cart_confirmation_and_sale_confirmation</field>
 </record>
 
 <record id="shopinvader_payment_check" model="shopinvader.payment">
     <field name="sequence">40</field>
-    <field name="payment_mode_id" ref="invader_payment_manual.payment_method_check"/>
+    <field name="payment_mode_id" ref="invader_payment_manual.payment_mode_check"/>
     <field name="backend_id" ref="shopinvader.backend_1"/>
     <field name="notification">cart_confirmation_and_sale_confirmation</field>
 </record>

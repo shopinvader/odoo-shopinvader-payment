@@ -9,7 +9,7 @@ from odoo.addons.component.core import Component
 class CartService(Component):
     _inherit = "shopinvader.cart.service"
 
-    def _get_available_payment_mode(self, cart):
+    def _get_available_payment_method(self, cart):
         for line in cart.order_line:
             if line.product_id.only_quotation:
                 # If we have a product that required a quotation in the cart
@@ -17,4 +17,4 @@ class CartService(Component):
                 # method as it's not possible to pay it.
                 # Customer must request a quotation for this cart
                 return self.env["shopinvader.payment"].browse(False)
-        return super(CartService, self)._get_available_payment_mode(cart)
+        return super(CartService, self)._get_available_payment_method(cart)
