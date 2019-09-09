@@ -23,11 +23,6 @@ class InvaderPaymentService(Component):
             InvaderPaymentService, self
         )._invader_find_payable_from_transaction(transaction)
 
-    def _invader_restrict_payment_mode_ids(self):
-        return self.work.shopinvader_backend.mapped(
-            "payment_method_ids.payment_mode_id.id"
-        )
-
     def _invader_get_target_validator(self):
         res = super(
             InvaderPaymentService, self
