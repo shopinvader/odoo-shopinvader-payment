@@ -7,6 +7,7 @@ from hashlib import sha256
 
 from cerberus import Validator
 from odoo import _, fields
+from odoo.addons.base_rest.components.service import to_int
 from odoo.addons.component.core import AbstractComponent
 from odoo.exceptions import UserError
 
@@ -61,6 +62,11 @@ class PaymentServiceSips(AbstractComponent):
 
     def _validator_prepare_payment(self):
         schema = {
+            "payment_mode_id": {
+                "coerce": to_int,
+                "type": "integer",
+                "required": True,
+            },
             "normal_return_url": {"type": "string"},
             "automatic_response_url": {"type": "string"},
         }
