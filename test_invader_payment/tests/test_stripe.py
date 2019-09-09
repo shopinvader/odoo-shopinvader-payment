@@ -18,7 +18,7 @@ class TestInvaderPayment(VCRMixin, TestCommonPayment):
     def setUp(self):
         super().setUp()
         self.payment_mode = self.env.ref(
-            "invader_payment_stripe.payment_method_stripe"
+            "invader_payment_stripe.payment_mode_stripe"
         )
         acquirer = self.env.ref("payment.payment_acquirer_stripe")
         acquirer.write({"stripe_secret_key": stripe_secret_key})
@@ -84,7 +84,7 @@ class TestInvaderPayment(VCRMixin, TestCommonPayment):
 
     def test_wrong_provider_confirm(self):
         self.payment_mode = self.env.ref(
-            "invader_payment_manual.payment_method_check"
+            "invader_payment_manual.payment_mode_check"
         )
         with self.assertRaises(UserError) as m:
             self.service.dispatch(

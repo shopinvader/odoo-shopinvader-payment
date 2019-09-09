@@ -67,7 +67,7 @@ class TestInvaderPaymentSips(VCRMixin, TestCommonPayment):
 
     def test_wrong_provider_prepare_payment(self):
         self.payment_mode = self.env.ref(
-            "invader_payment_manual.payment_method_check"
+            "invader_payment_manual.payment_mode_check"
         )
         with self.assertRaises(UserError) as m:
             self.service.dispatch(
