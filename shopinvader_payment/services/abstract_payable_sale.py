@@ -43,7 +43,10 @@ class AbstractPayableSaleService(AbstractComponent):
                 {
                     "id": method.payment_mode_id.id,
                     "name": method.payment_mode_id.name,
-                    "provider": method.payment_mode_id.payment_acquirer_id.provider,
+                    # fmt: off
+                    "provider":
+                        method.payment_mode_id.payment_acquirer_id.provider,
+                    # fmt: on
                     "code": method.code,
                     "description": method.description,
                 }
