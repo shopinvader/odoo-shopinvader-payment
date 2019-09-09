@@ -36,7 +36,7 @@ class PaymentServiceStripe(AbstractComponent):
         """
         Validator of confirm_payment service
         target: see _allowed_payment_target()
-        payment_mode: The payment mode used to pay
+        payment_mode_id: The payment mode used to pay
         stripe_payment_intent_id: The previously created intent
         stripe_payment_method_id: The Stripe card created on client side
         :return: dict
@@ -46,9 +46,6 @@ class PaymentServiceStripe(AbstractComponent):
         )._invader_get_target_validator()
         res.update(
             {
-                # payment_mode cannot be integer here, because
-                # it can be an empty string from the form
-                "payment_mode": {"type": "string"},
                 "stripe_payment_intent_id": {"type": "string"},
                 "stripe_payment_method_id": {"type": "string"},
             }
@@ -120,12 +117,12 @@ class PaymentServiceStripe(AbstractComponent):
             * The stripe_payment_intent_id is passed
             * The intent state is 'succeeded'
         :param target: string (authorized value is checked by service)
-        :param payment_mode: string (The Odoo payment mode id)
+        :param payment_mode_id: string (The Odoo payment mode id)
         :param stripe_payment_method_id:
         :param stripe_payment_intent_id:
         :return:
         """
-        payment_mode = params.get("payment_mode")
+        payment_mode_id = params.get("payment_mode_id")
         stripe_payment_method_id = params.get("stripe_payment_method_id")
         stripe_payment_intent_id = params.get("stripe_payment_intent_id")
         transaction_obj = self.env["payment.transaction"]
@@ -137,15 +134,15 @@ class PaymentServiceStripe(AbstractComponent):
         try:
             if stripe_payment_method_id:
                 # First step
-                payment_mode_id = self.env["account.payment.mode"].browse(
-                    int(payment_mode)
+                payment_mode = self.env["account.payment.mode"].browse(
+                    payment_mode_id
                 )
                 transaction = transaction_obj.create(
                     payable._invader_prepare_payment_transaction_data(
-                        payment_mode_id
+                        payment_mode
                     )
                 )
-                payable._invader_payment_start(transaction, payment_mode_id)
+                payable._invader_payment_start(transaction, payment_mode)
                 intent = self._prepare_stripe_intent(
                     transaction, stripe_payment_method_id
                 )

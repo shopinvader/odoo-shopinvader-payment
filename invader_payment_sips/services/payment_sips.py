@@ -60,7 +60,6 @@ class PaymentServiceSips(AbstractComponent):
 
     def _validator_prepare_payment(self):
         schema = {
-            "payment_mode": {"type": "string"},
             "normal_return_url": {"type": "string"},
             "automatic_response_url": {"type": "string"},
         }
@@ -82,7 +81,7 @@ class PaymentServiceSips(AbstractComponent):
     def prepare_payment(
         self,
         target,
-        payment_mode,
+        payment_mode_id,
         normal_return_url,
         automatic_response_url,
         **params
@@ -91,9 +90,7 @@ class PaymentServiceSips(AbstractComponent):
         payable = self.component(
             usage="invader.payment"
         )._invader_find_payable_from_target(target, **params)
-        payment_mode = self.env["account.payment.mode"].browse(
-            int(payment_mode)
-        )
+        payment_mode = self.env["account.payment.mode"].browse(payment_mode_id)
         acquirer = payment_mode.payment_acquirer_id.sudo()
         if acquirer.provider != "sips":
             raise UserError(_("Payment mode acquirer mismatch."))

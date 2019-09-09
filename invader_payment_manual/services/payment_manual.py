@@ -4,7 +4,6 @@
 import logging
 
 from cerberus import Validator
-from odoo.addons.base_rest.components.service import to_int
 from odoo.addons.component.core import AbstractComponent
 
 _logger = logging.getLogger(__name__)
@@ -20,27 +19,21 @@ class PaymentManual(AbstractComponent):
     )
 
     def _validator_add_payment(self):
-        schema = {"payment_mode": {"coerce": to_int, "type": "integer"}}
-        schema.update(
-            self.component(
-                usage="invader.payment"
-            )._invader_get_target_validator()
-        )
-        return schema
+        return self.component(
+            usage="invader.payment"
+        )._invader_get_target_validator()
 
     def _validator_return_add_payment(self):
         schema = {}
         return Validator(schema, allow_unknown=True)
 
-    def add_payment(self, target, payment_mode, **params):
+    def add_payment(self, target, payment_mode_id, **params):
         """ Prepare data for Manual payment submission """
         transaction_obj = self.env["payment.transaction"]
         payable = self.component(
             usage="invader.payment"
         )._invader_find_payable_from_target(target, **params)
-        payment_mode = self.env["account.payment.mode"].browse(
-            int(payment_mode)
-        )
+        payment_mode = self.env["account.payment.mode"].browse(payment_mode_id)
         transaction = transaction_obj.create(
             payable._invader_prepare_payment_transaction_data(payment_mode)
         )

@@ -39,18 +39,24 @@ class TestInvaderPayment(VCRMixin, TestCommonPayment):
         next_response["body"]["string"] = json.dumps(body).encode("utf-8")
 
     def test_confirm_payment_one_step(self):
-        result = self.service.confirm_payment(
-            "demo_partner",
-            payment_mode=self.stripe_method.id,
-            stripe_payment_method_id="pm_card_visa",
+        result = self.service.dispatch(
+            "confirm_payment",
+            params={
+                "target": "demo_partner",
+                "payment_mode_id": self.stripe_method.id,
+                "stripe_payment_method_id": "pm_card_visa",
+            },
         )
         self.assertEqual(result, {"success": True})
 
     def test_confirm_payment_two_step(self):
-        result = self.service.confirm_payment(
-            "demo_partner",
-            payment_mode=self.stripe_method.id,
-            stripe_payment_method_id="pm_card_threeDSecure2Required",
+        result = self.service.dispatch(
+            "confirm_payment",
+            params={
+                "target": "demo_partner",
+                "payment_mode_id": self.stripe_method.id,
+                "stripe_payment_method_id": "pm_card_threeDSecure2Required",
+            },
         )
         self.assertIn("requires_action", result)
         self.assertTrue(result["requires_action"])
@@ -65,9 +71,12 @@ class TestInvaderPayment(VCRMixin, TestCommonPayment):
         # on server side so the simpliest solution is to
         # hack the next response
         self._alter_next_response({"status": "succeeded"})
-        result = self.service.confirm_payment(
-            "demo_partner",
-            payment_mode=self.stripe_method.id,
-            stripe_payment_intent_id=stripe_payment_intent_id,
+        result = self.service.dispatch(
+            "confirm_payment",
+            params={
+                "target": "demo_partner",
+                "payment_mode_id": self.stripe_method.id,
+                "stripe_payment_intent_id": stripe_payment_intent_id,
+            },
         )
         self.assertEqual(result, {"success": True})
