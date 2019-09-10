@@ -66,7 +66,7 @@ class TestInvaderPaymentSips(VCRMixin, TestCommonPayment):
         self.assertEqual(response.status_code, 200)
 
     def test_wrong_provider_prepare_payment(self):
-        self.payment_mode = self.env.ref(
+        self.payment_mode_check = self.env.ref(
             "invader_payment_manual.payment_mode_check"
         )
         with self.assertRaises(UserError) as m:
@@ -74,7 +74,7 @@ class TestInvaderPaymentSips(VCRMixin, TestCommonPayment):
                 "prepare_payment",
                 params={
                     "target": "demo_partner",
-                    "payment_mode_id": self.payment_mode.id,
+                    "payment_mode_id": self.payment_mode_check.id,
                     "normal_return_url": NORMAL_RETURN_URL,
                     "automatic_response_url": AUTOMATIC_RESPONSE_URL,
                 },

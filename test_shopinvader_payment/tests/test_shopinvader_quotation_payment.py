@@ -53,7 +53,7 @@ class TestShopinvaderQuotationPayment(CommonConnectedCartCase):
         Test Case:
             Retrieve the quotation info
         Expected result:
-            'available_methods' must not have all payment mode
+            'available_methods' must have all payment mode
         """
         response = self.quotation_service.dispatch(
             "search", params={"id": self.quotation.id}
@@ -69,7 +69,7 @@ class TestShopinvaderQuotationPayment(CommonConnectedCartCase):
         Test Case:
             Retrieve the quotation info
         Expected result:
-            'available_methods' must not have all payment mode
+            'available_methods' must have all payment mode
         """
         self.quotation.order_line[0].product_id.only_quotation = True
         response = self.quotation_service.dispatch(
@@ -91,7 +91,7 @@ class TestShopinvaderQuotationPayment(CommonConnectedCartCase):
             )
         self.assertEqual(self.quotation.typology, "quotation")
         self.assertEqual(
-            m.exception.name, _("The quotation have been not yet estimated")
+            m.exception.name, _("The quotation is not yet estimated")
         )
 
     def test_pay_quotation_with_check(self):
