@@ -96,4 +96,8 @@ class TestInvaderPayment(VCRMixin, TestCommonPayment):
                     "stripe_payment_method_id": "pm_card_visa",
                 },
             )
-        self.assertEqual(m.exception.name, "Payment mode acquirer mismatch.")
+        self.assertEqual(
+            m.exception.name,
+            "Payment mode acquirer mismatch should be "
+            "'stripe' instead of transfer.",
+        )

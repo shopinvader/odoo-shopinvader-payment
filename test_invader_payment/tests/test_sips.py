@@ -79,4 +79,8 @@ class TestInvaderPaymentSips(VCRMixin, TestCommonPayment):
                     "automatic_response_url": AUTOMATIC_RESPONSE_URL,
                 },
             )
-        self.assertEqual(m.exception.name, "Payment mode acquirer mismatch.")
+        self.assertEqual(
+            m.exception.name,
+            "Payment mode acquirer mismatch should be "
+            "'sips' instead of transfer.",
+        )

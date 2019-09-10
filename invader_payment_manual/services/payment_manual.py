@@ -50,7 +50,12 @@ class PaymentManual(AbstractComponent):
 
         acquirer = payment_mode.payment_acquirer_id.sudo()
         if acquirer.provider != "transfer":
-            raise UserError(_("Payment mode acquirer mismatch."))
+            raise UserError(
+                _(
+                    "Payment mode acquirer mismatch should be "
+                    "'transfer' instead of {}."
+                ).format(acquirer.provider)
+            )
 
         transaction = transaction_obj.create(
             payable._invader_prepare_payment_transaction_data(payment_mode)
