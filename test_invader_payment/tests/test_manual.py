@@ -36,7 +36,7 @@ class TestInvaderPaymentManual(TestCommonPayment):
         self.assertEqual(transaction.state, "pending")
 
     def test_wrong_provider_add_payment(self):
-        self.payment_mode = self.env.ref(
+        self.payment_mode_stripe = self.env.ref(
             "invader_payment_stripe.payment_mode_stripe"
         )
         with self.assertRaises(UserError) as m:
@@ -44,7 +44,11 @@ class TestInvaderPaymentManual(TestCommonPayment):
                 "add_payment",
                 params={
                     "target": "demo_partner",
-                    "payment_mode_id": self.payment_mode.id,
+                    "payment_mode_id": self.payment_mode_stripe.id,
                 },
             )
-        self.assertEqual(m.exception.name, "Payment mode acquirer mismatch.")
+        self.assertEqual(
+            m.exception.name,
+            "Payment mode acquirer mismatch should be "
+            "'transfer' instead of stripe.",
+        )

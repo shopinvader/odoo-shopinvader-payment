@@ -99,7 +99,12 @@ class PaymentServiceSips(AbstractComponent):
         payment_mode = self.env["account.payment.mode"].browse(payment_mode_id)
         acquirer = payment_mode.payment_acquirer_id.sudo()
         if acquirer.provider != "sips":
-            raise UserError(_("Payment mode acquirer mismatch."))
+            raise UserError(
+                _(
+                    "Payment mode acquirer mismatch should be "
+                    "'sips' instead of {}."
+                ).format(acquirer.provider)
+            )
         transaction_data = payable._invader_prepare_payment_transaction_data(
             payment_mode
         )
