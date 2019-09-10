@@ -1,6 +1,8 @@
 # Copyright 2019 ACSONE SA/NV
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+from odoo import _
 from odoo.addons.component.core import Component
+from odoo.exceptions import UserError
 
 
 class InvaderPaymentService(Component):
@@ -54,3 +56,16 @@ class InvaderPaymentService(Component):
         session management is in place.
         """
         return {}
+
+    def _check_acquirer(self, payment_mode, provider):
+        """Check that the payment mode have the correct provider
+        If the provider is not the same, raise an error
+        """
+        acquirer = payment_mode.payment_acquirer_id.sudo()
+        if acquirer.provider != provider:
+            raise UserError(
+                _(
+                    "Payment mode acquirer mismatch should be "
+                    "'{}' instead of '{}'."
+                ).format(provider, acquirer.provider)
+            )
