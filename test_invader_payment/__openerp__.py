@@ -12,7 +12,11 @@
     "application": False,
     "installable": True,
     "external_dependencies": {"python": [], "bin": []},
-    "depends": ["invader_payment_stripe", "invader_payment_manual"],
+    "depends": [
+        "invader_payment_stripe",
+        "invader_payment_manual",
+        "invader_payment_sips",
+    ],
     "data": [],
     "demo": [],
     "qweb": [],
