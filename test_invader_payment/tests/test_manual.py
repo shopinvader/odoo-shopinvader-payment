@@ -2,6 +2,7 @@
 # @author Sébastien BEAU <sebastien.beau@akretion.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+from odoo import _
 from odoo.exceptions import UserError
 
 from .common import TestCommonPayment
@@ -49,6 +50,8 @@ class TestInvaderPaymentManual(TestCommonPayment):
             )
         self.assertEqual(
             m.exception.name,
-            "Payment mode acquirer mismatch should be "
-            "'transfer' instead of stripe.",
+            _(
+                "Payment mode acquirer mismatch should be "
+                "'transfer' instead of 'stripe'."
+            ),
         )

@@ -59,6 +59,10 @@ class PaymentServiceSips(AbstractComponent):
     _usage = "payment_sips"
     _description = "REST Services for SIPS payments"
 
+    @property
+    def payment_service(self):
+        return self.component(usage="invader.payment")
+
     def _validator_prepare_payment(self):
         schema = {
             "payment_mode_id": {
@@ -69,11 +73,7 @@ class PaymentServiceSips(AbstractComponent):
             "normal_return_url": {"type": "string"},
             "automatic_response_url": {"type": "string"},
         }
-        schema.update(
-            self.component(
-                usage="invader.payment"
-            )._invader_get_target_validator()
-        )
+        schema.update(self.payment_service._invader_get_target_validator())
         return schema
 
     def _validator_return_prepare_payment(self):
@@ -93,22 +93,17 @@ class PaymentServiceSips(AbstractComponent):
         **params
     ):
         """ Prepare data for SIPS payment submission """
-        payable = self.component(
-            usage="invader.payment"
-        )._invader_find_payable_from_target(target, **params)
+        payable = self.payment_service._invader_find_payable_from_target(
+            target, **params
+        )
+
         payment_mode = self.env["account.payment.mode"].browse(payment_mode_id)
-        acquirer = payment_mode.payment_acquirer_id.sudo()
-        if acquirer.provider != "sips":
-            raise UserError(
-                _(
-                    "Payment mode acquirer mismatch should be "
-                    "'sips' instead of {}."
-                ).format(acquirer.provider)
-            )
+        self.payment_service._check_acquirer(payment_mode, "sips")
+
         transaction_data = payable._invader_prepare_payment_transaction_data(
             payment_mode
         )
-        transaction_data["acquirer_id"] = acquirer.id
+
         transaction = self.env["payment.transaction"].create(transaction_data)
         payable._invader_payment_start(transaction, payment_mode)
         data = _sips_make_data(
@@ -116,6 +111,7 @@ class PaymentServiceSips(AbstractComponent):
                 transaction, normal_return_url, automatic_response_url
             )
         )
+        acquirer = transaction.acquirer_id
         seal = _sips_make_seal(data, acquirer.sips_secret)
         return {
             "sips_form_action_url": acquirer.sips_get_form_action_url(),
@@ -199,9 +195,9 @@ class PaymentServiceSips(AbstractComponent):
                 data,
             )
             raise UserError(INVALID_DATA)
-        payable = self.component(
-            usage="invader.payment"
-        )._invader_find_payable_from_transaction(transaction)
+        payable = self.payment_service._invader_find_payable_from_transaction(
+            transaction
+        )
         if transaction.state == "draft":
             # if transaction is not draft, it means it has already been
             # processed by automatic_response or normal_return
@@ -241,11 +237,7 @@ class PaymentServiceSips(AbstractComponent):
             "success_redirect": {"type": "string"},
             "cancel_redirect": {"type": "string"},
         }
-        schema.update(
-            self.component(
-                usage="invader.payment"
-            )._invader_get_target_validator()
-        )
+        schema.update(self.payment_service._invader_get_target_validator())
         return Validator(schema, allow_unknown=True)
 
     def _validator_return_normal_return(self):
@@ -266,9 +258,7 @@ class PaymentServiceSips(AbstractComponent):
         if transaction.state == "done":
             res["redirect_to"] = success_redirect
             res.update(
-                self.component(
-                    usage="invader.payment"
-                )._invader_get_payment_success_reponse_data(
+                self.payment_service._invader_get_payment_success_reponse_data(
                     payable, target, **params
                 )
             )

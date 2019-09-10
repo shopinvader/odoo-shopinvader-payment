@@ -9,7 +9,6 @@ from odoo import _
 from odoo.addons.base_rest.components.service import to_int
 from odoo.addons.component.core import AbstractComponent
 from odoo.addons.payment_stripe.models.payment import INT_CURRENCIES
-from odoo.exceptions import UserError
 from odoo.tools.float_utils import float_round
 
 _logger = logging.getLogger(__name__)
@@ -34,6 +33,10 @@ class PaymentServiceStripe(AbstractComponent):
     _usage = "payment_stripe"
     _description = "REST Services for Stripe payments"
 
+    @property
+    def payment_service(self):
+        return self.component(usage="invader.payment")
+
     def _validator_confirm_payment(self):
         """
         Validator of confirm_payment service
@@ -43,9 +46,7 @@ class PaymentServiceStripe(AbstractComponent):
         stripe_payment_method_id: The Stripe card created on client side
         :return: dict
         """
-        res = self.component(
-            usage="invader.payment"
-        )._invader_get_target_validator()
+        res = self.payment_service._invader_get_target_validator()
         res.update(
             {
                 "payment_mode_id": {
@@ -133,22 +134,15 @@ class PaymentServiceStripe(AbstractComponent):
         stripe_payment_method_id = params.get("stripe_payment_method_id")
         stripe_payment_intent_id = params.get("stripe_payment_intent_id")
         transaction_obj = self.env["payment.transaction"]
-        payable = self.component(
-            usage="invader.payment"
-        )._invader_find_payable_from_target(target, **params)
+        payable = self.payment_service._invader_find_payable_from_target(
+            target, **params
+        )
 
         # Stripe part
         transaction = None
         payment_mode = self.env["account.payment.mode"].browse(payment_mode_id)
+        self.payment_service._check_acquirer(payment_mode, "stripe")
 
-        acquirer = payment_mode.payment_acquirer_id.sudo()
-        if acquirer.provider != "stripe":
-            raise UserError(
-                _(
-                    "Payment mode acquirer mismatch should be "
-                    "'stripe' instead of {}."
-                ).format(acquirer.provider)
-            )
         try:
             if stripe_payment_method_id:
                 # First step
@@ -247,13 +241,14 @@ class PaymentServiceStripe(AbstractComponent):
                 # enrich the response with additional data
                 # (necessary for ShopInvader's weird way to
                 # manipulate session data)
+                # fmt: off
                 res.update(
-                    self.component(
-                        usage="invader.payment"
-                    )._invader_get_payment_success_reponse_data(
-                        payable, target, **params
-                    )
+                    self.payment_service
+                        ._invader_get_payment_success_reponse_data(
+                            payable, target, **params
+                        )
                 )
+                # fmt: on
                 return res
             elif intent.status == "canceled":
                 return {"error": _("Payment canceled.")}

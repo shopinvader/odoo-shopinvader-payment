@@ -4,6 +4,7 @@
 
 import json
 
+from odoo import _
 from odoo.exceptions import UserError
 from vcr_unittest import VCRMixin
 
@@ -97,6 +98,8 @@ class TestInvaderPayment(VCRMixin, TestCommonPayment):
             )
         self.assertEqual(
             m.exception.name,
-            "Payment mode acquirer mismatch should be "
-            "'stripe' instead of transfer.",
+            _(
+                "Payment mode acquirer mismatch should be "
+                "'stripe' instead of 'transfer'."
+            ),
         )

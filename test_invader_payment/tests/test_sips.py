@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 import requests
+from odoo import _
 from odoo.exceptions import UserError
 from vcr_unittest import VCRMixin
 
@@ -81,6 +82,8 @@ class TestInvaderPaymentSips(VCRMixin, TestCommonPayment):
             )
         self.assertEqual(
             m.exception.name,
-            "Payment mode acquirer mismatch should be "
-            "'sips' instead of transfer.",
+            _(
+                "Payment mode acquirer mismatch should be "
+                "'sips' instead of 'transfer'."
+            ),
         )
