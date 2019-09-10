@@ -143,8 +143,12 @@ class PaymentServiceStripe(AbstractComponent):
 
         acquirer = payment_mode.payment_acquirer_id.sudo()
         if acquirer.provider != "stripe":
-            raise UserError(_("Payment mode acquirer mismatch."))
-
+            raise UserError(
+                _(
+                    "Payment mode acquirer mismatch should be "
+                    "'stripe' instead of {}."
+                ).format(acquirer.provider)
+            )
         try:
             if stripe_payment_method_id:
                 # First step

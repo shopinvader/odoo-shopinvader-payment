@@ -17,9 +17,9 @@ class InvaderPaymentService(Component):
                 raise UserError(_("Quotation id is missing"))
             quotation = self.component(usage="quotations")._get(quotation_id)
             if not quotation:
-                raise UserError(_("The quotation do not exist"))
+                raise UserError(_("The quotation doesn't exist"))
             elif quotation.state != "sent":
-                raise UserError(_("The quotation is not validated"))
+                raise UserError(_("The quotation is not yet estimated"))
             return quotation
         return super()._invader_find_payable_from_target(target, **params)
 

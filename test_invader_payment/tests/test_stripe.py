@@ -83,7 +83,7 @@ class TestInvaderPayment(VCRMixin, TestCommonPayment):
         self.assertEqual(result, {"success": True})
 
     def test_wrong_provider_confirm(self):
-        self.payment_mode = self.env.ref(
+        self.payment_mode_check = self.env.ref(
             "invader_payment_manual.payment_mode_check"
         )
         with self.assertRaises(UserError) as m:
@@ -91,8 +91,12 @@ class TestInvaderPayment(VCRMixin, TestCommonPayment):
                 "confirm_payment",
                 params={
                     "target": "demo_partner",
-                    "payment_mode_id": self.payment_mode.id,
+                    "payment_mode_id": self.payment_mode_check.id,
                     "stripe_payment_method_id": "pm_card_visa",
                 },
             )
-        self.assertEqual(m.exception.name, "Payment mode acquirer mismatch.")
+        self.assertEqual(
+            m.exception.name,
+            "Payment mode acquirer mismatch should be "
+            "'stripe' instead of transfer.",
+        )
