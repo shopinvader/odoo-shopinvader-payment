@@ -6,7 +6,7 @@
     "summary": """
         REST Services for manual payment like bank transfer,
         check ... (base module)""",
-    "version": "12.0.1.0.0",
+    "version": "10.0.1.0.0",
     "license": "AGPL-3",
     "author": "ACSONE SA/NV",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",

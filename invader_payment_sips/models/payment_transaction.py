@@ -1,4 +1,4 @@
- -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 # BACKPORT FROM 12.0 TO BE REMOVED!!!!!!!
 

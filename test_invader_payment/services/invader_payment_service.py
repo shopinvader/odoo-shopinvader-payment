@@ -19,9 +19,9 @@ class PaymentServiceStripe(Component):
     def _invader_find_payable_from_transaction(self, transaction):
         if transaction.sale_order_ids:
             return transaction.sale_order_ids
-        return super()._invader_find_payable_from_transaction(transaction)
+        return super(PaymentServiceStripe, self)._invader_find_payable_from_transaction(transaction)
 
     def _invader_get_target_validator(self):
-        res = super()._invader_get_target_validator()
+        res = super(PaymentServiceStripe, self)._invader_get_target_validator()
         res["target"]["allowed"].append("demo_partner")
         return res

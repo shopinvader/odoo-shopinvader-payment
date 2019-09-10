@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2016 Akretion (http://www.akretion.com)
 # Benoît GUILLOT <benoit.guillot@akretion.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
@@ -18,6 +19,6 @@ class QuotationService(Component):
         Add Payment information into cart
         :return:
         """
-        values = super()._convert_one_sale(sale)
+        values = super(QuotationService, self)._convert_one_sale(sale)
         values.update({"payment": self._get_shopinvader_payment_data(sale)})
         return values
