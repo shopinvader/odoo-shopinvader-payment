@@ -6,9 +6,9 @@ from odoo.addons.shopinvader.tests.test_cart import CommonConnectedCartCase
 from odoo.exceptions import UserError
 
 
-class TestPaymentManualCase(CommonConnectedCartCase):
+class TestShopinvaderPaymentManual(CommonConnectedCartCase):
     def setUp(self, *args, **kwargs):
-        super(TestPaymentManualCase, self).setUp(*args, **kwargs)
+        super().setUp(*args, **kwargs)
         self.shopinvader_payment = self.env.ref(
             "shopinvader_payment_manual.shopinvader_payment_check"
         )

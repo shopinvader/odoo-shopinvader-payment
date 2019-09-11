@@ -15,7 +15,7 @@ from .common import TestCommonPayment
 stripe_secret_key = "sk_test_4eC39HqLyjWDarjtT1zdp7dc"
 
 
-class TestInvaderPayment(VCRMixin, TestCommonPayment):
+class TestInvaderPaymentStripe(VCRMixin, TestCommonPayment):
     def setUp(self):
         super().setUp()
         self.payment_mode = self.env.ref(
