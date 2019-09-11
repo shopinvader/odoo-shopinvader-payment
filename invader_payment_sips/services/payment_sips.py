@@ -98,14 +98,14 @@ class PaymentServiceSips(AbstractComponent):
         )
 
         payment_mode = self.env["account.payment.mode"].browse(payment_mode_id)
-        self.payment_service._check_acquirer(payment_mode, "sips")
+        self.payment_service._check_provider(payment_mode, "sips")
 
         transaction_data = payable._invader_prepare_payment_transaction_data(
             payment_mode
         )
 
         transaction = self.env["payment.transaction"].create(transaction_data)
-        payable._invader_payment_start(transaction, payment_mode)
+        payable._invader_set_payment_mode(payment_mode)
         data = _sips_make_data(
             self._prepare_sips_data(
                 transaction, normal_return_url, automatic_response_url

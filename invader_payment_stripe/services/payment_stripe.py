@@ -141,7 +141,7 @@ class PaymentServiceStripe(AbstractComponent):
         # Stripe part
         transaction = None
         payment_mode = self.env["account.payment.mode"].browse(payment_mode_id)
-        self.payment_service._check_acquirer(payment_mode, "stripe")
+        self.payment_service._check_provider(payment_mode, "stripe")
 
         try:
             if stripe_payment_method_id:
@@ -151,7 +151,7 @@ class PaymentServiceStripe(AbstractComponent):
                         payment_mode
                     )
                 )
-                payable._invader_payment_start(transaction, payment_mode)
+                payable._invader_set_payment_mode(payment_mode)
                 intent = self._prepare_stripe_intent(
                     transaction, stripe_payment_method_id
                 )
