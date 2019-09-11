@@ -28,9 +28,9 @@ class SaleOrder(models.Model):
         }
         return vals
 
-    def _invader_payment_start(self, transaction, payment_mode_id):
+    def _invader_set_payment_mode(self, payment_mode):
         self.ensure_one()
-        vals = {"payment_mode_id": payment_mode_id.id}
+        vals = {"payment_mode_id": payment_mode.id}
         newvals = self.play_onchanges(vals, ["payment_mode_id"])
         vals.update(newvals)
         self.write(vals)

@@ -17,8 +17,11 @@ class InvaderPayable(models.AbstractModel):
         :return: dictionary suitable for ``payment.transaction`` ``create()``
         """
 
-    def _invader_payment_start(self, transaction, payment_mode_id):
+    def _invader_set_payment_mode(self, payment_mode):
         """
-        Called just after the transaction has been created.
+        Called to set the payment_mode on the payable. The payable object can
+        be notified if the transaction process by defining an event listener.
+        see `òdoo.addons.ivader_payment.model.payment_transaction.
+        PaymentTransaction`
         """
         pass

@@ -28,8 +28,8 @@ class InvaderPaymentService(Component):
         """
         return {"target": {"type": "string", "required": True, "allowed": []}}
 
-    def _check_acquirer(self, payment_mode, provider):
-        """Check that the payment mode have the correct provider
+    def _check_provider(self, payment_mode, provider):
+        """Check that the payment mode has the correct provider
         If the provider is not the same, raise an error
         """
         acquirer = payment_mode.payment_acquirer_id.sudo()
