@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2017 Akretion (http://www.akretion.com).
 # @author Sébastien BEAU <sebastien.beau@akretion.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
@@ -27,7 +28,7 @@ class TestShopinvaderQuotationPaymentCart(CommonConnectedCartCase):
 
 class TestShopinvaderQuotationPayment(CommonConnectedCartCase):
     def setUp(self, *args, **kwargs):
-        super().setUp(*args, **kwargs)
+        super(TestShopinvaderQuotationPayment, self).setUp(*args, **kwargs)
         self.quotation = self.env.ref("shopinvader.sale_order_2")
         self.quotation.action_request_quotation()
         self.payment_mode = self.env.ref(

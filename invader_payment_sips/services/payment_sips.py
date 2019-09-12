@@ -4,13 +4,18 @@
 
 import logging
 from hashlib import sha256
-from cerberus import Validator
-from openerp import _, fields
-from openerp.addons.base_rest.components.service import to_int
-from openerp.addons.component.core import AbstractComponent
-from openerp.exceptions import UserError
+
+from odoo import _, fields
+from odoo.addons.base_rest.components.service import to_int
+from odoo.addons.component.core import AbstractComponent
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
+
+try:
+    from cerberus import Validator
+except ImportError as err:
+    _logger.debug(err)
 
 SIPS_CURRENCY_CODES = {
     "EUR": ("978", 100),

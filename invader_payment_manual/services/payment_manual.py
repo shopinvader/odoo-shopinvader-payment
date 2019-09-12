@@ -1,13 +1,18 @@
+# -*- coding: utf-8 -*-
 # Copyright 2019 ACSONE SA/NV (http://acsone.eu).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import logging
 
-from cerberus import Validator
 from odoo.addons.base_rest.components.service import to_int
 from odoo.addons.component.core import AbstractComponent
 
 _logger = logging.getLogger(__name__)
+
+try:
+    from cerberus import Validator
+except ImportError as err:
+    _logger.debug(err)
 
 
 class PaymentManual(AbstractComponent):

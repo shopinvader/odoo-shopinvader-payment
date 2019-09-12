@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2019 Akretion (http://www.akretion.com).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 from odoo import _
@@ -21,10 +22,14 @@ class InvaderPaymentService(Component):
             elif quotation.state != "sent":
                 raise UserError(_("The quotation is not yet estimated"))
             return quotation
-        return super()._invader_find_payable_from_target(target, **params)
+        return super(
+            InvaderPaymentService, self
+        )._invader_find_payable_from_target(target, **params)
 
     def _invader_get_target_validator(self):
-        res = super()._invader_get_target_validator()
+        res = super(
+            InvaderPaymentService, self
+        )._invader_get_target_validator()
         res["target"]["allowed"].append("quotation")
         res["quotation_id"] = {"coerce": to_int, "type": "integer"}
         return res

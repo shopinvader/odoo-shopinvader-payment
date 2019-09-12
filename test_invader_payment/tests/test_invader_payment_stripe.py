@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2019 Akretion (http://www.akretion.com).
 # @author Sébastien BEAU <sebastien.beau@akretion.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
@@ -17,7 +18,7 @@ stripe_secret_key = "sk_test_4eC39HqLyjWDarjtT1zdp7dc"
 
 class TestInvaderPaymentStripe(VCRMixin, TestCommonPayment):
     def setUp(self):
-        super().setUp()
+        super(TestInvaderPaymentStripe, self).setUp()
         self.payment_mode = self.env.ref(
             "invader_payment_stripe.payment_mode_stripe"
         )
