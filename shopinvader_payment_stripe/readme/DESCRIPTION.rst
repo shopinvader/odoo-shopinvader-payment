@@ -1,1 +1,1 @@
-Implements Stripe payment
+REST Services for Stripe Payments (/shopinvader route).

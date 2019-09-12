@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+
+<record id="payment_mode_banktransfer" model="account.payment.mode">
+    <field name="name">Bank Transfer</field>
+    <field name="bank_account_link">variable</field>
+    <field name="payment_method_id" ref="account.account_payment_method_manual_out"/>
+    <field name="payment_acquirer_id" ref="payment.payment_acquirer_transfer"/>
+</record>
+
+<record id="payment_mode_check" model="account.payment.mode">
+    <field name="name">Check</field>
+    <field name="bank_account_link">variable</field>
+    <field name="payment_method_id" ref="account.account_payment_method_manual_out"/>
+    <field name="payment_acquirer_id" ref="payment_acquirer_check"/>
+</record>
+
+</odoo>

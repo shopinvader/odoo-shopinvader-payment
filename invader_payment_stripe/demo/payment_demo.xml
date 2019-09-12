@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+
+    <record id="payment_mode_stripe" model="account.payment.mode">
+        <field name="name">Stripe</field>
+        <field name="bank_account_link">variable</field>
+        <field name="payment_method_id" ref="payment.account_payment_method_electronic_in"/>
+        <field name="payment_acquirer_id" ref="payment.payment_acquirer_stripe"/>
+    </record>
+
+</odoo>
