@@ -82,7 +82,7 @@ class AbstractPaymentService(AbstractComponent):
             # provider_account set on the payment method
             transaction = self.env["gateway.transaction"].new(vals)
         with transaction._get_provider(provider_name) as provider:
-            transaction = provider.process_return(**params)
+            transaction = provider._process_return(**params)
             if transaction.state in ["to_capture", "succeeded"]:
                 result = self.update(
                     step={"next": self.shopinvader_backend.last_step_id.code}
