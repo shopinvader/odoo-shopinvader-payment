@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2019 ACSONE SA/NV (<http://acsone.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+from odoo.addons.base_rest.components.service import skip_secure_response
 from odoo.addons.base_rest.components.service import to_int
 from odoo.addons.component.core import Component
 
@@ -17,6 +18,10 @@ class InvoiceService(Component):
         """
         _id = params.get("id")
         return self._get(_id=_id)
+
+    @skip_secure_response
+    def search(self, **params):
+        return super(InvoiceService, self).search(**params)
 
     def _validator_add_payment(self):
         schema = super(InvoiceService, self)._validator_add_payment()
