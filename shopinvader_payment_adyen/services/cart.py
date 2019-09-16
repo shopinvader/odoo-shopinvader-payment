@@ -7,22 +7,29 @@ from odoo.addons.component.core import Component
 
 
 class CartService(Component):
-    _inherit = "shopinvader.cart.service"
+    _name = "shopinvader.cart.service"
+    _inherit = [_name, "payment.service.adyen"]
 
     def _execute_payment_action(
-        self, provider_name, transaction, cart, params
+        self, provider_name, transaction, target, params
     ):
+        """
+        Inherit to merge the result of the payment with the current cart
+        :param provider_name: str
+        :param transaction: transaction recordset
+        :param target: recordset
+        :param params: dict
+        :return: dict
+        """
+        values = super(CartService, self)._execute_payment_action(
+            provider_name, transaction, target, params
+        )
         if provider_name == "adyen" and transaction.url:
-            cart = self._get()
-            res = self._to_json(cart)
-            res["data"]["payment"]["adyen_params"] = {
-                "MD": transaction.meta["MD"],
-                "PaReq": transaction.meta["paRequest"],
-                "TermUrl": params["return_url"],
-                "IssuerUrl": transaction.url,
-            }
-            return res
-        else:
-            return super(CartService, self)._execute_payment_action(
-                provider_name, transaction, cart, params
-            )
+            cart = target
+            result = self._to_json(cart)
+            payment = result.setdefault("data", {}).setdefault("payment", {})
+            super_payment = values.get("data", {}).get("payment", {})
+            if super_payment:
+                payment.update(super_payment)
+            return result
+        return values
