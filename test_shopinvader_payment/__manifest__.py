@@ -5,7 +5,7 @@
 {
     "name": "Test shopinvader payment",
     "summary": "Test shopinvader payment",
-    "version": "10.0.1.0.0",
+    "version": "10.0.2.0.0",
     "category": "Shopinvader",
     "website": "www.akretion.com",
     "author": " Akretion",
