@@ -5,7 +5,7 @@
 {
     "name": "Stripe Payment Acquirer (REST, Base)",
     "summary": "REST Services for Stripe Payments (base module)",
-    "version": "10.0.1.0.0",
+    "version": "10.0.2.0.0",
     "category": "e-commerce",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "author": "ACSONE SA/NV",
