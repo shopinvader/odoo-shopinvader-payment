@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="acquirer_form_sips" model="ir.ui.view">
+            <field name="name">acquirer.sips.form (in invader_payment_sips)</field>
+            <field name="model">payment.acquirer</field>
+            <field name="inherit_id" ref="payment_sips.acquirer_form_sips"/>
+            <field name="arch" type="xml">
+                <field name="sips_merchant_id" position="after">
+                    <field name="sips_version"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

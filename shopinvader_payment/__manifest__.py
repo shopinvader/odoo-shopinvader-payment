@@ -6,7 +6,7 @@
 {
     "name": "Shopinvader Payment",
     "summary": "Payment integration for Shopinvader",
-    "version": "10.0.1.0.1",
+    "version": "10.0.1.0.0",
     "category": "e-commerce",
     "website": "https://akretion.com",
     "author": "Akretion",
@@ -15,11 +15,14 @@
     "installable": True,
     "external_dependencies": {"python": ["cerberus", "unidecode"], "bin": []},
     "depends": [
-        "base_transaction_id",
+        "account_payment_mode",
+        "account_payment_sale",
         "shopinvader",
-        "payment_gateway",
         "sale_automatic_workflow_payment_mode",
         "onchange_helper",
+        "invader_payment",
+        "component_event",
+        "invader_sale_payment",  # backport model defs from 12.0
     ],
     "data": [
         "views/shopinvader_menu.xml",
@@ -27,6 +30,5 @@
         "views/backend_view.xml",
         "security/ir.model.access.csv",
     ],
-    "demo": ["demo/payment_demo.xml"],
     "qweb": [],
 }

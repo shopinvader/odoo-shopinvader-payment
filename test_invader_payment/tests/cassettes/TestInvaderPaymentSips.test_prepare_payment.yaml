@@ -1,0 +1,78 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      User-Agent: [python-requests/2.20.0]
+    method: POST
+    uri: https://payment-webinit.sips-atos.com/paymentInit?Data=amount%3D500%7CcurrencyCode%3D978%7CtransactionReference%3DFake%7CmerchantId%3D002001000000001%7CkeyVersion%3D1%7CnormalReturnUrl%3Dhttps%3A%2F%2Fshopinvader.com%2Finvader%2Fpayment_sips%2Fnormal_return%3Fsuccess_redirect%3D%2Fcart%2Fvalidation%26cancel_redirect%3D%2Fcart%2Fcheckout%3Fcanceled_payment%3Dsips%26target%3Dcurrent_cart%7CautomaticResponseUrl%3Dhttps%3A%2F%2Fshopinvader.com%2Finvader%2Fpayment_sips%2Fautomatic_response&InterfaceVersion=HP_2.3&Seal=37ccc9081289d30b14c47cfbf4052ed22d4d883755fbe0fd21bd3860e8154318
+  response:
+    body: {string: !!python/unicode "\n\n\n\n\n\n\n\n\n<HTML>\n  <head>\n  \t<style\
+        \ type=\"text/css\">\n  \t.content {\n        width: 100%;\n        text-align:\
+        \ center;\n        padding: 0;\n        margin: 50px 0 0 0;\n        font-family:\
+        \ Arial, Helvetica, sans-serif;\n\t}\n\t\n\t.fieldset {\n\t        background:\
+        \ #F9F9F9;\n\t        border: 0;\n\t        font-size: 1.3em;\n\t        color:\
+        \ #FF0000;\n\t        font-weight: bold;\n\t        height: 100px;\n\t   \
+        \     padding-top: 60px;\n\t}\n\n\t.error input[type=\"submit\"] {\n\t\tbackground-color:\
+        \ gray;\n\t\tborder: medium none;\n\t\tborder-radius: 3px;\n\t\tbox-shadow:\
+        \ 0 1px 1px rgba(0, 0, 0, 0.5);\n\t\tcolor: white;\n\t\tdisplay: inline-block;\n\
+        \t\tfont-size: 1em;\n\t\tmargin: 0.5em;\n\t\tpadding: 0.25em 1.5em;\n\t\t\
+        text-decoration: none;\n\t\ttext-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);\n\t\t\
+        cursor: pointer;\n\t}\n\n\t.error input[type=\"submit\"]:hover {\n\t\tbackground-color:\
+        \ #006699;\n\t}\n  \t</style>\n  \t<title>ERROR</title>\n  </head>\n \n  <body>\n\
+        \  <div class=\"content error\">\n\t  <div class=\"fieldset\">\n\t\t  <p>An\
+        \ error has occurred, please contact your merchant.\n\t\t  \n\t\t  </p>\n\t\
+        \t  <p>\n\t\t  &nbsp;[539f635bedea46]\n\n\t\t  \n\t\t  </p>\n\t  </div>\n\
+        \  </div>\n  </body>\n</HTML>\n\n"}
+    headers:
+      Connection: [Keep-Alive]
+      Content-Length: ['1100']
+      Content-Type: [text/html;charset=UTF-8]
+      Date: ['Wed, 11 Sep 2019 18:30:48 GMT']
+      Keep-Alive: ['timeout=15, max=100']
+      Set-Cookie: [JSESSIONID=QDMacmaHDgqaS3D1KljqfSRN.33v; Path=/; Secure; HttpOnly,
+        TS01af447f=018154f51b4444944563c56c187b74cad7ddd2492bc8b11fbd8535a1fe41baa1dd7ea6f80cdcdbdb22a8b331c18b375b4d8a6d0e28e6199d08c21e2cba1a852acec0648486;
+          Path=/; Secure; HTTPOnly]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      User-Agent: [python-requests/2.20.0]
+    method: POST
+    uri: https://payment-webinit.simu.sips-atos.com/paymentInit?Seal=eb16aae8a8592d69fe0a44512e514b056cd0484b2eaae99011d13c96d3b739f5&Data=keyVersion%3D1%7CtransactionReference%3DFake%7CnormalReturnUrl%3Dhttps%3A%2F%2Fshopinvader.com%2Finvader%2Fpayment_sips%2Fnormal_return%3Fsuccess_redirect%3D%2Fcart%2Fvalidation%26cancel_redirect%3D%2Fcart%2Fcheckout%3Fcanceled_payment%3Dsips%26target%3Dcurrent_cart%7CcurrencyCode%3D978%7Camount%3D500%7CautomaticResponseUrl%3Dhttps%3A%2F%2Fshopinvader.com%2Finvader%2Fpayment_sips%2Fautomatic_response%7CmerchantId%3D002001000000001&InterfaceVersion=HP_2.3
+  response:
+    body: {string: !!python/unicode "\n\n\n\n\n\n\n\n\n<HTML>\n  <head>\n  \t<style\
+        \ type=\"text/css\">\n  \t.content {\n        width: 100%;\n        text-align:\
+        \ center;\n        padding: 0;\n        margin: 50px 0 0 0;\n        font-family:\
+        \ Arial, Helvetica, sans-serif;\n\t}\n\t\n\t.fieldset {\n\t        background:\
+        \ #F9F9F9;\n\t        border: 0;\n\t        font-size: 1.3em;\n\t        color:\
+        \ #FF0000;\n\t        font-weight: bold;\n\t        height: 100px;\n\t   \
+        \     padding-top: 60px;\n\t}\n\n\t.error input[type=\"submit\"] {\n\t\tbackground-color:\
+        \ gray;\n\t\tborder: medium none;\n\t\tborder-radius: 3px;\n\t\tbox-shadow:\
+        \ 0 1px 1px rgba(0, 0, 0, 0.5);\n\t\tcolor: white;\n\t\tdisplay: inline-block;\n\
+        \t\tfont-size: 1em;\n\t\tmargin: 0.5em;\n\t\tpadding: 0.25em 1.5em;\n\t\t\
+        text-decoration: none;\n\t\ttext-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);\n\t\t\
+        cursor: pointer;\n\t}\n\n\t.error input[type=\"submit\"]:hover {\n\t\tbackground-color:\
+        \ #006699;\n\t}\n  \t</style>\n  \t<title>ERROR</title>\n  </head>\n \n  <body>\n\
+        \  <div class=\"content error\">\n\t  <div class=\"fieldset\">\n\t\t  <p>Transaction\
+        \ already processed\n\t\t  \n\t\t  \t&nbsp;:&nbsp;code=94 message=DUPLICATED\
+        \ TRANSACTION\n\t\t  \n\t\t  </p>\n\t\t  <p>\n\t\t  &nbsp;[3191fbb12f803b]\n\
+        \n\t\t  \n\t\t  </p>\n\t  </div>\n  </div>\n  </body>\n</HTML>\n\n"}
+    headers:
+      connection: [Keep-Alive]
+      content-length: ['1139']
+      content-type: [text/html;charset=UTF-8]
+      date: ['Thu, 12 Sep 2019 07:37:55 GMT']
+      keep-alive: ['timeout=15, max=100']
+      set-cookie: [JSESSIONID=7EGEt9xFTBjQQAfinvY67UFi.35s; Path=/; Secure; HttpOnly,
+        TS01af447f=01500b242d2868f59a0be2e0dc237f41908ab2d328e3d31adf892774b740525d16cf09cfecc6aeb94800a6076f71868d2857a6b6b7d4e363050a60f8f3dbd0ef7ebd047b45;
+          Path=/; Secure; HTTPOnly]
+    status: {code: 200, message: OK}
+version: 1
