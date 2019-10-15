@@ -1,4 +1,1 @@
-# -*- coding: utf-8 -*-
-
-from . import payment_service
-from . import cart
+from . import payment_adyen

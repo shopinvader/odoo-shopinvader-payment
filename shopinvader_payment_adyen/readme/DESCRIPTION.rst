@@ -1,1 +1,1 @@
-Implements Adyen payment
+REST Services for Stripe Payments (/shopinvader route).
