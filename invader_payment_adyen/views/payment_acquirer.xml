@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="payment_acquirer_form_view" model="ir.ui.view">
+        <field name="name">payment.acquirer.form (in invader_payment_adyen)</field>
+        <field name="model">payment.acquirer</field>
+        <field name="inherit_id" ref="payment_adyen.acquirer_form_adyen"/>
+        <field name="arch" type="xml">
+            <field name="adyen_merchant_account" position="after">
+                <group attrs="{'invisible': [('provider', '!=', 'adyen')]}">
+                    <field name="adyen_api_key" attrs="{'required':[('provider', '=', 'adyen')]}"/>
+                </group>
+            </field>
+        </field>
+    </record>
+</odoo>

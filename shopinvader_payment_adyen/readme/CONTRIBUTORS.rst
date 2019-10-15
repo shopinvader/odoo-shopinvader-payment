@@ -1,1 +1,1 @@
-* Sebastien BEAU <sebastien.beau@akretion.com>
+Stéphane Bidoul <stephane.bidoul@acsone.eu>
