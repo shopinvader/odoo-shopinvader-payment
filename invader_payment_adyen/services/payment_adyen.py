@@ -4,10 +4,8 @@
 
 import logging
 
-from odoo import _
 from odoo.addons.base_rest.components.service import to_int
 from odoo.addons.component.core import AbstractComponent
-from odoo.addons.payment_stripe.models.payment import INT_CURRENCIES
 from odoo.tools.float_utils import float_round
 
 _logger = logging.getLogger(__name__)
@@ -40,6 +38,18 @@ class PaymentServiceAdyen(AbstractComponent):
     def payment_service(self):
         return self.component(usage="invader.payment")
 
+    def _get_adyen_service(self, transaction):
+        """
+        Return an intialized library
+        :param transaction:
+        :return:
+        """
+        adyen = Adyen.Adyen(
+            app_name=APP_NAME, platform=self._get_platform(transaction)
+        )
+        adyen.client.xapikey = self._get_adyen_api_key(transaction)
+        return adyen
+
     def _get_platform(self, transaction):
         """
         Return 'test' or 'live' depending on acquirer value
@@ -53,21 +63,11 @@ class PaymentServiceAdyen(AbstractComponent):
         res = self.payment_service._invader_get_target_validator()
         res.update(
             {
-                "merchantAccount": {"type": "string", "required": True},
                 "payment_mode_id": {
                     "coerce": to_int,
                     "type": "integer",
                     "required": True,
-                },
-                "countryCode": {"type": "string"},
-                "amount": {
-                    "type": "dict",
-                    "schema": {
-                        "value": {"coerce": int, "required": True},
-                        "currency": {"type": "string"},
-                    },
-                },
-                "channel": {"type": "string"},
+                }
             }
         )
         return res
@@ -109,12 +109,12 @@ class PaymentServiceAdyen(AbstractComponent):
         payment_mode = self.env["account.payment.mode"].browse(payment_mode_id)
         self.payment_service._check_provider(payment_mode, "adyen")
 
-        # Get available payment methods for the transacation details
-        # NOTE: Not created at the moment
         transaction = transaction_obj.create(
             payable._invader_prepare_payment_transaction_data(payment_mode)
         )
-        response = self._prepare_adyen_payment_methods_request(transaction)
+        request = self._prepare_adyen_payment_methods_request(transaction)
+        adyen = self._get_adyen_service(transaction)
+        response = adyen.checkout.payment_methods(request)
         return self._generate_adyen_response(
             response, payable, target, transaction, **params
         )
@@ -123,14 +123,11 @@ class PaymentServiceAdyen(AbstractComponent):
         """
         https://docs.adyen.com/checkout/drop-in-web#step-1-get-available-payment-methods
 
-        Prepare and call Adyen to retrieve available payment methods
+        Prepare retrieval of available payment methods
         :param transaction:
         :return:
         """
-        adyen = Adyen.Adyen(
-            app_name=APP_NAME, platform=self._get_platform(transaction)
-        )
-        adyen.client.xapikey = self._get_adyen_api_key(transaction)
+
         currency = transaction.currency_id
         amount = transaction.amount
         request = {
@@ -142,13 +139,12 @@ class PaymentServiceAdyen(AbstractComponent):
             },
             "channel": "Web",
         }
-        response = adyen.checkout.payment_methods(request)
-        return response
+        return request
 
     def _validator_payments(self):
         """
         Validator of payments service
-        target: see _allowed_payment_target()
+        target: see _invader_get_target_validator()
         payment_mode_id: The payment mode used to pay
         transaction_id: As the request to Adyen so not create some kind of
             transaction 'token', we must pass the transaction_id to the flow
@@ -167,9 +163,8 @@ class PaymentServiceAdyen(AbstractComponent):
                     "type": "integer",
                     "required": True,
                 },
-                "adyen_payment_method_id": {"type": "string"},
-                "payment_method": {"type": "dict"},
-                "return_url": {"type": "string"},
+                "payment_method": {"type": "dict", "required": True},
+                "return_url": {"type": "string", "required": True},
             }
         )
         return res
@@ -193,25 +188,48 @@ class PaymentServiceAdyen(AbstractComponent):
             allow_unknown=True,
         )
 
-    def payments(self, target, **params):
-        payment_mode_id = params.get("payment_mode_id")
-        transaction_id = params.get("transaction_id")
-        payment_method = params.get("payment_method")
-        return_url = params.get("return_url")
+    def payments(
+        self,
+        target,
+        transaction_id,
+        payment_mode_id,
+        payment_method,
+        return_url,
+        **params
+    ):
+        """
+        https://docs.adyen.com/checkout/drop-in-web#step-3-make-a-payment
+
+
+        :param target: the payable (e.g.: "current_cart")
+        :param transaction_id: the previously created transaction
+        :param payment_mode_id: the payment mode
+        :param payment_method: the Adyen payment method (bcmc, scheme, ...)
+        :param return_url: the url to return to (in case of redirect)
+        :param params: other parameters
+        :return:
+        """
         transaction_obj = self.env["payment.transaction"]
         payable = self.payment_service._invader_find_payable_from_target(
             target, **params
         )
 
-        # Adyen part
         payment_mode = self.env["account.payment.mode"].browse(payment_mode_id)
         self.payment_service._check_provider(payment_mode, "adyen")
 
         transaction = transaction_obj.browse(transaction_id)
         transaction.return_url = return_url
-        response = self._prepare_adyen_payments_request(
+        request = self._prepare_adyen_payments_request(
             transaction, payment_method
         )
+        adyen = self._get_adyen_service(transaction)
+        response = adyen.checkout.payments(request)
+        # Update transaction with required details for further Adyen calls
+        vals = {
+            "adyen_payment_data": response.message.get("paymentData"),
+            "acquirer_reference": response.message.get("pspReference"),
+        }
+        transaction.update(vals)
         result_code = response.message.get("resultCode")
         if result_code == "Authorised":
             transaction._set_transaction_done()
@@ -227,15 +245,11 @@ class PaymentServiceAdyen(AbstractComponent):
     def _prepare_adyen_payments_request(self, transaction, payment_method):
         """
         https://docs.adyen.com/checkout/drop-in-web#step-3-make-a-payment
-        Prepare and call Adyen payments request
+        Prepare payments request
         :param transaction:
         :param payment_method:
         :return:
         """
-        adyen = Adyen.Adyen(
-            app_name=APP_NAME, platform=self._get_platform(transaction)
-        )
-        adyen.client.xapikey = self._get_adyen_api_key(transaction)
         currency = transaction.currency_id
         amount = transaction.amount
         request = {
@@ -251,24 +265,17 @@ class PaymentServiceAdyen(AbstractComponent):
             "returnUrl": transaction.return_url,
             "additionalData": {"executeThreeD": True},
         }
-        response = adyen.checkout.payments(request)
-        # Update transaction with required details in further Adyen calls
-        vals = {
-            "adyen_payment_data": response.message.get("paymentData"),
-            "acquirer_reference": response.message.get("pspReference"),
-        }
-        transaction.update(vals)
-        return response
 
-    def _prepare_payment_details(self, transaction_id, **params):
-        transaction = self.env["payment.transaction"].browse(
-            int(transaction_id)
-        )
-        adyen = Adyen.Adyen(
-            app_name=APP_NAME, platform=self._get_platform(transaction)
-        )
-        adyen.client.xapikey = self._get_adyen_api_key(transaction)
-        adyen.client.xapikey = self._get_adyen_api_key(transaction)
+        return request
+
+    def _prepare_payment_details(self, transaction, **params):
+        """
+        Remove specific entries from params and keep received by Adyen ones
+        Pass saved paymentData on transaction level to request
+        :param transaction:
+        :param params:
+        :return:
+        """
         params.pop("success_redirect")
         params.pop("target")
         params.pop("cancel_redirect")
@@ -276,23 +283,29 @@ class PaymentServiceAdyen(AbstractComponent):
             "paymentData": transaction.adyen_payment_data,
             "details": params,
         }
-        response = adyen.checkout.payments_details(request)
-        return response
+        return request
 
-    def _validator_payments_details(self):
+    def _validator_payment_details(self):
         """
         Validator of payments service
         target: see _allowed_payment_target()
         payment_mode_id: The payment mode used to pay
-        stripe_payment_intent_id: The previously created intent
-        stripe_payment_method_id: The Stripe card created on client side
         :return: dict
         """
         res = self.payment_service._invader_get_target_validator()
-        res.update({"data": {"type": "dict", "required": True}})
+        res.update(
+            {
+                "data": {"type": "dict", "required": True},
+                "transaction_id": {
+                    "coerce": to_int,
+                    "type": "integer",
+                    "required": True,
+                },
+            }
+        )
         return res
 
-    def _validator_return_payments_details(self):
+    def _validator_return_payment_details(self):
         return Validator(
             {
                 "resultCode": {"type": "string"},
@@ -310,7 +323,12 @@ class PaymentServiceAdyen(AbstractComponent):
         :param params:
         :return:
         """
-        response = self._prepare_payment_details(**params)
+        transaction_id = params.get("transaction_id")
+        transaction = self.env["payment.transaction"].browse(transaction_id)
+        adyen = self._get_adyen_service(transaction)
+        request = self._prepare_payment_details(transaction, **params)
+        response = adyen.checkout.payments_details(request)
+
         return response
 
     def _validator_paymentResult(self):
@@ -340,7 +358,9 @@ class PaymentServiceAdyen(AbstractComponent):
             params.get("transaction_id")
         )
         # Response will be an AdyenResult object
-        response = self._prepare_payment_details(**params)
+        adyen = self._get_adyen_service(transaction)
+        request = self._prepare_payment_details(transaction, **params)
+        response = adyen.checkout.payments_details(request)
         result_code = response.message.get("resultCode")
         return_url = params.get("success_redirect")
         if result_code == "Authorised":
@@ -360,15 +380,11 @@ class PaymentServiceAdyen(AbstractComponent):
 
     def _get_formatted_amount(self, currency, amount):
         """
-        The expected amount format by Stripe
+        The expected amount format by Adyen
         :param amount: float
         :return: int
         """
-        res = int(
-            amount
-            if currency.name in INT_CURRENCIES
-            else float_round(amount * 100, 2)
-        )
+        res = int(float_round(amount, 2) * 100)
         return res
 
     def _get_adyen_api_key(self, transaction):
@@ -383,7 +399,8 @@ class PaymentServiceAdyen(AbstractComponent):
 
     def _get_adyen_merchant_account(self, transaction):
         """
-        Return adyen merchant account depending on payment.transaction recordset
+        Return adyen merchant account depending on
+        payment.transaction recordset
         :param transaction: payment.transaction
         :return: string
         """
@@ -398,13 +415,12 @@ class PaymentServiceAdyen(AbstractComponent):
     ):
         """
         This is the message returned to client
-        :param response: The response generated by Adyen call
+        :param response: The response generated by Adyen call (AdyenResult)
         :param payable: invader.payable record
         :return: dict
         """
-        if response:
-            message = response.message
-            if transaction:
-                message.update({"transaction_id": transaction.id})
-            return message
-        return {"error": _("Payment Error")}
+
+        message = response.message
+        if transaction:
+            message.update({"transaction_id": transaction.id})
+        return message
