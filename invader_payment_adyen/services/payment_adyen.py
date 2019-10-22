@@ -4,6 +4,7 @@
 
 import logging
 
+from odoo import fields
 from odoo.addons.base_rest.components.service import to_int
 from odoo.addons.component.core import AbstractComponent
 from odoo.tools.float_utils import float_round
@@ -57,7 +58,7 @@ class PaymentServiceAdyen(AbstractComponent):
         :return:
         """
         environment = transaction.acquirer_id.environment
-        return environment if environment == "test" else "live"
+        return str(environment) if environment == "test" else "live"
 
     def _validator_paymentMethods(self):
         res = self.payment_service._invader_get_target_validator()
@@ -215,6 +216,7 @@ class PaymentServiceAdyen(AbstractComponent):
         )
 
         payment_mode = self.env["account.payment.mode"].browse(payment_mode_id)
+        payable._invader_set_payment_mode(payment_mode)
         self.payment_service._check_provider(payment_mode, "adyen")
 
         transaction = transaction_obj.browse(transaction_id)
@@ -224,12 +226,7 @@ class PaymentServiceAdyen(AbstractComponent):
         )
         adyen = self._get_adyen_service(transaction)
         response = adyen.checkout.payments(request)
-        # Update transaction with required details for further Adyen calls
-        vals = {
-            "adyen_payment_data": response.message.get("paymentData"),
-            "acquirer_reference": response.message.get("pspReference"),
-        }
-        transaction.update(vals)
+        self._update_transaction_with_response(transaction, response)
         result_code = response.message.get("resultCode")
         if result_code == "Authorised":
             transaction._set_transaction_done()
@@ -361,6 +358,7 @@ class PaymentServiceAdyen(AbstractComponent):
         adyen = self._get_adyen_service(transaction)
         request = self._prepare_payment_details(transaction, **params)
         response = adyen.checkout.payments_details(request)
+        self._update_transaction_with_response(transaction, response)
         result_code = response.message.get("resultCode")
         return_url = params.get("success_redirect")
         if result_code == "Authorised":
@@ -409,6 +407,33 @@ class PaymentServiceAdyen(AbstractComponent):
         return acquirer.filtered(
             lambda a: a.provider == "adyen"
         ).adyen_merchant_account
+
+    def _update_transaction_with_response(self, transaction, response):
+        """
+        Update the transaction with Adyen response
+        :param transaction: payment.transaction
+        :param response: AdyenResult
+        :return:
+        """
+        vals = {}
+        payment_data = response.message.get("paymentData")
+        if payment_data:
+            vals.update({"adyen_payment_data": payment_data})
+        psp_reference = response.message.get("pspReference")
+        if psp_reference:
+            vals.update({"acquirer_reference": psp_reference})
+        result_code = response.message.get("resultCode")
+        if result_code:
+            # Log resultCode of Adyen in transaction
+            message = transaction.state_message
+            stamp = fields.Datetime.now()
+            adyen_message = "\n" + stamp + ": " + str(response.message)
+            if message:
+                message += adyen_message
+            else:
+                message = adyen_message
+            vals.update({"state_message": message})
+        transaction.update(vals)
 
     def _generate_adyen_response(
         self, response, payable, target, transaction=False, **params
