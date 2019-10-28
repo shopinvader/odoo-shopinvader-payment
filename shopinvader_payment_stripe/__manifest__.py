@@ -1,22 +1,15 @@
-# -*- coding: utf-8 -*-
-# Copyright 2016 Akretion (http://www.akretion.com)
-# Sébastien BEAU <sebastien.beau@akretion.com>
+# Copyright 2019 ACSONE SA/NV (http://acsone.eu).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
-    "name": "Shopinvader Payment Stripe",
-    "summary": "Shopinvader Stripe Payment Gateway",
-    "version": "10.0.1.0.0",
-    "category": "e-commerce",
-    "website": "https://akretion.com",
-    "author": "Akretion",
+    "name": "Stripe Payment Acquirer (REST, Shopinvader)",
+    "summary": "Shopinvader REST Services for Stripe Payments",
+    "version": "12.0.2.0.0",
+    "author": "ACSONE SA/NV",
+    "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "license": "AGPL-3",
-    "application": False,
-    "installable": False,
-    "auto_install": True,
-    "external_dependencies": {"python": [], "bin": []},
-    "depends": ["shopinvader_payment", "payment_gateway_stripe"],
-    "data": [],
-    "demo": ["demo/shopinvader_payment_demo.xml"],
-    "qweb": [],
+    "category": "e-commerce",
+    "depends": ["shopinvader_payment", "invader_payment_stripe"],
+    "demo": ["demo/payment_demo.xml"],
+    "autoinstall": True,
 }

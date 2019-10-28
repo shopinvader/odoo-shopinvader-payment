@@ -1,0 +1,4 @@
+bank-payment
+sale-workflow https://github.com/akretion/sale-workflow.git 12-mig-sale_automatic_workflow_payment_mode
+server-tools
+shopinvader https://github.com/shopinvader/odoo-shopinvader.git 12.0
