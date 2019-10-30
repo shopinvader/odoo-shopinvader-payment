@@ -2,11 +2,8 @@
 # Copyright 2019 ACSONE SA/NV
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from datetime import datetime
-
-from odoo import _, api, models
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
-from odoo.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class PaymentTransaction(models.Model):
@@ -155,12 +152,7 @@ class PaymentTransaction(models.Model):
             )
 
         self.write(
-            {
-                "state": "pending",
-                "date": datetime.now().strftime(
-                    DEFAULT_SERVER_DATETIME_FORMAT
-                ),
-            }
+            {"state": "pending", "date_validate": fields.Datetime.now()}
         )
         self._log_payment_transaction_received()
 
@@ -173,12 +165,7 @@ class PaymentTransaction(models.Model):
             )
 
         self.write(
-            {
-                "state": "authorized",
-                "date": datetime.now().strftime(
-                    DEFAULT_SERVER_DATETIME_FORMAT
-                ),
-            }
+            {"state": "authorized", "date_validate": fields.Datetime.now()}
         )
         self._log_payment_transaction_received()
 
@@ -193,14 +180,7 @@ class PaymentTransaction(models.Model):
         # Cancel the existing payments.
         self.mapped("payment_id").cancel()
 
-        self.write(
-            {
-                "state": "cancel",
-                "date": datetime.now().strftime(
-                    DEFAULT_SERVER_DATETIME_FORMAT
-                ),
-            }
-        )
+        self.write({"state": "cancel", "date_validate": fields.Datetime.now()})
         self._log_payment_transaction_received()
 
     @api.multi
@@ -215,9 +195,7 @@ class PaymentTransaction(models.Model):
         self.write(
             {
                 "state": "error",
-                "date": datetime.now().strftime(
-                    DEFAULT_SERVER_DATETIME_FORMAT
-                ),
+                "date_validate": fields.Datetime.now(),
                 "state_message": msg,
             }
         )
@@ -233,11 +211,4 @@ class PaymentTransaction(models.Model):
                 _("Only draft/authorized transaction can be posted.")
             )
 
-        self.write(
-            {
-                "state": "done",
-                "date": datetime.now().strftime(
-                    DEFAULT_SERVER_DATETIME_FORMAT
-                ),
-            }
-        )
+        self.write({"state": "done", "date_validate": fields.Datetime.now()})
