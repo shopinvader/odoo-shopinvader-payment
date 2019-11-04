@@ -8,6 +8,7 @@
             <field name="adyen_merchant_account" position="after">
                 <group attrs="{'invisible': [('provider', '!=', 'adyen')]}">
                     <field name="adyen_api_key" attrs="{'required':[('provider', '=', 'adyen')]}"/>
+                    <field name="adyen_live_endpoint_prefix" attrs="{'required':[('provider', '=', 'adyen'), ('environment', '=', 'prod')]}"/>
                 </group>
             </field>
         </field>
