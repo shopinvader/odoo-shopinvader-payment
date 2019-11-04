@@ -46,7 +46,9 @@ class PaymentServiceAdyen(AbstractComponent):
         :return:
         """
         adyen = Adyen.Adyen(
-            app_name=APP_NAME, platform=self._get_platform(transaction)
+            app_name=APP_NAME,
+            platform=self._get_platform(transaction),
+            live_endpoint_prefix=self._get_live_prefix(transaction),
         )
         adyen.client.xapikey = self._get_adyen_api_key(transaction)
         return adyen
@@ -59,6 +61,11 @@ class PaymentServiceAdyen(AbstractComponent):
         """
         environment = transaction.acquirer_id.environment
         return str(environment) if environment == "test" else "live"
+
+    def _get_live_prefix(self, transaction):
+        environment = transaction.acquirer_id.environment
+        prefix = transaction.acquirer_id.adyen_live_endpoint_prefix
+        return str(prefix) if environment == "prod" else ""
 
     def _validator_paymentMethods(self):
         res = self.payment_service._invader_get_target_validator()
