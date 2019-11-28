@@ -30,14 +30,13 @@ class TestInvaderPaymentAdyen(TestCommonPayment):
 
     def test_notification(self):
         self.transaction.acquirer_reference = "pspReference"
+        signature = "18AAP/S+vexKqyNtXIbrqJka0Oq+fuYpt9b8hPRapRM="
         request = {
             "live": "false",
             "notificationItems": [
                 {
                     "NotificationRequestItem": {
-                        "additionalData": {
-                            "hmacSignature": "18AAP/S+vexKqyNtXIbrqJka0Oq+fuYpt9b8hPRapRM="
-                        },
+                        "additionalData": {"hmacSignature": signature},
                         "pspReference": "pspReference",
                         "originalReference": "originalReference",
                         "merchantAccount": "merchantAccount",
