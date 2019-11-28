@@ -420,6 +420,16 @@ class PaymentServiceAdyen(AbstractComponent):
             lambda a: a.provider == "adyen"
         ).adyen_merchant_account
 
+    def _update_additional_details(self, response):
+        """
+        Hook to be able to enrich transaction with response
+        additionalData
+        :param vals:
+        :param response:
+        :return:
+        """
+        return {}
+
     def _update_transaction_with_response(self, transaction, response):
         """
         Update the transaction with Adyen response
@@ -428,6 +438,7 @@ class PaymentServiceAdyen(AbstractComponent):
         :return:
         """
         vals = {}
+        vals.update(self._update_additional_details(response))
         payment_data = response.message.get("paymentData")
         if payment_data:
             vals.update({"adyen_payment_data": payment_data})
@@ -469,7 +480,12 @@ class PaymentServiceAdyen(AbstractComponent):
                 "type": "list",
                 "schema": {
                     "type": "dict",
-                    "schema": {"NotificationRequestItem": {"type": "dict"}},
+                    "schema": {
+                        "NotificationRequestItem": {
+                            "type": "dict",
+                            "schema": {"additionalData": {"type": "dict"}},
+                        }
+                    },
                 },
             },
         }
