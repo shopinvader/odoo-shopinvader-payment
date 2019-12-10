@@ -10,7 +10,7 @@
     "author": " Akretion",
     "license": "AGPL-3",
     "application": False,
-    "installable": True,
+    "installable": False,
     "external_dependencies": {"python": [], "bin": []},
     "depends": ["shopinvader_payment_manual", "shopinvader_quotation_payment"],
     "data": [],
