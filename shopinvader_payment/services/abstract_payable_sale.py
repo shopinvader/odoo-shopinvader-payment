@@ -18,20 +18,18 @@ class AbstractPayableSaleService(AbstractComponent):
         Specific method to shopinvader to retrieve the payment dict information
         to pass to the front-end
         * Available methods
-        * The payment mode
+        * The acquirer
         * The amount
+        # TODO: For retro compatibility with services return content, we
+                let the dict keys unchanged. To be changed in next version
         :return:
         """
         payment_methods = self._get_available_payment_methods(sale)
-        selected_method = payment_methods.filtered(
-            lambda m: m.payment_mode_id == sale.payment_mode_id
-        )
         values = {
             "available_methods": {
                 "count": len(payment_methods),
                 "items": self._get_payment_method_data(payment_methods),
             },
-            "selected_method": self._get_payment_method_data(selected_method),
             "amount": sale.amount_total,
         }
         return values
@@ -41,11 +39,11 @@ class AbstractPayableSaleService(AbstractComponent):
         for method in methods:
             res.append(
                 {
-                    "id": method.payment_mode_id.id,
-                    "name": method.payment_mode_id.name,
+                    "id": method.acquirer_id.id,
+                    "name": method.acquirer_id.name,
                     # fmt: off
                     "provider":
-                        method.payment_mode_id.payment_acquirer_id.provider,
+                        method.acquirer_id.provider,
                     # fmt: on
                     "code": method.code,
                     "description": method.description,

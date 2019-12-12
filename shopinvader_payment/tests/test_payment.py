@@ -6,7 +6,52 @@ from odoo.addons.shopinvader.tests.test_cart import CommonConnectedCartCase
 
 
 class ShopinvaderPaymentCase(CommonConnectedCartCase):
-    def setUp(self, *args, **kwargs):
-        super(ShopinvaderPaymentCase, self).setUp(*args, **kwargs)
+    @classmethod
+    def setUpClass(cls):
+        super(ShopinvaderPaymentCase, cls).setUpClass()
+        cls.cart = cls.env.ref("shopinvader.sale_order_2")
+        cls.shopinvader_session = {"cart_id": cls.cart.id}
 
-    # TODO: Add tests
+        with cls.work_on_services(
+            cls, partner=None, shopinvader_session=cls.shopinvader_session
+        ) as work:
+            cls.cart_service = work.component(usage="cart")
+
+    def _setup_payment_acquirer(self):
+        vals = {"name": "Fake Acquirer", "provider": "manual"}
+        acquirer_id = self.env["payment.acquirer"].create(vals)
+        vals = {"acquirer_id": acquirer_id.id, "backend_id": self.backend.id}
+        self.env["shopinvader.payment"].create(vals)
+
+    def test_no_acquirer(self):
+        response = self.cart_service.dispatch(
+            "search", params={"id": self.cart.id}
+        )
+        self.assertEquals(
+            0,
+            response.get("data")
+            .get("payment")
+            .get("available_methods")
+            .get("count"),
+        )
+
+    def test_acquirer(self):
+        self._setup_payment_acquirer()
+        response = self.cart_service.dispatch(
+            "search", params={"id": self.cart.id}
+        )
+        self.assertEquals(
+            1,
+            response.get("data")
+            .get("payment")
+            .get("available_methods")
+            .get("count"),
+        )
+        items = (
+            response.get("data")
+            .get("payment")
+            .get("available_methods")
+            .get("items")
+        )
+        self.assertEquals(1, len(items))
+        self.assertEquals("Fake Acquirer", items[0].get("name"))
