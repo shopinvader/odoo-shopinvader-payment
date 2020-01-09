@@ -8,20 +8,11 @@ class InvaderPayable(models.AbstractModel):
     _name = "invader.payable"
     _description = "Interface for payable objects (e.g. cart, ...)"
 
-    def _invader_prepare_payment_transaction_data(self, payment_mode):
+    def _invader_prepare_payment_transaction_data(self, acquirer_id):
         """
         Prepare a dictionary to create a ``payment.transaction`` for the
         correct amount and linked to the payable object.
 
-        :param payment_mode: ``account.payment.mode`` record
+        :param acquirer_id: ``payment.acquirer`` record
         :return: dictionary suitable for ``payment.transaction`` ``create()``
         """
-
-    def _invader_set_payment_mode(self, payment_mode):
-        """
-        Called to set the payment_mode on the payable. The payable object can
-        be notified if the transaction process by defining an event listener.
-        see `òdoo.addons.ivader_payment.model.payment_transaction.
-        PaymentTransaction`
-        """
-        pass

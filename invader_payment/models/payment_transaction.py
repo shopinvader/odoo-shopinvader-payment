@@ -39,14 +39,12 @@ class PaymentTransaction(models.Model):
         record._notify_state_changed_event()
         return record
 
-    @api.multi
     def write(self, vals):
         res = super(PaymentTransaction, self).write(vals)
         if "state" in vals:
             self._notify_state_changed_event()
         return res
 
-    @api.multi
     def _notify_state_changed_event(self):
         """
         Notify the invader_payable that the state of the transaction

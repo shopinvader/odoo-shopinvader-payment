@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <tree string="Payment">
                 <field name="sequence" widget="handle"/>
-                <field name="payment_mode_id"/>
+                <field name="acquirer_id"/>
                 <field name="code"/>
                 <field name="notification"/>
             </tree>
@@ -23,7 +23,7 @@
                         <field name="code" class="oe_inline"/>
                     </h1>
                     <group name="configuration">
-                        <field name="payment_mode_id" widget="selection"/>
+                        <field name="acquirer_id" widget="selection"/>
                         <field name="notification"/>
                     </group>
                     <group name="description" string="Description">
