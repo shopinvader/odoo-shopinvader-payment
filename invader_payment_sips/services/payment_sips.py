@@ -5,6 +5,7 @@ import logging
 from hashlib import sha256
 
 from cerberus import Validator
+
 from odoo import _, fields
 from odoo.addons.base_rest.components.service import to_int
 from odoo.addons.component.core import AbstractComponent
