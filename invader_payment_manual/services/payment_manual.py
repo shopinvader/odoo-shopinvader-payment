@@ -44,12 +44,11 @@ class PaymentManual(AbstractComponent):
         payable = self.payment_service._invader_find_payable_from_target(
             target, **params
         )
-        payment_mode = self.env["account.payment.mode"].browse(payment_mode_id)
-        self.payment_service._check_provider(payment_mode, "transfer")
+        acquirer = self.env["payment.acquirer"].browse(payment_mode_id)
+        self.payment_service._check_provider(acquirer, "transfer")
 
         transaction = transaction_obj.create(
-            payable._invader_prepare_payment_transaction_data(payment_mode)
+            payable._invader_prepare_payment_transaction_data(acquirer)
         )
-        payable._invader_set_payment_mode(payment_mode)
         transaction.write({"state": "pending"})
         return {}
