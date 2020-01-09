@@ -4,10 +4,9 @@
 
 import json
 
-from vcr_unittest import VCRMixin
-
 from odoo import _
 from odoo.exceptions import UserError
+from vcr_unittest import VCRMixin
 
 from .common import TestCommonPayment
 

@@ -4,7 +4,6 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from mock import Mock
-
 from odoo.addons.payment_gateway_paypal.tests.test_payment import (
     PaypalCommonCase,
     PaypalScenario,

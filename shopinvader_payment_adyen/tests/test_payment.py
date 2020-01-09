@@ -7,7 +7,6 @@ import json
 from os.path import dirname
 
 from mock import Mock
-
 from odoo.addons.payment_gateway.tests.common import PaymentScenarioType
 from odoo.addons.payment_gateway_adyen.tests.test_payment import (
     ACCEPT_HEADER,
