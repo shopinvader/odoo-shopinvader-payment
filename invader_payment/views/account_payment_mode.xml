@@ -11,6 +11,7 @@
         <field name="arch" type="xml">
             <field name="variable_journal_ids" position="after">
                 <field name="payment_acquirer_id"/>
+                <field name="capture_payment"/>
             </field>
         </field>
     </record>

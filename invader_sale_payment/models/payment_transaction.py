@@ -5,6 +5,7 @@
 # TO REMOVE IN V12...  provided by sale addon
 
 from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class PaymentTransaction(models.Model):
@@ -82,3 +83,19 @@ class PaymentTransaction(models.Model):
             action["view_mode"] = "tree,form"
             action["domain"] = [("id", "in", sale_order_ids)]
         return action
+
+    @api.multi
+    def action_capture(self):
+        if any(self.mapped(lambda tx: tx.state != "authorized")):
+            raise ValidationError(
+                _(
+                    "Only transactions in the Authorized status"
+                    " can be captured."
+                )
+            )
+        for tx in self:
+            tx.capture_one_transaction()
+
+    @api.multi
+    def capture_one_transaction(self):
+        self.ensure_one()
