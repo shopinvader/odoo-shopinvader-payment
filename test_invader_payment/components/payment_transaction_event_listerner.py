@@ -17,5 +17,5 @@ class RestPartnerPaymentTransactionEventListener(Component):
     def on_payment_transaction_pending(self, res_partner, transaction):
         self._set_response_session(res_partner, "pending")
 
-    def on_payment_transaction_done(self, res_parnter, transaction):
-        self._set_response_session(res_parnter, "done")
+    def on_payment_transaction_done(self, res_partner, transaction):
+        self._set_response_session(res_partner, "done")
