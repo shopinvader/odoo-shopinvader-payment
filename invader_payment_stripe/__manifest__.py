@@ -4,13 +4,12 @@
 {
     "name": "Stripe Payment Acquirer (REST, Base)",
     "summary": "REST Services for Stripe Payments (base module)",
-    "version": "12.0.2.0.0",
+    "version": "13.0.1.0.0",
     "category": "e-commerce",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "author": "ACSONE SA/NV",
     "license": "AGPL-3",
     "external_dependencies": {"python": ["cerberus", "stripe"], "bin": []},
     "depends": ["invader_payment", "payment_stripe", "base_rest"],
-    "demo": ["demo/payment_demo.xml"],
-    "installable": False,
+    "installable": True,
 }
