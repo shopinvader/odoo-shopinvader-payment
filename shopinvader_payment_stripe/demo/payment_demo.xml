@@ -3,7 +3,7 @@
 
 <record id="shopinvader_payment_stripe" model="shopinvader.payment">
     <field name="sequence">40</field>
-    <field name="payment_mode_id" ref="invader_payment_stripe.payment_mode_stripe"/>
+    <field name="acquirer_id" ref="payment.payment_acquirer_stripe"/>
     <field name="code">stripe</field>
     <field name="backend_id" ref="shopinvader.backend_1"/>
     <field name="notification">cart_confirmation</field>
