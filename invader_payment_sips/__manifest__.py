@@ -13,4 +13,5 @@
     "external_dependencies": {"python": ["cerberus"]},
     "data": [],
     "demo": ["demo/payment_demo.xml"],
+    "installable": False,
 }

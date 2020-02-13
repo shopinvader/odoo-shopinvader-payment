@@ -140,18 +140,15 @@ class PaymentServiceStripe(AbstractComponent):
 
         # Stripe part
         transaction = None
-        payment_mode = self.env["account.payment.mode"].browse(payment_mode_id)
-        self.payment_service._check_provider(payment_mode, "stripe")
+        acquirer = self.env["payment.acquirer"].browse(payment_mode_id)
+        self.payment_service._check_provider(acquirer, "stripe")
 
         try:
             if stripe_payment_method_id:
                 # First step
                 transaction = transaction_obj.create(
-                    payable._invader_prepare_payment_transaction_data(
-                        payment_mode
-                    )
+                    payable._invader_prepare_payment_transaction_data(acquirer)
                 )
-                payable._invader_set_payment_mode(payment_mode)
                 intent = self._prepare_stripe_intent(
                     transaction, stripe_payment_method_id
                 )
@@ -181,7 +178,7 @@ class PaymentServiceStripe(AbstractComponent):
                 # Odoo does not like to change not draft transaction to error
                 transaction.write({"state": "draft"})
                 transaction._set_transaction_error(
-                    _("Exception: {}".format(e))
+                    _("Exception: {}").format(e)
                 )
             return self._generate_stripe_error_response(target, **params)
 
