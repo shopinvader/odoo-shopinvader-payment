@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2020 ACSONE SA/NV
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record model="ir.ui.view" id="payment_acquirer_form_view">
+        <field name="name">payment.acquirer.form (in invader_payment_stripe_bancontact)</field>
+        <field name="model">payment.acquirer</field>
+        <field name="inherit_id" ref="payment_stripe.acquirer_form_stripe"/>
+        <field name="arch" type="xml">
+            <xpath expr='//group[@attrs="{&apos;invisible&apos;: [(&apos;provider&apos;, &apos;!=&apos;, &apos;stripe&apos;)]}"]' position="attributes">
+                <attribute name="attrs">{'invisible': [('provider', 'not in', ['stripe', 'stripe_bancontact'])]}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
