@@ -5,7 +5,10 @@
 import logging
 
 from odoo import fields
-from odoo.addons.base_rest.components.service import to_int
+from odoo.addons.base_rest.components.service import (
+    skip_secure_response,
+    to_int,
+)
 from odoo.addons.component.core import AbstractComponent
 from odoo.tools.float_utils import float_round
 
@@ -351,6 +354,7 @@ class PaymentServiceAdyen(AbstractComponent):
         schema = {"redirect_to": {"type": "string"}}
         return Validator(schema, allow_unknown=True)
 
+    @skip_secure_response
     def paymentResult(self, **params):
         """
         This is intended to manage callbacks after a merchant redirection
