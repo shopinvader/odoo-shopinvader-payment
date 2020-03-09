@@ -26,7 +26,7 @@ ADYEN_TRANSACTION_STATUSES = {
     "Refused": "error",
     "Cancelled": "cancel",
     "Received": "pending",
-    "RedirectShopper": "pending",
+    "RedirectShopper": "draft",
 }
 APP_NAME = "INVADER"
 
