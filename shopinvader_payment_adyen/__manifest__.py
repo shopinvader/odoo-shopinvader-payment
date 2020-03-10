@@ -11,5 +11,6 @@
     "license": "AGPL-3",
     "category": "e-commerce",
     "depends": ["shopinvader_payment", "invader_payment_adyen"],
+    "demo": ["demo/payment_demo.xml"],
     "autoinstall": True,
 }
