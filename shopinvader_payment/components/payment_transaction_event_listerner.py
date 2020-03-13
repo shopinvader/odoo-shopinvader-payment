@@ -17,8 +17,6 @@ class SaleOrderPaymentTransactionEventListener(Component):
             return
         sale_order.action_confirm_cart()
         response = shopinvader_response.get()
-        response.set_session("cart_id", 0)
-        response.set_store_cache("cart", {})
         # TODO we should not have to return the last_sale information into the
         # response, only the id...
         # This code is an awful hack... We should never have to call
@@ -30,6 +28,8 @@ class SaleOrderPaymentTransactionEventListener(Component):
         setattr(work, "shopinvader_backend", shopinvader_backend)
         res = work.component(usage="cart")._to_json(sale_order)
         response.set_store_cache("last_sale", res.get("data", {}))
+        response.set_store_cache("cart", {})
+        response.set_session("cart_id", 0)
         # end of awful code ....
 
     def on_payment_transaction_done(self, sale_order, transaction):
