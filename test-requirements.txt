@@ -1,0 +1,2 @@
+--extra-index-url=https://wheelhouse.shopinvader.com/simple
+vcrpy-unittest
