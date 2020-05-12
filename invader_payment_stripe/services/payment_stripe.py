@@ -179,22 +179,16 @@ class PaymentServiceStripe(AbstractComponent):
                 )
                 payable._invader_set_payment_mode(payment_mode)
                 stripe_customer_id = None
-                if save_card:
+                token = self._get_token(
+                    payment_mode.payment_acquirer_id, stripe_payment_method_id
+                )
+                if token:
+                    stripe_customer_id = token.acquirer_ref
+                if save_card and not stripe_customer_id:
                     # Create Customer
                     stripe_customer_id = self._prepare_stripe_customer(
                         transaction
                     ).id
-                    # Add payment token to parter
-                    token = self.env["payment.token"].create(
-                        {
-                            "partner_id": self.partner.id,
-                            "acquirer_id": payment_mode.payment_acquirer_id.id,
-                            "acquirer_ref": stripe_customer_id,
-                            "name": stripe_customer_id,
-                            "stripe_payment_method": stripe_payment_method_id,
-                        }
-                    )
-                    transaction.payment_token_id = token.id
                 intent = self._prepare_stripe_intent(
                     transaction,
                     stripe_payment_method_id,
@@ -203,7 +197,17 @@ class PaymentServiceStripe(AbstractComponent):
                     ),
                     stripe_customer_id=stripe_customer_id,
                 )
-                transaction.write({"acquirer_reference": intent.id})
+                if save_card and not token:
+                    # Add payment token to parter
+                    token = self._create_token_from_stripe_intent_confirm(
+                        payment_mode, intent
+                    )
+                transaction.write(
+                    {
+                        "acquirer_reference": intent.id,
+                        "payment_token_id": token.id,
+                    }
+                )
             elif stripe_payment_intent_id:
                 # Second step if applicable
                 transaction = self._get_stripe_transaction_from_intent(
@@ -380,3 +384,28 @@ class PaymentServiceStripe(AbstractComponent):
             return "manual"
         else:
             return "automatic"
+
+    def _create_token_from_stripe_intent_confirm(self, payment_mode, intent):
+        charge = intent["charges"]["data"][0]
+        card = charge["payment_method_details"]["card"]
+        token = self.env["payment.token"].create(
+            {
+                "partner_id": self.partner.id,
+                "acquirer_id": payment_mode.payment_acquirer_id.id,
+                "acquirer_ref": charge.customer,
+                "name": "{} {} {}".format(
+                    card.brand, _("ending with"), card.last4
+                ),
+                "stripe_payment_method": charge.payment_method,
+            }
+        )
+        return token
+
+    def _get_token(self, payment_acquirer, stripe_payment_method):
+        return self.env["payment.token"].search(
+            [
+                ("stripe_payment_method", "=", stripe_payment_method),
+                ("partner_id", "=", self.partner.id),
+                ("acquirer_id", "=", payment_acquirer.id),
+            ]
+        )
