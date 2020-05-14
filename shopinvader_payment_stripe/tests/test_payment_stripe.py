@@ -1,5 +1,7 @@
 # Copyright 2020 ACSONE SA/NV (http://acsone.eu).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+from datetime import datetime, timedelta
+
 import mock
 from odoo.addons.invader_payment_stripe.services.payment_stripe import (
     PaymentServiceStripe,
@@ -48,3 +50,10 @@ class ShopinvaderStripePaymentCase(CommonConnectedCartCase):
         self.assertEquals(
             "test_response", self.cart.transaction_ids.acquirer_reference
         )
+        # Simulating automatic confirmation cron (The transaction has to
+        # be done for 10 minutes at least)
+        self.cart.transaction_ids.write(
+            {"date": datetime.now() - timedelta(minutes=10)}
+        )
+        self.env["payment.transaction"]._cron_post_process_after_done()
+        self.assertEquals("sale", self.cart.state)
