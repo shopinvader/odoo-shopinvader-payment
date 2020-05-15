@@ -4,7 +4,7 @@
 
 {
     "name": "Invader Sale Payment",
-    "description": """
+    "summary": """
         Backport the model definition between payment.transaction and
         sale.order""",
     "version": "10.0.2.0.0",
