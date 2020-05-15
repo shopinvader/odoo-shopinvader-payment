@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2020 ACSONE SA/NV
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo noupdate="1">
+
+    <record id="shopinvader_payment_paypal" model="shopinvader.payment">
+        <field name="sequence">50</field>
+        <field name="code">paypal</field>
+        <field name="acquirer_id" ref="payment.payment_acquirer_paypal"/>
+        <field name="backend_id" ref="shopinvader.backend_1"/>
+        <field name="notification">cart_confirmation</field>
+    </record>
+
+</odoo>

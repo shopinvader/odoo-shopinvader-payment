@@ -39,7 +39,8 @@ class PaymentServicePaypal(AbstractComponent):
         """
         Validator of confirm_payment service
         target: see _allowed_payment_target()
-        payment_mode_id: The payment mode used to pay
+        payment_mode_id: payment.acquirer id. Will be changed to acquirer_id.
+        Let to ensure backward compatibility
         :return: dict
         """
         res = self.payment_service._invader_get_target_validator()
@@ -61,8 +62,10 @@ class PaymentServicePaypal(AbstractComponent):
         return Validator(schema, allow_unknown=True)
 
     def _get_api_url(self, acquirer, path):
-        if acquirer.environment == "prod":
+        if acquirer.state == "enabled":
             return "https://api.paypal.com/{}".format(path)
+        elif acquirer.state == "disabled":
+            raise UserError(_("The Paypal acquirer is disabled!"))
         else:
             return "https://api.sandbox.paypal.com/{}".format(path)
 
@@ -131,14 +134,12 @@ class PaymentServicePaypal(AbstractComponent):
         payable = self.payment_service._invader_find_payable_from_target(
             target, **params
         )
-
-        payment_mode = self.env["account.payment.mode"].browse(payment_mode_id)
-        self.payment_service._check_provider(payment_mode, "paypal")
+        acquirer = self.env["payment.acquirer"].browse(payment_mode_id)
+        self.payment_service._check_provider(acquirer, "paypal")
 
         transaction = transaction_obj.create(
-            payable._invader_prepare_payment_transaction_data(payment_mode)
+            payable._invader_prepare_payment_transaction_data(acquirer)
         )
-        payable._invader_set_payment_mode(payment_mode)
         data = self._prepare_paypal_order(
             transaction, return_url, cancel_url, **params
         )
@@ -219,8 +220,9 @@ class PaymentServicePaypal(AbstractComponent):
     def normal_return(self, success_redirect, cancel_redirect, **params):
         """
         Service invoked in the user session, when the user returns to the
-        merchant site from the Paypal payment site. It must return a redirect_to
-        to the success or cancel url depending on transaction outcome.
+        merchant site from the Paypal payment site.
+        It must return a redirect_to to the success or cancel url depending on
+        transaction outcome.
         """
         _logger.info("Paypal normal_return: %s", params)
         transaction = self._process_response(**params)
