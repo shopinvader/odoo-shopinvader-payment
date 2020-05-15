@@ -1,4 +1,17 @@
-exclude: "^(setup/)|(cassettes/)|.pot$|.po$|README.rst"
+exclude: >
+  (?x)(
+    ^setup/|
+    /cassettes/|
+    \.pot$|
+    \.po$|
+    /README.rst$|
+    ^(
+      # installable = False
+      shopinvader_locomotive_payment_adyen|
+      shopinvader_payment_adyen|
+      shopinvader_payment_paypal
+    )/
+  )
 repos:
 - repo: https://github.com/ambv/black
   rev: 18.9b0
@@ -22,6 +35,14 @@ repos:
     args: [--ignore=E501 F401]  # ignore imported unused in __init__.py
     files: __init__.py
     language_version: python2.7
+  - id: fix-encoding-pragma
+    args: ["--remove"]
+- repo: https://github.com/pre-commit/mirrors-pylint
+  rev: v2.3.1
+  hooks:
+    - id: pylint
+      args: ["--rcfile=.pylintrc"]
+      additional_dependencies: ["pylint-odoo==3.1.0"]
 - repo: https://github.com/asottile/pyupgrade
   rev: v1.6.1
   hooks:
