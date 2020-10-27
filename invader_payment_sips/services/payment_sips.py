@@ -64,6 +64,8 @@ class PaymentServiceSips(AbstractComponent):
         return self.component(usage="invader.payment")
 
     def _validator_prepare_payment(self):
+        # payment_mode_id: payment.acquirer id. Will be changed to acquirer_id.
+        # Let to ensure backward compatibility
         schema = {
             "payment_mode_id": {
                 "coerce": to_int,
@@ -97,21 +99,17 @@ class PaymentServiceSips(AbstractComponent):
             target, **params
         )
 
-        payment_mode = self.env["account.payment.mode"].browse(payment_mode_id)
-        self.payment_service._check_provider(payment_mode, "sips")
+        acquirer = self.env["payment.acquirer"].browse(payment_mode_id)
+        self.payment_service._check_provider(acquirer, "sips")
 
-        transaction_data = payable._invader_prepare_payment_transaction_data(
-            payment_mode
-        )
+        transaction_data = payable._invader_prepare_payment_transaction_data(acquirer)
 
         transaction = self.env["payment.transaction"].create(transaction_data)
-        payable._invader_set_payment_mode(payment_mode)
         data = _sips_make_data(
             self._prepare_sips_data(
                 transaction, normal_return_url, automatic_response_url
             )
         )
-        acquirer = transaction.acquirer_id
         seal = _sips_make_seal(data, acquirer.sips_secret)
         return {
             "sips_form_action_url": acquirer.sips_get_form_action_url(),
