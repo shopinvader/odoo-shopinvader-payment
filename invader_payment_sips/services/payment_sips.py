@@ -1,6 +1,7 @@
 # Copyright 2019 ACSONE SA/NV (http://acsone.eu).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import dateutil
 import logging
 from hashlib import sha256
 
@@ -198,12 +199,13 @@ class PaymentServiceSips(AbstractComponent):
             # processed by automatic_response or normal_return
             response_code = data_o.get("responseCode")
             success = response_code == "00"
+            transaction_date_time = data_o.get("transactionDateTime", fields.Datetime.now())
+            if isinstance(transaction_date_time, str):
+                transaction_date_time = dateutil.parser.parse(transaction_date_time).replace(tzinfo=None)
             tx_data = {
                 # XXX better field for acquirer_reference?
                 "acquirer_reference": data_o.get("transactionReference"),
-                "date": data_o.get(
-                    "transactionDateTime", fields.Datetime.now()
-                ),
+                "date": transaction_date_time,
                 "state_message": "SIPS response_code {}".format(response_code),
             }
             transaction.write(tx_data)
