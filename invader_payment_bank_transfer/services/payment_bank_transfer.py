@@ -1,12 +1,11 @@
-# -*- coding: utf-8 -*-
 # Copyright 2019 ACSONE SA/NV (http://acsone.eu).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 import logging
 
 from cerberus import Validator
-from openerp import _
-from openerp.addons.component.core import AbstractComponent
+from odoo import _
+from odoo.addons.component.core import AbstractComponent
 
 _logger = logging.getLogger(__name__)
 
@@ -37,8 +36,8 @@ class PaymentBankTransfer(AbstractComponent):
             usage="invader.payment"
         )._invader_find_payable_from_target(target, **params)
         if payable:
-        # check that there is an actual cart to prevent user error
-        # which can create two sale orders
+            # check that there is an actual cart to prevent user error
+            # which can create two sale orders
             payment_mode = self.env["account.payment.mode"].browse(
                 int(payment_mode)
             )
@@ -47,7 +46,9 @@ class PaymentBankTransfer(AbstractComponent):
             payable._invader_payment_success(transaction)
             res = self.component(
                 usage="invader.payment"
-            )._invader_get_payment_success_reponse_data(payable, target, **params)
+            )._invader_get_payment_success_reponse_data(
+                payable, target, **params
+            )
             return res
         else:
             return {"error": _("An Error has occured, the cart is empty")}
