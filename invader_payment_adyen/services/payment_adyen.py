@@ -499,6 +499,7 @@ class PaymentServiceAdyen(AbstractComponent):
         schema = {}
         return Validator(schema, allow_unknown=True)
 
+    @skip_secure_response
     def webhook(self, **params):
         """
         Implement the webhook notification.
@@ -514,4 +515,4 @@ class PaymentServiceAdyen(AbstractComponent):
                 payment_acquirer_obj._handle_adyen_notification_item(
                     notification_item
                 )
-        return {}
+        return "[accepted]"

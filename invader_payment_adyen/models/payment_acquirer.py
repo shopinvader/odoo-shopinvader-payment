@@ -1,34 +1,14 @@
 # -*- coding: utf-8 -*-
 # Copyright 2019 ACSONE SA/NV (http://acsone.eu).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-import base64
-import binascii
-import hashlib
-import hmac
 import logging
-from collections import OrderedDict
 
+from Adyen.util import is_valid_hmac_notification
 from odoo import _, fields, models
 
 from ..services.exceptions import AdyenInvalidData
 
 _logger = logging.getLogger(__name__)
-
-ADYEN_PAYLOAD = [
-    {"key": 1, "value": "pspReference"},
-    {"key": 2, "value": "originalReference"},
-    {"key": 3, "value": "merchantAccountCode"},
-    {"key": 4, "value": "merchantReference"},
-    {"key": 5, "value": "amount"},
-    {"key": 7, "value": "eventCode"},
-    {"key": 8, "value": "success"},
-]
-
-
-def escape_vals(val):
-    if isinstance(val, int):
-        return val
-    return val.replace("\\", "\\\\").replace(":", "\\:")
 
 
 class PaymentAcquirer(models.Model):
@@ -42,38 +22,36 @@ class PaymentAcquirer(models.Model):
         "live-endpoints#set-up-live-endpoints",
     )
 
-    def _check_adyen_payload_hmac(self, notification_data):
-        """
-        Reimplement Adyen signature generation as it appeared to be buggy
-        TODO: Check Adyen lib updates
-        :param notification_data:
-        :return:
-        """
-        self.ensure_one()
-        payload = OrderedDict()
-        hmac_signature = notification_data.get("additionalData").get(
-            "hmacSignature"
+    def _get_adyen_notification_message(self, transaction, notification_item):
+        message = transaction.state_message
+        notification_message = "eventCode: {}, merchantReference: {}, pspReference: {}".format(
+            notification_item.get("eventCode"),
+            notification_item.get("merchantReference"),
+            notification_item.get("pspReference"),
         )
-        hmac_key = binascii.a2b_hex(self.adyen_skin_hmac_key)
-        for item in sorted(ADYEN_PAYLOAD, key=lambda k: k["key"]):
-            adyen_payload = item.get("value")
-            if adyen_payload == "amount":
-                value = notification_data.get("amount").get("value")
-                currency = notification_data.get("amount").get("currency")
-                payload.update({"value": value})
-                payload.update({"currency": currency})
-            else:
-                data = notification_data.get(adyen_payload, "")
-                payload.update({adyen_payload: data})
+        stamp = fields.Datetime.now()
+        adyen_message = "\n" + stamp + ": " + str(notification_message)
+        if message:
+            message += adyen_message
+        else:
+            message = adyen_message
+        return message
 
-        string = ":".join(
-            [str(escape_vals(pay)) for key, pay in payload.iteritems()]
+    def _get_adyen_additional_data(self, transaction, notification_item):
+        """Allows to update transaction details with additional data
+        comming from Adyen.
+
+        :param transaction: [description]
+        :type transaction: [type]
+        :param notification_item: [description]
+        :type notification_item: [type]
+        """
+        vals = {}
+        message = self._get_adyen_notification_message(
+            transaction, notification_item
         )
-        _logger.debug(_("Encoding Adyen Payload: %s"), string)
-        digest = base64.b64encode(
-            hmac.new(str(hmac_key), string, hashlib.sha256).digest()
-        )
-        return digest == hmac_signature
+        vals.update({"state_message": message})
+        return vals
 
     def _handle_adyen_notification_item(self, notification_item):
         """
@@ -91,9 +69,16 @@ class PaymentAcquirer(models.Model):
             _logger.warning(message)
             raise AdyenInvalidData(message)
         psp_reference = notification_item.get("pspReference")
+        merchant_reference = notification_item.get("merchantReference")
         transaction = self.env["payment.transaction"].search(
             [("acquirer_reference", "=", psp_reference)]
         )
+        if not transaction and merchant_reference:
+            # If the transaction hasn't been validated but already created
+            # by the paymentMethods call.
+            transaction = self.env["payment.transaction"].search(
+                [("reference", "=", merchant_reference)]
+            )
         if len(transaction) != 1:
             message = _(
                 "No payment transaction found with pspReference: %s"
@@ -101,8 +86,8 @@ class PaymentAcquirer(models.Model):
             )
             _logger.warning(message)
             raise AdyenInvalidData(message)
-        if not transaction.acquirer_id._check_adyen_payload_hmac(
-            notification_item
+        if not is_valid_hmac_notification(
+            notification_item, transaction.acquirer_id.adyen_skin_hmac_key
         ):
             message = _("Transaction Data is not safe!")
             _logger.warning(message)
@@ -118,5 +103,21 @@ class PaymentAcquirer(models.Model):
         event_code = notification_item.get("eventCode")
         if event_code == "AUTHORISATION":
             success = notification_item.get("success")
-            if success:
+            success = True if success == "true" else False
+            if success and transaction.state != "done":
+                # Set to done if not already. Don't raise, just pass
+                # It will return a 200 code to Adyen, so the webhook will
+                # be marked as done on their side.
                 transaction._set_transaction_done()
+            elif not success and transaction.state == "draft":
+                # Set to error if draft. Don't raise, just pass
+                # It will return a 200 code to Adyen, so the webhook will
+                # be marked as done on their side.
+                transaction._set_transaction_error(
+                    self._get_adyen_notification_message(
+                        transaction, notification_item
+                    )
+                )
+        data = self._get_adyen_additional_data(transaction, notification_item)
+        if data:
+            transaction.write(data)
