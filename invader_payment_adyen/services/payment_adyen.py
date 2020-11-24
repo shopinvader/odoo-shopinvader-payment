@@ -50,7 +50,6 @@ class PaymentServiceAdyen(AbstractComponent):
         :return:
         """
         adyen = Adyen.Adyen(
-            app_name=APP_NAME,
             platform=self._get_platform(transaction),
             live_endpoint_prefix=self._get_live_prefix(transaction),
         )
@@ -287,6 +286,8 @@ class PaymentServiceAdyen(AbstractComponent):
         params.pop("success_redirect")
         params.pop("target")
         params.pop("cancel_redirect")
+        params.pop("force_apply_redirection")
+        params.pop("transaction_id")
         request = {
             "paymentData": transaction.adyen_payment_data,
             "details": params,
