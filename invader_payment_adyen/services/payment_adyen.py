@@ -11,6 +11,7 @@ from odoo.addons.base_rest.components.service import (
     to_int,
 )
 from odoo.addons.component.core import AbstractComponent
+from odoo.addons.shopinvader.shopinvader_response import shopinvader_agnostic
 from odoo.tools.float_utils import float_round
 
 _logger = logging.getLogger(__name__)
@@ -501,6 +502,7 @@ class PaymentServiceAdyen(AbstractComponent):
         return Validator(schema, allow_unknown=True)
 
     @skip_secure_response
+    @shopinvader_agnostic
     def webhook(self, **params):
         """
         Implement the webhook notification.
