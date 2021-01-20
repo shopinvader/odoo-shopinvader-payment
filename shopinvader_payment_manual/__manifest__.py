@@ -16,5 +16,5 @@
     ],
     "demo": ["demo/payment_demo.xml"],
     "autoinstall": True,
-    "installable": True,
+    "installable": False,
 }

@@ -10,7 +10,7 @@
     "author": "ACSONE SA/NV",
     "license": "AGPL-3",
     "application": False,
-    "installable": True,
+    "installable": False,
     "external_dependencies": {"python": ["cerberus", "unidecode"], "bin": []},
     "depends": ["payment", "component", "component_event"],
 }
