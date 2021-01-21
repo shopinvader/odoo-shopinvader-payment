@@ -27,7 +27,7 @@ class ShopinvaderPaymentCase(CommonConnectedCartCase):
         response = self.cart_service.dispatch(
             "search", params={"id": self.cart.id}
         )
-        self.assertEquals(
+        self.assertEqual(
             0,
             response.get("data")
             .get("payment")
@@ -40,7 +40,7 @@ class ShopinvaderPaymentCase(CommonConnectedCartCase):
         response = self.cart_service.dispatch(
             "search", params={"id": self.cart.id}
         )
-        self.assertEquals(
+        self.assertEqual(
             1,
             response.get("data")
             .get("payment")
@@ -53,5 +53,5 @@ class ShopinvaderPaymentCase(CommonConnectedCartCase):
             .get("available_methods")
             .get("items")
         )
-        self.assertEquals(1, len(items))
-        self.assertEquals("Fake Acquirer", items[0].get("name"))
+        self.assertEqual(1, len(items))
+        self.assertEqual("Fake Acquirer", items[0].get("name"))
