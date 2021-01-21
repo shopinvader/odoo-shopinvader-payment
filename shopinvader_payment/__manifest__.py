@@ -10,7 +10,7 @@
     "website": "https://github.com/OCA/odoo-shopinvader-payment",
     "author": "Akretion",
     "license": "AGPL-3",
-    "installable": False,
+    "installable": True,
     "external_dependencies": {"python": ["cerberus", "unidecode"], "bin": []},
     "depends": [
         "shopinvader",
