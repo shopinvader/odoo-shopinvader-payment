@@ -7,7 +7,7 @@
     "summary": "Payment integration for Shopinvader",
     "version": "13.0.1.0.1",
     "category": "e-commerce",
-    "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
+    "website": "https://github.com/OCA/odoo-shopinvader-payment",
     "author": "Akretion",
     "license": "AGPL-3",
     "installable": False,

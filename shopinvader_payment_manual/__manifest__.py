@@ -8,7 +8,7 @@
     "version": "13.0.1.0.0",
     "license": "AGPL-3",
     "author": "ACSONE SA/NV",
-    "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
+    "website": "https://github.com/OCA/odoo-shopinvader-payment",
     "depends": [
         "invader_payment_manual",
         "shopinvader_payment",
