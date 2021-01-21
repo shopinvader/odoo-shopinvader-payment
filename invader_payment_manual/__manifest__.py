@@ -13,5 +13,5 @@
     "depends": ["invader_payment", "base_rest", "payment_transfer"],
     "external_dependencies": {"python": ["cerberus"]},
     "data": ["data/payment_acquirer_data.xml"],
-    "installable": False,
+    "installable": True,
 }
