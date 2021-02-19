@@ -5,6 +5,7 @@ from odoo.http import request
 from odoo.addons.base_rest.controllers.main import _PseudoCollection
 from odoo.addons.component.core import Component
 from odoo.addons.shopinvader import shopinvader_response
+from odoo.addons.shopinvader.utils import work_on_service_with_partner
 
 
 class SaleOrderPaymentTransactionEventListener(Component):
@@ -33,14 +34,16 @@ class SaleOrderPaymentTransactionEventListener(Component):
             # That should be the responsibility of the client
             # to request the cart info to be stored in its own cache
             # once the cache is reset.
-            collection = _PseudoCollection("shopinvader.backend", self.env)
-            work = self.work.work_on(collection=collection)
-            work.shopinvader_backend = shopinvader_backend
-            # another ugly hack: the partner here should be taken
-            # from current client request
-            work.partner = sale_order.partner_id
-            res = work.component(usage="cart")._to_json(sale_order)
-            response.set_store_cache("last_sale", res.get("data", {}))
+
+            invader_partner = sale_order.partner_id._get_invader_partner(
+                shopinvader_backend
+            )
+            with work_on_service_with_partner(
+                self.env, invader_partner
+            ) as work:
+                res = work.component(usage="cart")._to_json(sale_order)
+                response.set_store_cache("last_sale", res.get("data", {}))
+
             # end of awful code ....
 
     def on_payment_transaction_done(self, sale_order, transaction):
