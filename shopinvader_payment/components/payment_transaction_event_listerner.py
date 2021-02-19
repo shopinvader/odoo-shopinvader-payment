@@ -32,6 +32,11 @@ class SaleOrderPaymentTransactionEventListener(Component):
             # another ugly hack: the partner here should be taken
             # from current client request
             setattr(work, "partner", sale_order.partner_id)
+
+            invader_partner = sale_order.partner_id._get_invader_partner(shopinvader_backend)
+            setattr(work, "invader_partner", invader_partner)
+            setattr(work, "invader_partner_user", invader_partner)
+
             res = work.component(usage="cart")._to_json(sale_order)
             response.set_store_cache("last_sale", res.get("data", {}))
             # end of awful code ....
