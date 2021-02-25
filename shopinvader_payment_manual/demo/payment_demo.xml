@@ -1,19 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo noupdate="1">
 
     <record id="shopinvader_payment_banktransfer" model="shopinvader.payment">
         <field name="sequence">30</field>
-        <field name="acquirer_id" ref="payment.payment_acquirer_transfer"/>
+        <field name="acquirer_id" ref="payment.payment_acquirer_transfer" />
         <field name="code">bank_transfer</field>
-        <field name="backend_id" ref="shopinvader.backend_1"/>
+        <field name="backend_id" ref="shopinvader.backend_1" />
         <field name="notification">cart_confirmation_and_sale_confirmation</field>
     </record>
 
     <record id="shopinvader_payment_check" model="shopinvader.payment">
         <field name="sequence">40</field>
-        <field name="acquirer_id" ref="invader_payment_manual.payment_acquirer_check"/>
+        <field name="acquirer_id" ref="invader_payment_manual.payment_acquirer_check" />
         <field name="code">check</field>
-        <field name="backend_id" ref="shopinvader.backend_1"/>
+        <field name="backend_id" ref="shopinvader.backend_1" />
         <field name="notification">cart_confirmation_and_sale_confirmation</field>
     </record>
 

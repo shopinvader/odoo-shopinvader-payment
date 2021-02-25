@@ -1,14 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Copyright 2017 Akretion
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
-
 <odoo>
 
     <record model="ir.ui.menu" id="account_payment_mode_menu">
         <field name="name">Acquirers</field>
-        <field name="parent_id" ref="shopinvader.menu_shopinvader_config"/>
-        <field name="action" ref="payment.action_payment_acquirer"/>
-        <field name="sequence" eval="20"/>
+        <field name="parent_id" ref="shopinvader.menu_shopinvader_config" />
+        <field name="action" ref="payment.action_payment_acquirer" />
+        <field name="sequence" eval="20" />
     </record>
 
 </odoo>
