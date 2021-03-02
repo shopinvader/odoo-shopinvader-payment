@@ -20,12 +20,8 @@ class TestInvaderPaymentManual(TestCommonPayment):
         existing_transactions = self.env["payment.transaction"].search(
             [("acquirer_id", "=", self.payment_mode.payment_acquirer_id.id)]
         )
-        self.service.dispatch(
-            "add_payment",
-            params={
-                "target": "demo_partner",
-                "payment_mode_id": self.payment_mode.id,
-            },
+        self.service.add_payment(
+            target="demo_partner", payment_mode_id=self.payment_mode.id
         )
         transaction = self.env["payment.transaction"].search(
             [
@@ -41,12 +37,9 @@ class TestInvaderPaymentManual(TestCommonPayment):
             "invader_payment_stripe.payment_mode_stripe"
         )
         with self.assertRaises(UserError) as m:
-            self.service.dispatch(
-                "add_payment",
-                params={
-                    "target": "demo_partner",
-                    "payment_mode_id": self.payment_mode_stripe.id,
-                },
+            self.service.add_payment(
+                target="demo_partner",
+                payment_mode_id=self.payment_mode_stripe.id,
             )
         self.assertEqual(
             m.exception.name,

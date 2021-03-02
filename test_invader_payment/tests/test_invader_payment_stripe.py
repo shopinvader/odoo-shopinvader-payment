@@ -43,13 +43,10 @@ class TestInvaderPaymentStripe(VCRMixin, TestCommonPayment):
         next_response["body"]["string"] = json.dumps(body).encode("utf-8")
 
     def test_confirm_payment_one_step(self):
-        result = self.service.dispatch(
-            "confirm_payment",
-            params={
-                "target": "demo_partner",
-                "payment_mode_id": self.payment_mode.id,
-                "stripe_payment_method_id": "pm_card_visa",
-            },
+        result = self.service.confirm_payment(
+            target="demo_partner",
+            payment_mode_id=self.payment_mode.id,
+            stripe_payment_method_id="pm_card_visa",
         )
         self.assertEqual(result, {"success": True})
         self.assertDictEqual(
@@ -58,13 +55,10 @@ class TestInvaderPaymentStripe(VCRMixin, TestCommonPayment):
         )
 
     def test_confirm_payment_two_step(self):
-        result = self.service.dispatch(
-            "confirm_payment",
-            params={
-                "target": "demo_partner",
-                "payment_mode_id": self.payment_mode.id,
-                "stripe_payment_method_id": "pm_card_threeDSecure2Required",
-            },
+        result = self.service.confirm_payment(
+            target="demo_partner",
+            payment_mode_id=self.payment_mode.id,
+            stripe_payment_method_id="pm_card_threeDSecure2Required",
         )
         self.assertIn("requires_action", result)
         self.assertTrue(result["requires_action"])
@@ -79,13 +73,10 @@ class TestInvaderPaymentStripe(VCRMixin, TestCommonPayment):
         # on server side so the simpliest solution is to
         # hack the next response
         self._alter_next_response({"status": "succeeded"})
-        result = self.service.dispatch(
-            "confirm_payment",
-            params={
-                "target": "demo_partner",
-                "payment_mode_id": self.payment_mode.id,
-                "stripe_payment_intent_id": stripe_payment_intent_id,
-            },
+        result = self.service.confirm_payment(
+            target="demo_partner",
+            payment_mode_id=self.payment_mode.id,
+            stripe_payment_intent_id=stripe_payment_intent_id,
         )
         self.assertEqual(result, {"success": True})
 
@@ -94,13 +85,10 @@ class TestInvaderPaymentStripe(VCRMixin, TestCommonPayment):
             "invader_payment_manual.payment_mode_check"
         )
         with self.assertRaises(UserError) as m:
-            self.service.dispatch(
-                "confirm_payment",
-                params={
-                    "target": "demo_partner",
-                    "payment_mode_id": self.payment_mode_check.id,
-                    "stripe_payment_method_id": "pm_card_visa",
-                },
+            self.service.confirm_payment(
+                target="demo_partner",
+                payment_mode_id=self.payment_mode_check.id,
+                stripe_payment_method_id="pm_card_visa",
             )
         self.assertEqual(
             m.exception.name,
