@@ -1,15 +1,17 @@
 # Copyright 2019 ACSONE SA/NV (http://acsone.eu).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import dateutil
 import logging
 from hashlib import sha256
 
+import dateutil
 from cerberus import Validator
+
 from odoo import _, fields
+from odoo.exceptions import UserError
+
 from odoo.addons.base_rest.components.service import to_int
 from odoo.addons.component.core import AbstractComponent
-from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -103,7 +105,9 @@ class PaymentServiceSips(AbstractComponent):
         acquirer = self.env["payment.acquirer"].browse(payment_mode_id)
         self.payment_service._check_provider(acquirer, "sips")
 
-        transaction_data = payable._invader_prepare_payment_transaction_data(acquirer)
+        transaction_data = payable._invader_prepare_payment_transaction_data(
+            acquirer
+        )
 
         transaction = self.env["payment.transaction"].create(transaction_data)
         data = _sips_make_data(
@@ -199,9 +203,13 @@ class PaymentServiceSips(AbstractComponent):
             # processed by automatic_response or normal_return
             response_code = data_o.get("responseCode")
             success = response_code == "00"
-            transaction_date_time = data_o.get("transactionDateTime", fields.Datetime.now())
+            transaction_date_time = data_o.get(
+                "transactionDateTime", fields.Datetime.now()
+            )
             if isinstance(transaction_date_time, str):
-                transaction_date_time = dateutil.parser.parse(transaction_date_time).replace(tzinfo=None)
+                transaction_date_time = dateutil.parser.parse(
+                    transaction_date_time
+                ).replace(tzinfo=None)
             tx_data = {
                 # XXX better field for acquirer_reference?
                 "acquirer_reference": data_o.get("transactionReference"),
