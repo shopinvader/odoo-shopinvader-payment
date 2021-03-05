@@ -1,5 +1,7 @@
 # Copyright 2019 ACSONE SA/NV
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+from odoo.http import request
+
 from odoo.addons.component.core import Component
 from odoo.addons.shopinvader import shopinvader_response
 from odoo.addons.shopinvader.utils import work_on_service_with_partner
@@ -15,8 +17,13 @@ class SaleOrderPaymentTransactionEventListener(Component):
         if not shopinvader_backend:
             return
         sale_order.action_confirm_cart()
+        try:
+            sess_cart_id = request.httprequest.environ.get("HTTP_SESS_CART_ID")
+        except RuntimeError:
+            # not in an http request (testing?)
+            sess_cart_id = None
         response = shopinvader_response.get(raise_if_not_found=False)
-        if response:
+        if response and sess_cart_id:
             response.set_session("cart_id", 0)
             response.set_store_cache("cart", {})
             # TODO we should not have to return the last_sale
@@ -30,9 +37,7 @@ class SaleOrderPaymentTransactionEventListener(Component):
             invader_partner = sale_order.partner_id._get_invader_partner(
                 shopinvader_backend
             )
-            with work_on_service_with_partner(
-                self.env, invader_partner
-            ) as work:
+            with work_on_service_with_partner(self.env, invader_partner) as work:
                 res = work.component(usage="cart")._to_json(sale_order)
                 response.set_store_cache("last_sale", res.get("data", {}))
 
