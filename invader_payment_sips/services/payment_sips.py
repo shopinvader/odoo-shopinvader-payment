@@ -4,11 +4,14 @@
 import logging
 from hashlib import sha256
 
+import dateutil
 from cerberus import Validator
+
 from odoo import _, fields
+from odoo.exceptions import UserError
+
 from odoo.addons.base_rest.components.service import to_int
 from odoo.addons.component.core import AbstractComponent
-from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -64,6 +67,8 @@ class PaymentServiceSips(AbstractComponent):
         return self.component(usage="invader.payment")
 
     def _validator_prepare_payment(self):
+        # payment_mode_id: payment.acquirer id. Will be changed to acquirer_id.
+        # Let to ensure backward compatibility
         schema = {
             "payment_mode_id": {
                 "coerce": to_int,
@@ -97,21 +102,19 @@ class PaymentServiceSips(AbstractComponent):
             target, **params
         )
 
-        payment_mode = self.env["account.payment.mode"].browse(payment_mode_id)
-        self.payment_service._check_provider(payment_mode, "sips")
+        acquirer = self.env["payment.acquirer"].browse(payment_mode_id)
+        self.payment_service._check_provider(acquirer, "sips")
 
         transaction_data = payable._invader_prepare_payment_transaction_data(
-            payment_mode
+            acquirer
         )
 
         transaction = self.env["payment.transaction"].create(transaction_data)
-        payable._invader_set_payment_mode(payment_mode)
         data = _sips_make_data(
             self._prepare_sips_data(
                 transaction, normal_return_url, automatic_response_url
             )
         )
-        acquirer = transaction.acquirer_id
         seal = _sips_make_seal(data, acquirer.sips_secret)
         return {
             "sips_form_action_url": acquirer.sips_get_form_action_url(),
@@ -200,12 +203,17 @@ class PaymentServiceSips(AbstractComponent):
             # processed by automatic_response or normal_return
             response_code = data_o.get("responseCode")
             success = response_code == "00"
+            transaction_date_time = data_o.get(
+                "transactionDateTime", fields.Datetime.now()
+            )
+            if isinstance(transaction_date_time, str):
+                transaction_date_time = dateutil.parser.parse(
+                    transaction_date_time
+                ).replace(tzinfo=None)
             tx_data = {
                 # XXX better field for acquirer_reference?
                 "acquirer_reference": data_o.get("transactionReference"),
-                "date": data_o.get(
-                    "transactionDateTime", fields.Datetime.now()
-                ),
+                "date": transaction_date_time,
                 "state_message": "SIPS response_code {}".format(response_code),
             }
             transaction.write(tx_data)
