@@ -169,6 +169,9 @@ class PaymentServiceStripe(AbstractComponent):
             save_card = params.get("save_card")
         elif payment_mode.payment_acquirer_id.save_token == "always":
             save_card = True
+        token = self._get_token(
+            payment_mode.payment_acquirer_id, stripe_payment_method_id
+        )
         try:
             if stripe_payment_method_id:
                 # First step
@@ -179,9 +182,6 @@ class PaymentServiceStripe(AbstractComponent):
                 )
                 payable._invader_set_payment_mode(payment_mode)
                 stripe_customer_id = None
-                token = self._get_token(
-                    payment_mode.payment_acquirer_id, stripe_payment_method_id
-                )
                 if token:
                     stripe_customer_id = token.acquirer_ref
                 if save_card and not stripe_customer_id:
@@ -197,17 +197,6 @@ class PaymentServiceStripe(AbstractComponent):
                     ),
                     stripe_customer_id=stripe_customer_id,
                 )
-                if save_card and not token:
-                    # Add payment token to parter
-                    token = self._create_token_from_stripe_intent_confirm(
-                        payment_mode, intent
-                    )
-                transaction.write(
-                    {
-                        "acquirer_reference": intent.id,
-                        "payment_token_id": token.id,
-                    }
-                )
             elif stripe_payment_intent_id:
                 # Second step if applicable
                 transaction = self._get_stripe_transaction_from_intent(
@@ -215,6 +204,21 @@ class PaymentServiceStripe(AbstractComponent):
                 )
                 intent = self._confirm_stripe_intent(
                     transaction, stripe_payment_intent_id
+                )
+            if (
+                intent.status in ["suceeded", "authorized"]
+                and intent.setup_future_usage
+                and not token
+            ):
+                # Add payment token to parter
+                token = self._create_token_from_stripe_intent_confirm(
+                    payment_mode, intent
+                )
+                transaction.write(
+                    {
+                        "acquirer_reference": intent.id,
+                        "payment_token_id": token.id,
+                    }
                 )
             if intent.status == "succeeded":
                 # Handle post-payment fulfillment
