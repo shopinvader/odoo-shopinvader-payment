@@ -197,6 +197,7 @@ class PaymentServiceStripe(AbstractComponent):
                     ),
                     stripe_customer_id=stripe_customer_id,
                 )
+                transaction.write({"acquirer_reference": intent.id})
             elif stripe_payment_intent_id:
                 # Second step if applicable
                 transaction = self._get_stripe_transaction_from_intent(
@@ -214,12 +215,7 @@ class PaymentServiceStripe(AbstractComponent):
                 token = self._create_token_from_stripe_intent_confirm(
                     payment_mode, intent
                 )
-                transaction.write(
-                    {
-                        "acquirer_reference": intent.id,
-                        "payment_token_id": token.id,
-                    }
-                )
+                transaction.write({"payment_token_id": token.id})
             if intent.status == "succeeded":
                 # Handle post-payment fulfillment
                 transaction._set_transaction_done()
