@@ -1,7 +1,8 @@
 # Do NOT update manually; changes here will be overwritten by Copier
-_commit: v1.0.2
+_commit: v1.0.4-5-g862d276
 _src_path: git+https://github.com/shopinvader/shopinvader-addons-repo-template
 black_version: 19.10b0
 generate_requirements_txt: true
 odoo_version: '13.0'
+python_line_length: 79
 repo_slug: odoo-shopinvader-payment
