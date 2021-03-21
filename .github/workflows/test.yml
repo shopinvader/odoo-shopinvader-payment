@@ -11,7 +11,14 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    container: ghcr.io/sbidoul/oca-ci/py3.6-odoo13.0:latest
+    container: ${{ matrix.container }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - container: ghcr.io/sbidoul/oca-ci/py3.6-odoo13.0:latest
+            makepot: "true"
+          - container: ghcr.io/sbidoul/oca-ci/py3.6-ocb13.0:latest
     services:
       postgres:
         image: postgres:9.6
@@ -34,4 +41,4 @@ jobs:
       - run: |
           oca_export_and_commit_pot
           git push https://x-access-token:${{ secrets.GIT_PUSH_TOKEN }}@github.com/${{ github.repository }}
-        if: ${{ github.event_name == 'push' && github.repository_owner == 'shopinvader' && startsWith(github.ref, 'refs/heads/13.0') }}
+        if: ${{ matrix.makepot == 'true' && github.event_name == 'push' && github.repository_owner == 'shopinvader' && startsWith(github.ref, 'refs/heads/13.0') }}
