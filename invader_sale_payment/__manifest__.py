@@ -10,7 +10,7 @@
     "version": "10.0.2.0.0",
     "license": "AGPL-3",
     "author": "ACSONE SA/NV",
-    "website": "https://acsone.eu/",
+    "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "depends": ["sale", "payment"],
     "data": ["views/sale_order.xml", "views/payment_transaction.xml"],
     "demo": [],
