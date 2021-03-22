@@ -1,0 +1,81 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* invader_payment
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: invader_payment
+#: model:ir.model.fields,field_description:invader_payment.field_invader_payable_display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: invader_payment
+#: model:ir.model.fields,field_description:invader_payment.field_invader_payable_id
+msgid "ID"
+msgstr ""
+
+#. module: invader_payment
+#: model:ir.model,name:invader_payment.model_invader_payable
+msgid "Interface for payable objects (e.g. cart, ...)"
+msgstr ""
+
+#. module: invader_payment
+#: model:ir.model.fields,field_description:invader_payment.field_invader_payable___last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: invader_payment
+#: code:addons/invader_payment/models/payment_transaction.py:164
+#, python-format
+msgid "Only draft transaction can be authorized."
+msgstr ""
+
+#. module: invader_payment
+#: code:addons/invader_payment/models/payment_transaction.py:151
+#: code:addons/invader_payment/models/payment_transaction.py:192
+#, python-format
+msgid "Only draft transaction can be processed."
+msgstr ""
+
+#. module: invader_payment
+#: code:addons/invader_payment/models/payment_transaction.py:177
+#, python-format
+msgid "Only draft/authorized transaction can be cancelled."
+msgstr ""
+
+#. module: invader_payment
+#: code:addons/invader_payment/models/payment_transaction.py:211
+#, python-format
+msgid "Only draft/authorized transaction can be posted."
+msgstr ""
+
+#. module: invader_payment
+#: model:ir.model.fields,field_description:invader_payment.field_account_payment_mode_payment_acquirer_id
+msgid "Payment Acquirer"
+msgstr ""
+
+#. module: invader_payment
+#: model:ir.model,name:invader_payment.model_account_payment_mode
+msgid "Payment Modes"
+msgstr ""
+
+#. module: invader_payment
+#: model:ir.model,name:invader_payment.model_payment_transaction
+msgid "Payment Transaction"
+msgstr ""
+
+#. module: invader_payment
+#: code:addons/invader_payment/services/invader_payment_service.py:40
+#, python-format
+msgid "Payment mode acquirer mismatch should be '{}' instead of '{}'."
+msgstr ""
+
