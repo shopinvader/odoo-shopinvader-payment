@@ -1,0 +1,150 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* shopinvader_payment
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: shopinvader_payment
+#: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_payment_backend_id
+msgid "Backend"
+msgstr ""
+
+#. module: shopinvader_payment
+#: selection:shopinvader.payment,notification:0
+msgid "Cart Validation"
+msgstr ""
+
+#. module: shopinvader_payment
+#: selection:shopinvader.payment,notification:0
+msgid "Cart and Sale Confirmation"
+msgstr ""
+
+#. module: shopinvader_payment
+#: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_payment_code
+msgid "Code"
+msgstr ""
+
+#. module: shopinvader_payment
+#: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_payment_create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: shopinvader_payment
+#: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_payment_create_date
+msgid "Created on"
+msgstr ""
+
+#. module: shopinvader_payment
+#: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_payment_description
+#: model:ir.ui.view,arch_db:shopinvader_payment.shopinvader_payment_view_form
+msgid "Description"
+msgstr ""
+
+#. module: shopinvader_payment
+#: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_payment_display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: shopinvader_payment
+#: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_payment_id
+msgid "ID"
+msgstr ""
+
+#. module: shopinvader_payment
+#: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_payment___last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: shopinvader_payment
+#: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_payment_write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: shopinvader_payment
+#: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_payment_write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: shopinvader_payment
+#: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_payment_manual
+msgid "Manual"
+msgstr ""
+
+#. module: shopinvader_payment
+#: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_payment_notification
+msgid "Notification"
+msgstr ""
+
+#. module: shopinvader_payment
+#: model:ir.ui.view,arch_db:shopinvader_payment.shopinvader_backend_view_form
+#: model:ir.ui.view,arch_db:shopinvader_payment.shopinvader_payment_view_form
+#: model:ir.ui.view,arch_db:shopinvader_payment.shopinvader_payment_view_tree
+msgid "Payment"
+msgstr ""
+
+#. module: shopinvader_payment
+#: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_backend_payment_method_ids
+#: model:ir.ui.view,arch_db:shopinvader_payment.shopinvader_backend_view_form
+msgid "Payment Method"
+msgstr ""
+
+#. module: shopinvader_payment
+#: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_payment_payment_mode_id
+msgid "Payment Mode"
+msgstr ""
+
+#. module: shopinvader_payment
+#: model:ir.ui.menu,name:shopinvader_payment.account_payment_mode_menu
+msgid "Payment Modes"
+msgstr ""
+
+#. module: shopinvader_payment
+#: model:ir.model,name:shopinvader_payment.model_payment_transaction
+msgid "Payment Transaction"
+msgstr ""
+
+#. module: shopinvader_payment
+#: code:addons/shopinvader_payment/models/sale_order.py:19
+#, python-format
+msgid "Payment mode %s is not allowed on backend %s"
+msgstr ""
+
+#. module: shopinvader_payment
+#: selection:shopinvader.payment,notification:0
+msgid "Sale Confirmation"
+msgstr ""
+
+#. module: shopinvader_payment
+#: model:ir.model,name:shopinvader_payment.model_sale_order
+msgid "Sales Order"
+msgstr ""
+
+#. module: shopinvader_payment
+#: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_payment_sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: shopinvader_payment
+#: model:ir.model,name:shopinvader_payment.model_shopinvader_payment
+msgid "Shopinvader Payment"
+msgstr ""
+
+#. module: shopinvader_payment
+#: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_payment_show_description_after_validation
+msgid "Show description after validation"
+msgstr ""
+
+#. module: shopinvader_payment
+#: model:ir.model,name:shopinvader_payment.model_shopinvader_backend
+msgid "shopinvader.backend"
+msgstr ""
+
