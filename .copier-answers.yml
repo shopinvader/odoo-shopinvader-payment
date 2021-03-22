@@ -1,5 +1,5 @@
 # Do NOT update manually; changes here will be overwritten by Copier
-_commit: v1.0.9
+_commit: v1.0.10
 _src_path: ../../../shopinvader-addons-repo-template
 black_version: 19.10b0
 generate_requirements_txt: true
