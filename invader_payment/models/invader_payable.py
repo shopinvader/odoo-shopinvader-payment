@@ -25,4 +25,3 @@ class InvaderPayable(models.AbstractModel):
         see `òdoo.addons.ivader_payment.model.payment_transaction.
         PaymentTransaction`
         """
-        pass
