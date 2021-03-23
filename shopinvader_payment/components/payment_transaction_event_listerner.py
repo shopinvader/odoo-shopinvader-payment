@@ -26,7 +26,7 @@ class SaleOrderPaymentTransactionEventListener(Component):
         # once the cache is reset
         collection = _PseudoCollection("shopinvader.backend", self.env)
         work = self.work.work_on(collection=collection)
-        setattr(work, "shopinvader_backend", shopinvader_backend)
+        work.shopinvader_backend = shopinvader_backend
         res = work.component(usage="cart")._to_json(sale_order)
         response.set_store_cache("last_sale", res.get("data", {}))
         # end of awful code ....

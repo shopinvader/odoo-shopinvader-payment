@@ -3,9 +3,10 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 import requests
+from vcr_unittest import VCRMixin
+
 from odoo import _
 from odoo.exceptions import UserError
-from vcr_unittest import VCRMixin
 
 from .common import TestCommonPayment
 
@@ -47,14 +48,11 @@ class TestInvaderPaymentSips(VCRMixin, TestCommonPayment):
         }
 
     def test_prepare_payment(self):
-        result = self.service.dispatch(
-            "prepare_payment",
-            params={
-                "target": "demo_partner",
-                "payment_mode_id": self.payment_mode.id,
-                "normal_return_url": NORMAL_RETURN_URL,
-                "automatic_response_url": AUTOMATIC_RESPONSE_URL,
-            },
+        result = self.service.prepare_payment(
+            target="demo_partner",
+            payment_mode_id=self.payment_mode.id,
+            normal_return_url=NORMAL_RETURN_URL,
+            automatic_response_url=AUTOMATIC_RESPONSE_URL,
         )
         response = requests.post(
             result["sips_form_action_url"],
@@ -71,14 +69,11 @@ class TestInvaderPaymentSips(VCRMixin, TestCommonPayment):
             "invader_payment_manual.payment_mode_check"
         )
         with self.assertRaises(UserError) as m:
-            self.service.dispatch(
-                "prepare_payment",
-                params={
-                    "target": "demo_partner",
-                    "payment_mode_id": self.payment_mode_check.id,
-                    "normal_return_url": NORMAL_RETURN_URL,
-                    "automatic_response_url": AUTOMATIC_RESPONSE_URL,
-                },
+            self.service.prepare_payment(
+                target="demo_partner",
+                payment_mode_id=self.payment_mode_check.id,
+                normal_return_url=NORMAL_RETURN_URL,
+                automatic_response_url=AUTOMATIC_RESPONSE_URL,
             )
         self.assertEqual(
             m.exception.name,

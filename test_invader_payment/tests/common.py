@@ -4,11 +4,11 @@
 
 from odoo.addons.base_rest.controllers.main import _PseudoCollection
 from odoo.addons.component.core import WorkContext
-from odoo.addons.component.tests.common import TransactionComponentCase
+from odoo.addons.component.tests.common import SavepointComponentCase
 from odoo.addons.shopinvader import shopinvader_response
 
 
-class TestCommonPayment(TransactionComponentCase):
+class TestCommonPayment(SavepointComponentCase):
     def setUp(self):
         super(TestCommonPayment, self).setUp()
         shopinvader_response.set_testmode(True)
