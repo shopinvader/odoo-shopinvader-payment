@@ -1,4 +1,4 @@
-unidecode
+# generated from manifests external_dependencies
 cerberus
-paypalrestsdk
 stripe
+unidecode
