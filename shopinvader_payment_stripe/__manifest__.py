@@ -6,7 +6,7 @@
     "summary": "Shopinvader REST Services for Stripe Payments",
     "version": "12.0.2.0.0",
     "author": "ACSONE SA/NV",
-    "website": "https://github.com/OCA/odoo-shopinvader-payment",
+    "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "license": "AGPL-3",
     "category": "e-commerce",
     "depends": ["shopinvader_payment", "invader_payment_stripe"],

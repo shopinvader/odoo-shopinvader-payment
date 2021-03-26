@@ -9,7 +9,7 @@
     "version": "14.0.1.0.0",
     "license": "AGPL-3",
     "author": "ACSONE SA/NV",
-    "website": "https://github.com/OCA/odoo-shopinvader-payment",
+    "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "depends": ["invader_payment", "base_rest", "payment_transfer"],
     "external_dependencies": {"python": ["cerberus"]},
     "data": ["data/payment_acquirer_data.xml"],
