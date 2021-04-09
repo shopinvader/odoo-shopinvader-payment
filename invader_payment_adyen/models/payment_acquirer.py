@@ -51,6 +51,10 @@ class PaymentAcquirer(models.Model):
             transaction, notification_item
         )
         vals.update({"state_message": message})
+        if not transaction.acquirer_reference:
+            vals.update(
+                {"acquirer_reference": notification_item.get("pspReference")}
+            )
         return vals
 
     def _handle_adyen_notification_item(self, notification_item):
@@ -101,6 +105,9 @@ class PaymentAcquirer(models.Model):
             _logger.warning(message)
             raise AdyenInvalidData(message)
         event_code = notification_item.get("eventCode")
+        data = self._get_adyen_additional_data(transaction, notification_item)
+        if data:
+            transaction.write(data)
         if event_code == "AUTHORISATION":
             success = notification_item.get("success")
             success = True if success == "true" else False
@@ -118,6 +125,3 @@ class PaymentAcquirer(models.Model):
                         transaction, notification_item
                     )
                 )
-        data = self._get_adyen_additional_data(transaction, notification_item)
-        if data:
-            transaction.write(data)

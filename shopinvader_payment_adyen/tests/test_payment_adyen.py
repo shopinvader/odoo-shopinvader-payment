@@ -163,6 +163,9 @@ class TestShopinvaderAdyenService(
         self.assertIn(
             "pspReference: psp_reference_1", self.transaction.state_message
         )
+        self.assertEqual(
+            "psp_reference_1", self.transaction.acquirer_reference
+        )
 
     def test_notification_failed(self):
         self.data.update({"payment_mode_id": self.account_payment_mode.id})
