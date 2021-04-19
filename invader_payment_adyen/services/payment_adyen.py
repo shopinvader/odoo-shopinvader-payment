@@ -32,6 +32,49 @@ ADYEN_TRANSACTION_STATUSES = {
 }
 APP_NAME = "INVADER"
 
+payment_completion_details = [
+    "MD",
+    "PaReq",
+    "PaRes",
+    "billingToken",
+    "cupsecureplus.smscode",
+    "facilitatorAccessToken",
+    "oneTimePasscode",
+    "orderID",
+    "payerID",
+    "payload",
+    "paymentID",
+    "paymentStatus",
+    "redirectResult",
+    "returnUrlQueryString",
+    "threeds2.challengeResult",
+    "threeds2.fingerprint",
+]
+
+
+def filter_completion_details(details):
+    """
+        Filter authorized details in order to pass just those ones to the API
+
+        :param details: The details values as a dict
+        :type details: dict
+    """
+    if not details:
+        return
+    unknown_params = []
+    for key, _ in details.items():
+        if key not in payment_completion_details:
+            details.pop(key)
+            unknown_params.append(key)
+    if unknown_params:
+        # Log unknown keys
+        message = (
+            "PaymentCompletionDetails contains unknown params: %s"
+            % ",".join([str(param) for param in unknown_params])
+        )
+        _logger.info(message)
+    return details
+
 
 class PaymentServiceAdyen(AbstractComponent):
 
@@ -284,11 +327,7 @@ class PaymentServiceAdyen(AbstractComponent):
         :param params:
         :return:
         """
-        params.pop("success_redirect")
-        params.pop("target")
-        params.pop("cancel_redirect")
-        params.pop("force_apply_redirection")
-        params.pop("transaction_id")
+        params = filter_completion_details(params)
         request = {
             "paymentData": transaction.adyen_payment_data,
             "details": params,
