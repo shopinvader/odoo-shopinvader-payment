@@ -5,7 +5,7 @@
 {
     "name": "Paypal Payment Acquirer (REST, Base)",
     "summary": "REST Services for Stripe Payments (base module)",
-    "version": "13.0.1.0.0",
+    "version": "13.0.1.0.1",
     "category": "e-commerce",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "author": "Akretion",
