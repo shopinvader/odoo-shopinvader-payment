@@ -5,7 +5,7 @@
 {
     "name": "Paypal Payment Acquirer (REST, Shopinvader)",
     "summary": "Shopinvader REST Services for Paypal Payments",
-    "version": "13.0.2.0.0",
+    "version": "13.0.2.0.1",
     "author": "Akretion",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "license": "AGPL-3",
