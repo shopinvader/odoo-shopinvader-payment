@@ -1,0 +1,30 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      User-Agent: [python-requests/2.20.0]
+    method: POST
+    uri: https://api.sandbox.paypal.com/v1/oauth2/token?grant_type=client_credentials
+  response:
+    body: {string: '{"error":"invalid_client","error_description":"Client Authentication
+        failed"}'}
+    headers:
+      Connection: [close]
+      Content-Length: ['77']
+      Content-Type: [application/json]
+      Date: ['Fri, 13 Sep 2019 14:52:05 GMT']
+      HTTP_X_PP_AZ_LOCATOR: [sandbox.slc]
+      Paypal-Debug-Id: [415c1251700ef, 415c1251700ef]
+      Server: [Apache]
+      Set-Cookie: ['X-PP-SILOVER=name%3DSANDBOX3.API.1%26silo_version%3D1880%26app%3Dapiplatformproxyserv%26TIME%3D363690845%26HTTP_X_PP_AZ_LOCATOR%3Dsandbox.slc;
+          Expires=Fri, 13 Sep 2019 15:22:05 GMT; domain=.paypal.com; path=/; Secure;
+          HttpOnly', 'X-PP-SILOVER=; Expires=Thu, 01 Jan 1970 00:00:01 GMT']
+      Vary: [Authorization]
+      X-PAYPAL-TOKEN-SERVICE: [IAAS]
+      paypal-debug-id: [415c1251700ef, 415c1251700ef]
+    status: {code: 401, message: Unauthorized}
+version: 1

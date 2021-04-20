@@ -1,0 +1,249 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      User-Agent: [python-requests/2.20.0]
+    method: POST
+    uri: https://api.sandbox.paypal.com/v1/oauth2/token?grant_type=client_credentials
+  response:
+    body: {string: '{"scope":"https://uri.paypal.com/services/invoicing https://uri.paypal.com/services/disputes/read-buyer
+        https://uri.paypal.com/services/payments/realtimepayment https://uri.paypal.com/services/disputes/update-seller
+        https://uri.paypal.com/services/payments/payment/authcapture openid https://uri.paypal.com/services/disputes/read-seller
+        https://uri.paypal.com/services/payments/refund https://api.paypal.com/v1/vault/credit-card
+        https://api.paypal.com/v1/payments/.* https://uri.paypal.com/payments/payouts
+        https://api.paypal.com/v1/vault/credit-card/.* https://uri.paypal.com/services/subscriptions
+        https://uri.paypal.com/services/applications/webhooks","access_token":"A21AAGG6R6nm6nbDDyOjQeRa_tIzFdvBNCn4CjF8JylETD9K-uLbbPDduv61Z0F42wsUWih9a220qimo7tkvGtBV0xbdMy6pg","token_type":"Bearer","app_id":"APP-80W284485P519543T","expires_in":32400,"nonce":"2019-09-13T14:19:15ZrkbdtWJNYgN0ML4Alg3msJG9iIWdIfJlsOr7Thonc-Y"}'}
+    headers:
+      Connection: [close]
+      Content-Length: ['918']
+      Content-Type: [application/json]
+      Date: ['Fri, 13 Sep 2019 14:19:15 GMT']
+      HTTP_X_PP_AZ_LOCATOR: [sandbox.slc]
+      Paypal-Debug-Id: [b42869f25d00a, b42869f25d00a]
+      Server: [Apache]
+      Set-Cookie: ['X-PP-SILOVER=name%3DSANDBOX3.API.1%26silo_version%3D1880%26app%3Dapiplatformproxyserv%26TIME%3D1671789405%26HTTP_X_PP_AZ_LOCATOR%3Dsandbox.slc;
+          Expires=Fri, 13 Sep 2019 14:49:15 GMT; domain=.paypal.com; path=/; Secure;
+          HttpOnly', 'X-PP-SILOVER=; Expires=Thu, 01 Jan 1970 00:00:01 GMT']
+      Vary: [Authorization]
+      X-PAYPAL-TOKEN-SERVICE: [IAAS]
+      paypal-debug-id: [b42869f25d00a, b42869f25d00a]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"purchase_units": [{"amount": {"currency_code": "EUR", "value": 5.0}}],
+      "application_context": {"return_url": "https://shopinvader.com/invader/payment_paypal/normal_return?success_redirect=/cart/validation&cancel_redirect=/cart/checkout?canceled_payment=paypal",
+      "landing_page": "LOGIN", "cancel_url": "https://shopinvader.com/cart/checkout",
+      "user_action": "PAY_NOW"}, "intent": "CAPTURE"}'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['391']
+      Content-Type: [application/json]
+      User-Agent: [python-requests/2.20.0]
+    method: POST
+    uri: https://api.sandbox.paypal.com/v2/checkout/orders
+  response:
+    body: {string: '{"id":"9HW16169D2517640S","links":[{"href":"https://api.sandbox.paypal.com/v2/checkout/orders/9HW16169D2517640S","rel":"self","method":"GET"},{"href":"https://www.sandbox.paypal.com/checkoutnow?token=9HW16169D2517640S","rel":"approve","method":"GET"},{"href":"https://api.sandbox.paypal.com/v2/checkout/orders/9HW16169D2517640S","rel":"update","method":"PATCH"},{"href":"https://api.sandbox.paypal.com/v2/checkout/orders/9HW16169D2517640S/capture","rel":"capture","method":"POST"}],"status":"CREATED"}'}
+    headers:
+      Connection: [close]
+      Content-Length: ['501']
+      Content-Type: [application/json]
+      Date: ['Fri, 13 Sep 2019 14:19:16 GMT']
+      HTTP_X_PP_AZ_LOCATOR: [sandbox.slc]
+      Paypal-Debug-Id: [3b28dc0d8c087, 3b28dc0d8c087]
+      Server: [Apache]
+      Set-Cookie: ['X-PP-SILOVER=name%3DSANDBOX3.API.1%26silo_version%3D1880%26app%3Dapiplatformproxyserv%26TIME%3D1688566621%26HTTP_X_PP_AZ_LOCATOR%3Dsandbox.slc;
+          Expires=Fri, 13 Sep 2019 14:49:17 GMT; domain=.paypal.com; path=/; Secure;
+          HttpOnly', 'X-PP-SILOVER=; Expires=Thu, 01 Jan 1970 00:00:01 GMT']
+      Vary: [Authorization]
+      paypal-debug-id: [3b28dc0d8c087, 3b28dc0d8c087]
+    status: {code: 201, message: Created}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      User-Agent: [python-requests/2.20.0]
+    method: POST
+    uri: https://api.sandbox.paypal.com/v1/oauth2/token?grant_type=client_credentials
+  response:
+    body: {string: '{"scope":"https://uri.paypal.com/services/invoicing https://uri.paypal.com/services/disputes/read-buyer
+        https://uri.paypal.com/services/payments/realtimepayment https://uri.paypal.com/services/disputes/update-seller
+        https://uri.paypal.com/services/payments/payment/authcapture openid https://uri.paypal.com/services/disputes/read-seller
+        https://uri.paypal.com/services/payments/refund https://api.paypal.com/v1/vault/credit-card
+        https://api.paypal.com/v1/payments/.* https://uri.paypal.com/payments/payouts
+        https://api.paypal.com/v1/vault/credit-card/.* https://uri.paypal.com/services/subscriptions
+        https://uri.paypal.com/services/applications/webhooks","access_token":"A21AAGG6R6nm6nbDDyOjQeRa_tIzFdvBNCn4CjF8JylETD9K-uLbbPDduv61Z0F42wsUWih9a220qimo7tkvGtBV0xbdMy6pg","token_type":"Bearer","app_id":"APP-80W284485P519543T","expires_in":32361,"nonce":"2019-09-13T14:19:15ZrkbdtWJNYgN0ML4Alg3msJG9iIWdIfJlsOr7Thonc-Y"}'}
+    headers:
+      Connection: [close]
+      Content-Length: ['918']
+      Content-Type: [application/json]
+      Date: ['Fri, 13 Sep 2019 14:19:54 GMT']
+      HTTP_X_PP_AZ_LOCATOR: [sandbox.slc]
+      Paypal-Debug-Id: [16605852a30e5, 16605852a30e5]
+      Server: [Apache]
+      Set-Cookie: ['X-PP-SILOVER=name%3DSANDBOX3.API.1%26silo_version%3D1880%26app%3Dapiplatformproxyserv%26TIME%3D2326100829%26HTTP_X_PP_AZ_LOCATOR%3Dsandbox.slc;
+          Expires=Fri, 13 Sep 2019 14:49:54 GMT; domain=.paypal.com; path=/; Secure;
+          HttpOnly', 'X-PP-SILOVER=; Expires=Thu, 01 Jan 1970 00:00:01 GMT']
+      Vary: [Authorization]
+      X-PAYPAL-TOKEN-SERVICE: [IAAS]
+      paypal-debug-id: [16605852a30e5, 16605852a30e5]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      Content-Type: [application/json]
+      User-Agent: [python-requests/2.20.0]
+    method: POST
+    uri: https://api.sandbox.paypal.com/v2/checkout/orders/9HW16169D2517640S/capture
+  response:
+    body: {string: '{"id":"9HW16169D2517640S","purchase_units":[{"reference_id":"default","shipping":{"name":{"full_name":"test
+        buyer"},"address":{"address_line_1":"Av. de la Pelouse, 87648672 Mayet","admin_area_2":"Paris","admin_area_1":"Alsace","postal_code":"75002","country_code":"FR"}},"payments":{"captures":[{"id":"0B074153EK766461Y","status":"COMPLETED","amount":{"currency_code":"EUR","value":"5.00"},"final_capture":true,"seller_protection":{"status":"ELIGIBLE","dispute_categories":["ITEM_NOT_RECEIVED","UNAUTHORIZED_TRANSACTION"]},"seller_receivable_breakdown":{"gross_amount":{"currency_code":"EUR","value":"5.00"},"paypal_fee":{"currency_code":"EUR","value":"0.42"},"net_amount":{"currency_code":"EUR","value":"4.58"}},"links":[{"href":"https://api.sandbox.paypal.com/v2/payments/captures/0B074153EK766461Y","rel":"self","method":"GET"},{"href":"https://api.sandbox.paypal.com/v2/payments/captures/0B074153EK766461Y/refund","rel":"refund","method":"POST"},{"href":"https://api.sandbox.paypal.com/v2/checkout/orders/9HW16169D2517640S","rel":"up","method":"GET"}],"create_time":"2019-09-13T14:19:55Z","update_time":"2019-09-13T14:19:55Z"}]}}],"payer":{"name":{"given_name":"test","surname":"buyer"},"email_address":"paypal-buyer@laboandco.com","payer_id":"NEKEA4FWFYNSG","address":{"country_code":"FR"}},"links":[{"href":"https://api.sandbox.paypal.com/v2/checkout/orders/9HW16169D2517640S","rel":"self","method":"GET"}],"status":"COMPLETED"}'}
+    headers:
+      Connection: [close]
+      Content-Length: ['1434']
+      Content-Type: [application/json]
+      Date: ['Fri, 13 Sep 2019 14:19:55 GMT']
+      HTTP_X_PP_AZ_LOCATOR: [sandbox.slc]
+      Paypal-Debug-Id: [9a6116a08379b, 9a6116a08379b]
+      Server: [Apache]
+      Set-Cookie: ['X-PP-SILOVER=name%3DSANDBOX3.API.1%26silo_version%3D1880%26app%3Dapiplatformproxyserv%26TIME%3D2342878045%26HTTP_X_PP_AZ_LOCATOR%3Dsandbox.slc;
+          Expires=Fri, 13 Sep 2019 14:49:56 GMT; domain=.paypal.com; path=/; Secure;
+          HttpOnly', 'X-PP-SILOVER=; Expires=Thu, 01 Jan 1970 00:00:01 GMT']
+      Vary: [Authorization]
+      paypal-debug-id: [9a6116a08379b, 9a6116a08379b]
+    status: {code: 201, message: Created}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      User-Agent: [python-requests/2.20.0]
+    method: POST
+    uri: https://api.sandbox.paypal.com/v1/oauth2/token?grant_type=client_credentials
+  response:
+    body: {string: '{"scope":"https://uri.paypal.com/services/invoicing https://uri.paypal.com/services/disputes/read-buyer
+        https://uri.paypal.com/services/payments/realtimepayment https://uri.paypal.com/services/disputes/update-seller
+        https://uri.paypal.com/services/payments/payment/authcapture openid https://uri.paypal.com/services/disputes/read-seller
+        https://uri.paypal.com/services/payments/refund https://api.paypal.com/v1/vault/credit-card
+        https://api.paypal.com/v1/payments/.* https://uri.paypal.com/payments/payouts
+        https://api.paypal.com/v1/vault/credit-card/.* https://uri.paypal.com/services/subscriptions
+        https://uri.paypal.com/services/applications/webhooks","access_token":"A21AAGG6R6nm6nbDDyOjQeRa_tIzFdvBNCn4CjF8JylETD9K-uLbbPDduv61Z0F42wsUWih9a220qimo7tkvGtBV0xbdMy6pg","token_type":"Bearer","app_id":"APP-80W284485P519543T","expires_in":32285,"nonce":"2019-09-13T14:19:15ZrkbdtWJNYgN0ML4Alg3msJG9iIWdIfJlsOr7Thonc-Y"}'}
+    headers:
+      Connection: [close]
+      Content-Length: ['918']
+      Content-Type: [application/json]
+      Date: ['Fri, 13 Sep 2019 14:21:10 GMT']
+      HTTP_X_PP_AZ_LOCATOR: [sandbox.slc]
+      Paypal-Debug-Id: [56773cbde80aa, 56773cbde80aa]
+      Server: [Apache]
+      Set-Cookie: ['X-PP-SILOVER=name%3DSANDBOX3.API.1%26silo_version%3D1880%26app%3Dapiplatformproxyserv%26TIME%3D3601169245%26HTTP_X_PP_AZ_LOCATOR%3Dsandbox.slc;
+          Expires=Fri, 13 Sep 2019 14:51:10 GMT; domain=.paypal.com; path=/; Secure;
+          HttpOnly', 'X-PP-SILOVER=; Expires=Thu, 01 Jan 1970 00:00:01 GMT']
+      Vary: [Authorization]
+      X-PAYPAL-TOKEN-SERVICE: [IAAS]
+      paypal-debug-id: [56773cbde80aa, 56773cbde80aa]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"intent": "CAPTURE", "application_context": {"cancel_url": "https://shopinvader.com/cart/checkout",
+      "user_action": "PAY_NOW", "landing_page": "LOGIN", "return_url": "https://shopinvader.com/invader/payment_paypal/normal_return?success_redirect=/cart/validation&cancel_redirect=/cart/checkout?canceled_payment=paypal"},
+      "purchase_units": [{"amount": {"value": 5.0, "currency_code": "EUR"}}]}'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['391']
+      Content-Type: [application/json]
+      User-Agent: [python-requests/2.20.0]
+    method: POST
+    uri: https://api.sandbox.paypal.com/v2/checkout/orders
+  response:
+    body: {string: '{"id":"87H72342P9320710C","links":[{"href":"https://api.sandbox.paypal.com/v2/checkout/orders/87H72342P9320710C","rel":"self","method":"GET"},{"href":"https://www.sandbox.paypal.com/checkoutnow?token=87H72342P9320710C","rel":"approve","method":"GET"},{"href":"https://api.sandbox.paypal.com/v2/checkout/orders/87H72342P9320710C","rel":"update","method":"PATCH"},{"href":"https://api.sandbox.paypal.com/v2/checkout/orders/87H72342P9320710C/capture","rel":"capture","method":"POST"}],"status":"CREATED"}'}
+    headers:
+      Connection: [close]
+      Content-Length: ['501']
+      Content-Type: [application/json]
+      Date: ['Fri, 13 Sep 2019 14:21:11 GMT']
+      HTTP_X_PP_AZ_LOCATOR: [sandbox.slc]
+      Paypal-Debug-Id: [e554fd4eeaa2a, e554fd4eeaa2a]
+      Server: [Apache]
+      Set-Cookie: ['X-PP-SILOVER=name%3DSANDBOX3.API.1%26silo_version%3D1880%26app%3Dapiplatformproxyserv%26TIME%3D3617946461%26HTTP_X_PP_AZ_LOCATOR%3Dsandbox.slc;
+          Expires=Fri, 13 Sep 2019 14:51:12 GMT; domain=.paypal.com; path=/; Secure;
+          HttpOnly', 'X-PP-SILOVER=; Expires=Thu, 01 Jan 1970 00:00:01 GMT']
+      Vary: [Authorization]
+      paypal-debug-id: [e554fd4eeaa2a, e554fd4eeaa2a]
+    status: {code: 201, message: Created}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      User-Agent: [python-requests/2.20.0]
+    method: POST
+    uri: https://api.sandbox.paypal.com/v1/oauth2/token?grant_type=client_credentials
+  response:
+    body: {string: '{"scope":"https://uri.paypal.com/services/invoicing https://uri.paypal.com/services/disputes/read-buyer
+        https://uri.paypal.com/services/payments/realtimepayment https://uri.paypal.com/services/disputes/update-seller
+        https://uri.paypal.com/services/payments/payment/authcapture openid https://uri.paypal.com/services/disputes/read-seller
+        https://uri.paypal.com/services/payments/refund https://api.paypal.com/v1/vault/credit-card
+        https://api.paypal.com/v1/payments/.* https://uri.paypal.com/payments/payouts
+        https://api.paypal.com/v1/vault/credit-card/.* https://uri.paypal.com/services/subscriptions
+        https://uri.paypal.com/services/applications/webhooks","access_token":"A21AAGG6R6nm6nbDDyOjQeRa_tIzFdvBNCn4CjF8JylETD9K-uLbbPDduv61Z0F42wsUWih9a220qimo7tkvGtBV0xbdMy6pg","token_type":"Bearer","app_id":"APP-80W284485P519543T","expires_in":32102,"nonce":"2019-09-13T14:19:15ZrkbdtWJNYgN0ML4Alg3msJG9iIWdIfJlsOr7Thonc-Y"}'}
+    headers:
+      Connection: [close]
+      Content-Length: ['918']
+      Content-Type: [application/json]
+      Date: ['Fri, 13 Sep 2019 14:24:13 GMT']
+      HTTP_X_PP_AZ_LOCATOR: [sandbox.slc]
+      Paypal-Debug-Id: [e2958a0273330, e2958a0273330]
+      Server: [Apache]
+      Set-Cookie: ['X-PP-SILOVER=name%3DSANDBOX3.API.1%26silo_version%3D1880%26app%3Dapiplatformproxyserv%26TIME%3D2376498013%26HTTP_X_PP_AZ_LOCATOR%3Dsandbox.slc;
+          Expires=Fri, 13 Sep 2019 14:54:13 GMT; domain=.paypal.com; path=/; Secure;
+          HttpOnly', 'X-PP-SILOVER=; Expires=Thu, 01 Jan 1970 00:00:01 GMT']
+      Vary: [Authorization]
+      X-PAYPAL-TOKEN-SERVICE: [IAAS]
+      paypal-debug-id: [e2958a0273330, e2958a0273330]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      Content-Type: [application/json]
+      User-Agent: [python-requests/2.20.0]
+    method: POST
+    uri: https://api.sandbox.paypal.com/v2/checkout/orders/87H72342P9320710C/capture
+  response:
+    body: {string: '{"id":"87H72342P9320710C","purchase_units":[{"reference_id":"default","shipping":{"name":{"full_name":"test
+        buyer"},"address":{"address_line_1":"Av. de la Pelouse, 87648672 Mayet","admin_area_2":"Paris","admin_area_1":"Alsace","postal_code":"75002","country_code":"FR"}},"payments":{"captures":[{"id":"8CH57936317043322","status":"COMPLETED","amount":{"currency_code":"EUR","value":"5.00"},"final_capture":true,"seller_protection":{"status":"ELIGIBLE","dispute_categories":["ITEM_NOT_RECEIVED","UNAUTHORIZED_TRANSACTION"]},"seller_receivable_breakdown":{"gross_amount":{"currency_code":"EUR","value":"5.00"},"paypal_fee":{"currency_code":"EUR","value":"0.42"},"net_amount":{"currency_code":"EUR","value":"4.58"}},"links":[{"href":"https://api.sandbox.paypal.com/v2/payments/captures/8CH57936317043322","rel":"self","method":"GET"},{"href":"https://api.sandbox.paypal.com/v2/payments/captures/8CH57936317043322/refund","rel":"refund","method":"POST"},{"href":"https://api.sandbox.paypal.com/v2/checkout/orders/87H72342P9320710C","rel":"up","method":"GET"}],"create_time":"2019-09-13T14:24:14Z","update_time":"2019-09-13T14:24:14Z"}]}}],"payer":{"name":{"given_name":"test","surname":"buyer"},"email_address":"paypal-buyer@laboandco.com","payer_id":"NEKEA4FWFYNSG","address":{"country_code":"FR"}},"links":[{"href":"https://api.sandbox.paypal.com/v2/checkout/orders/87H72342P9320710C","rel":"self","method":"GET"}],"status":"COMPLETED"}'}
+    headers:
+      Connection: [close]
+      Content-Length: ['1434']
+      Content-Type: [application/json]
+      Date: ['Fri, 13 Sep 2019 14:24:14 GMT']
+      HTTP_X_PP_AZ_LOCATOR: [sandbox.slc]
+      Paypal-Debug-Id: [f346872176a6b, f346872176a6b]
+      Server: [Apache]
+      Set-Cookie: ['X-PP-SILOVER=name%3DSANDBOX3.API.1%26silo_version%3D1880%26app%3Dapiplatformproxyserv%26TIME%3D2393275229%26HTTP_X_PP_AZ_LOCATOR%3Dsandbox.slc;
+          Expires=Fri, 13 Sep 2019 14:54:15 GMT; domain=.paypal.com; path=/; Secure;
+          HttpOnly', 'X-PP-SILOVER=; Expires=Thu, 01 Jan 1970 00:00:01 GMT']
+      Vary: [Authorization]
+      paypal-debug-id: [f346872176a6b, f346872176a6b]
+    status: {code: 201, message: Created}
+version: 1
