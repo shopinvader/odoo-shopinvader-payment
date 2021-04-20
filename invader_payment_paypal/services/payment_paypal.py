@@ -6,10 +6,12 @@ import logging
 
 import requests
 from cerberus import Validator
+
 from odoo import _
+from odoo.exceptions import UserError
+
 from odoo.addons.base_rest.components.service import to_int
 from odoo.addons.component.core import AbstractComponent
-from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 

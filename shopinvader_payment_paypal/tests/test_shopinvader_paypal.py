@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 
 import mock
 import requests
+
 from odoo.addons.shopinvader.tests.test_cart import CommonConnectedCartCase
 
 
