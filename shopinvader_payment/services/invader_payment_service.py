@@ -12,6 +12,8 @@ class InvaderPaymentService(Component):
     def _invader_find_payable_from_target(self, target, **params):
         if target == "current_cart":
             return self.component(usage="cart")._get()
+        if target == "transaction_orders":
+            return params["transaction"].sale_order_ids
         return super(
             InvaderPaymentService, self
         )._invader_find_payable_from_target(target, **params)
@@ -21,4 +23,5 @@ class InvaderPaymentService(Component):
             InvaderPaymentService, self
         )._invader_get_target_validator()
         res["target"]["allowed"].append("current_cart")
+        res["target"]["allowed"].append("transaction_orders")
         return res
