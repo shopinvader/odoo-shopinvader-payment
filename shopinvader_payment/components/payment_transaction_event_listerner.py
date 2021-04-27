@@ -1,5 +1,7 @@
 # Copyright 2019 ACSONE SA/NV
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+from odoo.http import request
+
 from odoo.addons.base_rest.controllers.main import _PseudoCollection
 from odoo.addons.component.core import Component
 from odoo.addons.shopinvader import shopinvader_response
@@ -15,8 +17,13 @@ class SaleOrderPaymentTransactionEventListener(Component):
         if not shopinvader_backend:
             return
         sale_order.action_confirm_cart()
+        try:
+            sess_cart_id = request.httprequest.environ.get("HTTP_SESS_CART_ID")
+        except RuntimeError:
+            # not in an http request (testing?)
+            sess_cart_id = None
         response = shopinvader_response.get(raise_if_not_found=False)
-        if response:
+        if response and sess_cart_id:
             response.set_session("cart_id", 0)
             response.set_store_cache("cart", {})
             # TODO we should not have to return the last_sale
