@@ -158,7 +158,7 @@ class PaymentServiceSips(AbstractComponent):
     def _validator_return_automatic_response(self):
         return {}
 
-    def _process_response(self, **params):
+    def _process_response(self, in_customer_session, **params):
         INVALID_DATA = _("invalid data")
         data = params.get("Data")
         seal = params.get("Seal")
@@ -198,11 +198,11 @@ class PaymentServiceSips(AbstractComponent):
                 data,
             )
             raise UserError(INVALID_DATA)
+        response_code = data_o.get("responseCode")
+        success = response_code == "00"
         if transaction.state == "draft":
             # if transaction is not draft, it means it has already been
             # processed by automatic_response or normal_return
-            response_code = data_o.get("responseCode")
-            success = response_code == "00"
             transaction_date_time = data_o.get(
                 "transactionDateTime", fields.Datetime.now()
             )
@@ -222,6 +222,12 @@ class PaymentServiceSips(AbstractComponent):
             else:
                 # XXX we may need to handle pending state?
                 transaction._set_transaction_cancel()
+        elif in_customer_session:
+            # If we are here this means the automatic response from SIPS
+            # came before the manual_response that comes through the browser.
+            # We want _confirm_and_invalidate_session() to run so the
+            # front receives last_sale and an empty cart.
+            transaction._notify_state_changed_event()
         return transaction
 
     def automatic_response(self, **params):
@@ -230,7 +236,7 @@ class PaymentServiceSips(AbstractComponent):
         with information on the transaction outcome.
         """
         _logger.info("SIPS automatic_response: %s", params)
-        self._process_response(**params)
+        self._process_response(in_customer_session=False, **params)
         return {}
 
     def _validator_normal_return(self):
@@ -257,7 +263,9 @@ class PaymentServiceSips(AbstractComponent):
         to the success or cancel url depending on transaction outcome.
         """
         _logger.info("SIPS normal_return: %s", params)
-        transaction = self._process_response(**params)
+        transaction = self._process_response(
+            in_customer_session=True, **params
+        )
         res = {}
         if transaction.state == "done":
             res["redirect_to"] = success_redirect
