@@ -12,9 +12,13 @@ from odoo.addons.shopinvader.tests.common import CommonMixin
 
 
 class ShopinvaderPaypalCase(PaypalCommonCase, CommonMixin, PaypalScenario):
+    @classmethod
+    def setUpClass(cls):
+        super(ShopinvaderPaypalCase, cls).setUpClass()
+        CommonMixin._setup_backend(cls)
+
     def setUp(self, *args, **kwargs):
         super(ShopinvaderPaypalCase, self).setUp(*args, **kwargs)
-        CommonMixin.setUp(self)
         self.shopinvader_session = {"cart_id": self.sale.id}
         self.partner = self.sale.partner_id
         self.env["shopinvader.partner"].create(

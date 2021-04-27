@@ -25,9 +25,13 @@ REDIRECT_URL = {
 
 
 class ShopinvaderAdyenCommonCase(AdyenCommonCase, CommonMixin):
+    @classmethod
+    def setUpClass(cls):
+        super(ShopinvaderAdyenCommonCase, cls).setUpClass()
+        CommonMixin._setup_backend(cls)
+
     def setUp(self, *args, **kwargs):
         super(ShopinvaderAdyenCommonCase, self).setUp(*args, **kwargs)
-        CommonMixin.setUp(self)
         self.shopinvader_session = {"cart_id": self.sale.id}
         self.partner = self.sale.partner_id
         self.env["shopinvader.partner"].create(
