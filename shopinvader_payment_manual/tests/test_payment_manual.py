@@ -29,5 +29,5 @@ class ShopinvaderManualPaymentCase(CommonConnectedCartCase):
                 "payment_mode_id": self.acquirer.id,
             },
         )
-        self.assertEquals(1, len(self.cart.transaction_ids))
-        self.assertEquals("pending", self.cart.transaction_ids.state)
+        self.assertEqual(1, len(self.cart.transaction_ids))
+        self.assertEqual("pending", self.cart.transaction_ids.state)

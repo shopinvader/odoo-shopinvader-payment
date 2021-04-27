@@ -4,6 +4,7 @@
 import logging
 
 from cerberus import Validator
+
 from odoo.addons.base_rest.components.service import to_int
 from odoo.addons.component.core import AbstractComponent
 
@@ -15,9 +16,7 @@ class PaymentManual(AbstractComponent):
     _name = "payment.service.manual"
     _inherit = "base.rest.service"
     _usage = "payment_manual"
-    _description = (
-        "REST Services for manual payments (bank transfer, check...)"
-    )
+    _description = "REST Services for manual payments (bank transfer, check...)"
 
     @property
     def payment_service(self):

@@ -6,7 +6,7 @@
     "summary": "Test shopinvader payment",
     "version": "12.0.2.0.0",
     "category": "Shopinvader",
-    "website": "www.akretion.com",
+    "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "author": " Akretion",
     "license": "AGPL-3",
     "application": False,
