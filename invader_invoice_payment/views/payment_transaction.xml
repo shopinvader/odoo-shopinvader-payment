@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2019 ACSONE SA/NV
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record model="ir.ui.view" id="payment_transaction_form_view">
+        <field name="name">payment.transaction.form (in invader_invoice_payment)</field>
+        <field name="model">payment.transaction</field>
+         <field name="inherit_id" ref="payment.transaction_form"/>
+         <field name="priority" eval="90"/>
+         <field name="arch" type="xml">
+             <xpath expr="//sheet/group[1]" position="before">
+                 <div class="oe_button_box" name="button_box">
+                    <button name="action_view_account_invoice" type="object" class="oe_stat_button" icon="fa-money"  attrs="{'invisible': [('invoice_ids_nbr', '=', 0)]}">
+                        <field name="invoice_ids_nbr" widget="statinfo" string="Invoice(s)"/>
+                    </button>
+                 </div>
+             </xpath>
+         </field>
+    </record>
+</odoo>
