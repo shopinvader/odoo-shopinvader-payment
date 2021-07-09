@@ -24,34 +24,21 @@ class ShopinvaderPaymentCase(CommonConnectedCartCase):
         self.env["shopinvader.payment"].create(vals)
 
     def test_no_acquirer(self):
-        response = self.cart_service.dispatch(
-            "search", params={"id": self.cart.id}
-        )
-        self.assertEquals(
+        response = self.cart_service.dispatch("search", params={"id": self.cart.id})
+        self.assertEqual(
             0,
-            response.get("data")
-            .get("payment")
-            .get("available_methods")
-            .get("count"),
+            response.get("data").get("payment").get("available_methods").get("count"),
         )
 
     def test_acquirer(self):
         self._setup_payment_acquirer()
-        response = self.cart_service.dispatch(
-            "search", params={"id": self.cart.id}
-        )
-        self.assertEquals(
+        response = self.cart_service.dispatch("search", params={"id": self.cart.id})
+        self.assertEqual(
             1,
-            response.get("data")
-            .get("payment")
-            .get("available_methods")
-            .get("count"),
+            response.get("data").get("payment").get("available_methods").get("count"),
         )
         items = (
-            response.get("data")
-            .get("payment")
-            .get("available_methods")
-            .get("items")
+            response.get("data").get("payment").get("available_methods").get("items")
         )
-        self.assertEquals(1, len(items))
-        self.assertEquals("Fake Acquirer", items[0].get("name"))
+        self.assertEqual(1, len(items))
+        self.assertEqual("Fake Acquirer", items[0].get("name"))

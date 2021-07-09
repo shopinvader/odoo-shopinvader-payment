@@ -4,13 +4,13 @@
 {
     "name": "Shopinvader Payment",
     "summary": "Payment integration for Shopinvader",
-    "version": "13.0.1.0.0",
+    "version": "14.0.1.0.0",
     "category": "e-commerce",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "author": "ACSONE SA/NV",
     "license": "AGPL-3",
     "application": False,
-    "installable": False,
+    "installable": True,
     "external_dependencies": {"python": ["cerberus", "unidecode"], "bin": []},
     "depends": ["payment", "component", "component_event"],
 }
