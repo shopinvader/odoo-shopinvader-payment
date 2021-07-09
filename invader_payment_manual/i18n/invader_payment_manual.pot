@@ -1,0 +1,59 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* invader_payment_manual
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: invader_payment_manual
+#: model_terms:payment.acquirer,pending_msg:invader_payment_manual.payment_acquirer_check
+msgid "Bank Account"
+msgstr ""
+
+#. module: invader_payment_manual
+#: model:payment.acquirer,name:invader_payment_manual.payment_acquirer_check
+msgid "Check"
+msgstr ""
+
+#. module: invader_payment_manual
+#: model_terms:payment.acquirer,pre_msg:invader_payment_manual.payment_acquirer_check
+msgid "Check information will be provided after choosing the payment aquirer."
+msgstr ""
+
+#. module: invader_payment_manual
+#: model_terms:payment.acquirer,pending_msg:invader_payment_manual.payment_acquirer_check
+msgid "Communication"
+msgstr ""
+
+#. module: invader_payment_manual
+#: model_terms:payment.acquirer,pending_msg:invader_payment_manual.payment_acquirer_check
+msgid "Please use the following transfer details"
+msgstr ""
+
+#. module: invader_payment_manual
+#: model_terms:payment.acquirer,pending_msg:invader_payment_manual.payment_acquirer_check
+msgid "Please use the order name as communication reference."
+msgstr ""
+
+#. module: invader_payment_manual
+#: model_terms:payment.acquirer,auth_msg:invader_payment_manual.payment_acquirer_check
+msgid "Your payment has been authorized."
+msgstr ""
+
+#. module: invader_payment_manual
+#: model_terms:payment.acquirer,cancel_msg:invader_payment_manual.payment_acquirer_check
+msgid "Your payment has been cancelled."
+msgstr ""
+
+#. module: invader_payment_manual
+#: model_terms:payment.acquirer,done_msg:invader_payment_manual.payment_acquirer_check
+msgid "Your payment has been successfully processed. Thank you!"
+msgstr ""
