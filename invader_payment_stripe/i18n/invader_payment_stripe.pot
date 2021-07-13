@@ -14,19 +14,30 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: invader_payment_stripe
-#: code:addons/invader_payment_stripe/services/payment_stripe.py:186
+#: code:addons/invader_payment_stripe/services/payment_stripe.py:210
+#: code:addons/invader_payment_stripe/services/payment_stripe.py:245
 #, python-format
 msgid "Exception: {}"
 msgstr ""
 
 #. module: invader_payment_stripe
-#: code:addons/invader_payment_stripe/services/payment_stripe.py:246
+#: model:ir.model,name:invader_payment_stripe.model_payment_acquirer
+msgid "Payment Acquirer"
+msgstr ""
+
+#. module: invader_payment_stripe
+#: code:addons/invader_payment_stripe/services/payment_stripe.py:330
 #, python-format
 msgid "Payment Error"
 msgstr ""
 
 #. module: invader_payment_stripe
-#: code:addons/invader_payment_stripe/services/payment_stripe.py:243
+#: model:ir.model,name:invader_payment_stripe.model_payment_transaction
+msgid "Payment Transaction"
+msgstr ""
+
+#. module: invader_payment_stripe
+#: code:addons/invader_payment_stripe/services/payment_stripe.py:327
 #, python-format
 msgid "Payment canceled."
 msgstr ""
