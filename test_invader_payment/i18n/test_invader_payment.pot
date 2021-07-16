@@ -30,7 +30,7 @@ msgid "Payment mode acquirer mismatch should be 'sips' instead of 'transfer'."
 msgstr ""
 
 #. module: test_invader_payment
-#: code:addons/test_invader_payment/tests/test_invader_payment_stripe.py:95
+#: code:addons/test_invader_payment/tests/test_invader_payment_stripe.py:96
 #, python-format
 msgid "Payment mode acquirer mismatch should be 'stripe' instead of 'transfer'."
 msgstr ""
