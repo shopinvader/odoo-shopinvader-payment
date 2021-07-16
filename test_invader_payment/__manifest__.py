@@ -4,7 +4,7 @@
 {
     "name": "Test invader payment",
     "summary": "Test Invader payment",
-    "version": "12.0.2.0.0",
+    "version": "12.0.3.0.0",
     "category": "Shopinvader",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "author": " Akretion",
