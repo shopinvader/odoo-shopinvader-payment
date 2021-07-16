@@ -6,8 +6,6 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-13 08:49+0000\n"
-"PO-Revision-Date: 2020-05-13 08:49+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,35 +14,30 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: invader_payment_stripe
-#: code:addons/invader_payment_stripe/services/payment_stripe.py:210
-#: code:addons/invader_payment_stripe/services/payment_stripe.py:245
-#: code:addons/invader_payment_stripe/services/payment_stripe.py:269
+#: code:addons/invader_payment_stripe/services/payment_stripe.py:238
+#: code:addons/invader_payment_stripe/services/payment_stripe.py:273
 #, python-format
 msgid "Exception: {}"
 msgstr ""
 
 #. module: invader_payment_stripe
-#: code:addons/invader_payment_stripe/services/payment_stripe.py:246
 #: model:ir.model,name:invader_payment_stripe.model_payment_acquirer
 msgid "Payment Acquirer"
 msgstr ""
 
 #. module: invader_payment_stripe
-#: code:addons/invader_payment_stripe/services/payment_stripe.py:330
-#: code:addons/invader_payment_stripe/services/payment_stripe.py:375
+#: code:addons/invader_payment_stripe/services/payment_stripe.py:379
 #, python-format
 msgid "Payment Error"
 msgstr ""
 
 #. module: invader_payment_stripe
-#: code:addons/invader_payment_stripe/services/payment_stripe.py:243
 #: model:ir.model,name:invader_payment_stripe.model_payment_transaction
 msgid "Payment Transaction"
 msgstr ""
 
 #. module: invader_payment_stripe
-#: code:addons/invader_payment_stripe/services/payment_stripe.py:327
-#: code:addons/invader_payment_stripe/services/payment_stripe.py:372
+#: code:addons/invader_payment_stripe/services/payment_stripe.py:376
 #, python-format
 msgid "Payment canceled."
 msgstr ""
@@ -55,7 +48,8 @@ msgid "Stripe"
 msgstr ""
 
 #. module: invader_payment_stripe
-#: code:addons/invader_payment_stripe/services/payment_stripe.py:397
+#: code:addons/invader_payment_stripe/services/payment_stripe.py:399
 #, python-format
 msgid "ending with"
 msgstr ""
+
