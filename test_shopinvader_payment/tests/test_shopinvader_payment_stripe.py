@@ -56,3 +56,34 @@ class TestShopinvaderPaymentStripe(CommonConnectedCartCase):
         self.assertEqual(len(transactions) > 0, True)
         for transaction in transactions:
             self.assertEqual(transaction.state, "done")
+
+    def test_payment_with_saved_card(self):
+        self.payment_mode = self.env.ref(
+            "invader_payment_stripe.payment_mode_stripe"
+        )
+        self.payment_mode.payment_acquirer_id.save_token = "ask"
+        with self.work_on_services(
+            partner=self.partner, shopinvader_session=self.shopinvader_session
+        ) as work:
+            self.payment_stripe_service = work.component(
+                usage="payment_stripe"
+            )
+        result = self.payment_stripe_service.dispatch(
+            "confirm_payment",
+            params={
+                "target": "current_cart",
+                "payment_mode_id": self.payment_mode.id,
+                "stripe_payment_method_id": "pm_card_visa",
+                "save_card": True,
+            },
+        )
+        self.assertEqual(result.get("success"), True, result)
+        transactions = self.cart.transaction_ids
+        self.assertEqual(len(transactions) > 0, True)
+        for transaction in transactions:
+            self.assertEqual(transaction.state, "done")
+            self.assertEqual(
+                transaction.payment_token_id.stripe_payment_method,
+                "pm_card_visa",
+            )
+        self.assertEqual(self.partner.payment_token_count, 1)

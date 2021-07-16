@@ -26,6 +26,7 @@ class TestInvaderPaymentStripe(VCRMixin, TestCommonPayment):
         acquirer.write({"stripe_secret_key": stripe_secret_key})
         self.service = self._get_service("payment_stripe")
         self.demo_partner = self.env.ref("base.res_partner_1")
+        self.service.partner = self.demo_partner
 
     def _get_vcr_kwargs(self, **kwargs):
         return {
