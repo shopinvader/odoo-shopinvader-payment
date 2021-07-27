@@ -4,7 +4,7 @@
 {
     "name": "Stripe Payment Acquirer (REST, Shopinvader)",
     "summary": "Shopinvader REST Services for Stripe Payments",
-    "version": "13.0.1.0.0",
+    "version": "14.0.1.0.0",
     "author": "ACSONE SA/NV",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "license": "AGPL-3",
