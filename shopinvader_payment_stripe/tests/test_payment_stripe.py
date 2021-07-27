@@ -3,11 +3,12 @@
 from datetime import datetime, timedelta
 
 import mock
+from stripe import PaymentIntent
+
 from odoo.addons.invader_payment_stripe.services.payment_stripe import (
     PaymentServiceStripe,
 )
 from odoo.addons.shopinvader.tests.test_cart import CommonConnectedCartCase
-from stripe import PaymentIntent
 
 
 class ShopinvaderStripePaymentCase(CommonConnectedCartCase):
