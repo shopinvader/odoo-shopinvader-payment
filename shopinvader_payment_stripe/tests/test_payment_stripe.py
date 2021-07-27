@@ -14,17 +14,15 @@ class ShopinvaderStripePaymentCase(CommonConnectedCartCase):
     def setUp(self, *args, **kwargs):
         super(ShopinvaderStripePaymentCase, self).setUp(*args, **kwargs)
         self.acquirer = self.env.ref("payment.payment_acquirer_stripe")
-
-    @classmethod
-    def setUpClass(cls):
-        super(ShopinvaderStripePaymentCase, cls).setUpClass()
-        cls.cart = cls.env.ref("shopinvader.sale_order_2")
-        cls.shopinvader_session = {"cart_id": cls.cart.id}
-        with cls.work_on_services(
-            cls, partner=None, shopinvader_session=cls.shopinvader_session
+        self.acquirer.journal_id = self.env["account.journal"].search(
+            [("code", "=", "BNK1")]
+        )
+        with self.work_on_services(
+            partner=self.partner, shopinvader_session=self.shopinvader_session
         ) as work:
-            cls.cart_service = work.component(usage="cart")
-            cls.payment_service = work.component(usage="payment_stripe")
+            self.cart_service = work.component(usage="cart")
+            self.payment_service = work.component(usage="payment_stripe")
+        self.cr.commit = mock.Mock()  # Do not commit
 
     def test_payment_stripe_service_succeeded(self):
         # Prepare a fake Stripe Intent
@@ -45,15 +43,15 @@ class ShopinvaderStripePaymentCase(CommonConnectedCartCase):
                     "stripe_payment_method_id": "pm_123456789",
                 },
             )
-        self.assertEquals(1, len(self.cart.transaction_ids))
-        self.assertEquals("done", self.cart.transaction_ids.state)
-        self.assertEquals(
+        self.assertEqual(1, len(self.cart.transaction_ids))
+        self.assertEqual("done", self.cart.transaction_ids.state)
+        self.assertEqual(
             "test_response", self.cart.transaction_ids.acquirer_reference
         )
         # Simulating automatic confirmation cron (The transaction has to
         # be done for 10 minutes at least)
         self.cart.transaction_ids.write(
-            {"date": datetime.now() - timedelta(minutes=10)}
+            {"date": datetime.now() - timedelta(minutes=11)}
         )
         self.env["payment.transaction"]._cron_post_process_after_done()
-        self.assertEquals("sale", self.cart.state)
+        self.assertEqual("sale", self.cart.state)
