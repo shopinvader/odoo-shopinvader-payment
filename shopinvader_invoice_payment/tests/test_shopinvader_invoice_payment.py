@@ -6,7 +6,7 @@ from odoo.addons.shopinvader_invoice.tests.common import CommonInvoiceCase
 class TestShopinvaderInvoicePayment(CommonInvoiceCase):
     def setUp(self, *args, **kwargs):
         super().setUp(*args, **kwargs)
-        self.register_payments_obj = self.env["account.register.payments"]
+        # self.register_payments_obj = self.env["account.register.payments"]
         self.journal_obj = self.env["account.journal"]
         self.payment_method_manual_in = self.env.ref(
             "account.account_payment_method_manual_in"
@@ -15,7 +15,17 @@ class TestShopinvaderInvoicePayment(CommonInvoiceCase):
             {"name": "Bank", "type": "bank", "code": "BNK6278"}
         )
         self.invoice = self._confirm_and_invoice_sale(self.sale, payment=False)
-        self.payment_mode = self.env.ref("invader_payment_manual.payment_mode_check")
+        pay_out = self.env.ref("account.account_payment_method_manual_out")
+        # acquirer = self.env.ref("invader_payment_manual.payment_acquirer_check")
+        self.payment_mode = self.env["account.payment.mode"].create(
+            {
+                "name": "Check",
+                "bank_account_link": "variable",
+                "payment_method_id": pay_out.id,
+                # "payment_acquirer_id": acquirer.id,
+            }
+        )
+        self.backend.write({"invoice_access_open": True})
         with self.work_on_services(partner=self.partner) as work:
             self.payment_manual_service = work.component(usage="payment_manual")
 

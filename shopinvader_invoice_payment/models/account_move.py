@@ -3,8 +3,8 @@
 from odoo import _, exceptions, models
 
 
-class AccountInvoice(models.Model):
-    _name = "account.invoice"
+class AccountMove(models.Model):
+    _name = "account.move"
     _inherit = [_name, "invader.payable"]
 
     def _invader_prepare_payment_transaction_data(self, payment_mode):
