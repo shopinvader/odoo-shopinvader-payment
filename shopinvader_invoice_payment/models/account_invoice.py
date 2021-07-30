@@ -1,14 +1,12 @@
-# -*- coding: utf-8 -*-
 # Copyright 2019 ACSONE SA/NV (<http://acsone.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-from odoo import _, api, exceptions, models
+from odoo import _, exceptions, models
 
 
 class AccountInvoice(models.Model):
     _name = "account.invoice"
     _inherit = [_name, "invader.payable"]
 
-    @api.multi
     def _invader_prepare_payment_transaction_data(self, payment_mode):
         self.ensure_one()
         allowed_payment_mode = self.shopinvader_backend_id.mapped(
@@ -28,7 +26,6 @@ class AccountInvoice(models.Model):
         }
         return vals
 
-    @api.multi
     def _invader_set_payment_mode(self, payment_mode):
         self.ensure_one()
         vals = {"payment_mode_id": payment_mode.id}

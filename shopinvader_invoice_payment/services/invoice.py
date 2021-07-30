@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2019 ACSONE SA/NV (<http://acsone.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 import logging
@@ -75,7 +74,7 @@ class InvoiceService(Component):
         Inherit the return_search validator to allow unknown
         :return: dict
         """
-        schema = super(InvoiceService, self)._validator_return_search()
+        schema = super()._validator_return_search()
         return Validator(schema, allow_unknown=True)
 
     def _to_json_invoice(self, invoice):
@@ -84,7 +83,7 @@ class InvoiceService(Component):
         :param invoice: account.invoice recordset
         :return: dict
         """
-        values = super(InvoiceService, self)._to_json_invoice(invoice)
+        values = super()._to_json_invoice(invoice)
         values.update({"payment": self._get_shopinvader_payment_data(invoice)})
         return values
 
@@ -93,6 +92,6 @@ class InvoiceService(Component):
         Inherit to add also validated invoices
         :return: list of str
         """
-        states = super(InvoiceService, self)._get_allowed_invoice_states()
+        states = super()._get_allowed_invoice_states()
         states.append("open")
         return states
