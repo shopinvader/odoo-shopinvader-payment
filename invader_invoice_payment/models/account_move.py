@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 # Copyright 2019 ACSONE SA/NV (<http://acsone.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 from odoo import api, fields, models
 
 
-class AccountInvoice(models.Model):
-    _inherit = "account.invoice"
+class AccountMove(models.Model):
+    _inherit = "account.move"
 
     transaction_ids = fields.Many2many(
         comodel_name="payment.transaction",
@@ -35,7 +34,6 @@ class AccountInvoice(models.Model):
                 lambda t: t.state == "authorized"
             )
 
-    @api.multi
     @api.depends("transaction_ids")
     def _compute_payment_transaction_count(self):
         """
@@ -46,7 +44,6 @@ class AccountInvoice(models.Model):
         for rec in self:
             rec.payment_transaction_count = len(rec.transaction_ids)
 
-    @api.multi
     def action_view_transaction(self):
         """
         Action to view related transactions
@@ -58,9 +55,7 @@ class AccountInvoice(models.Model):
             "res_model": "payment.transaction",
         }
         if self.payment_transaction_count == 1:
-            action.update(
-                {"res_id": self.transaction_ids.id, "view_mode": "form"}
-            )
+            action.update({"res_id": self.transaction_ids.id, "view_mode": "form"})
         else:
             action.update(
                 {
