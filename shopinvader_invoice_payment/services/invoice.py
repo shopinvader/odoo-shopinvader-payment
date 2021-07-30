@@ -19,7 +19,7 @@ class InvoiceService(Component):
     def _get_available_payment_methods(self, invoice):
         """
         Get payment method for the given invoice
-        :param invoice: account.invoice recordset
+        :param invoice: account.move recordset
         :return: shopinvader.payment recordset
         """
         return invoice.shopinvader_backend_id.payment_method_ids
@@ -31,12 +31,15 @@ class InvoiceService(Component):
         * Available methods
         * The payment mode
         * The amount
-        :param invoice: account.invoice recordset
+        :param invoice: account.move recordset
         :return: dict
         """
         payment_methods = self._get_available_payment_methods(invoice)
         selected_method = payment_methods.filtered(
-            lambda m: m.payment_mode_id == invoice.payment_mode_id
+            lambda m: m.acquirer_id.inbound_payment_method_ids.mapped(
+                "payment_mode_ids"
+            )
+            == invoice.payment_mode_id
         )
         values = {
             "available_methods": {
@@ -45,7 +48,7 @@ class InvoiceService(Component):
             },
             "selected_method": self._get_payment_method_data(selected_method),
             # Don't use amount_total in case if we have partial payment.
-            "amount": invoice.residual,
+            "amount": invoice.amount_residual_signed,
         }
         return values
 
@@ -80,7 +83,7 @@ class InvoiceService(Component):
     def _to_json_invoice(self, invoice):
         """
         Inherit the invoice json to add payment method details
-        :param invoice: account.invoice recordset
+        :param invoice: account.move recordset
         :return: dict
         """
         values = super()._to_json_invoice(invoice)

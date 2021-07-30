@@ -12,5 +12,5 @@
     "application": False,
     "installable": True,
     "external_dependencies": {"python": ["cerberus", "unidecode"], "bin": []},
-    "depends": ["payment", "component", "component_event"],
+    "depends": ["payment", "component", "component_event", "account_payment_mode"],
 }

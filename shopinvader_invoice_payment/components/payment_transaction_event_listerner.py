@@ -4,17 +4,16 @@ from odoo.addons.component.core import Component
 from odoo.addons.shopinvader import shopinvader_response
 
 
-class AccountInvoicePaymentTransactionEventListener(Component):
-    _name = "account.invoice.payment.transaction.event.listener"
+class AccountMovePaymentTransactionEventListener(Component):
+    _name = "account.move.payment.transaction.event.listener"
     _inherit = "base.event.listener"
-    _apply_on = ["account.invoice"]
+    _apply_on = ["account.move"]
 
     def _confirm_and_invalidate_session(self, account_invoice):
-        shopinvader_backend = account_invoice.shopinvader_backend_id
-        if not shopinvader_backend:
+        if not account_invoice.shopinvader_backend_id:
             return
         # In case of the invoice is not already validated
-        account_invoice.action_invoice_open()
+        account_invoice.action_post()
         response = shopinvader_response.get()
         response.set_session("invoice_id", 0)
         response.set_store_cache("invoice", {})
