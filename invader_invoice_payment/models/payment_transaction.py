@@ -7,7 +7,7 @@ class PaymentTransaction(models.Model):
     _inherit = "payment.transaction"
 
     invoice_ids = fields.Many2many(
-        comodel_name="account.invoice",
+        comodel_name="account.move",
         relation="account_invoice_transaction_rel",
         column1="transaction_id",
         column2="invoice_id",
