@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2019 ACSONE SA/NV
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 from odoo.addons.base_rest.components.service import to_int
@@ -12,14 +11,10 @@ class InvaderPaymentService(Component):
         if target == "invoice":
             invoice_id = params.get("invoice_id")
             return self.component(usage="invoice")._get(invoice_id)
-        return super(
-            InvaderPaymentService, self
-        )._invader_find_payable_from_target(target, **params)
+        return super()._invader_find_payable_from_target(target, **params)
 
     def _invader_get_target_validator(self):
-        schema = super(
-            InvaderPaymentService, self
-        )._invader_get_target_validator()
+        schema = super()._invader_get_target_validator()
         schema["target"]["allowed"].append("invoice")
         schema.update(
             {

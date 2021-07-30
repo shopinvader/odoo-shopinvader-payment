@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2019 ACSONE SA/NV (<http://acsone.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 from odoo.addons.shopinvader_invoice.tests.common import CommonInvoiceCase
@@ -6,7 +5,7 @@ from odoo.addons.shopinvader_invoice.tests.common import CommonInvoiceCase
 
 class TestShopinvaderInvoicePayment(CommonInvoiceCase):
     def setUp(self, *args, **kwargs):
-        super(TestShopinvaderInvoicePayment, self).setUp(*args, **kwargs)
+        super().setUp(*args, **kwargs)
         self.register_payments_obj = self.env["account.register.payments"]
         self.journal_obj = self.env["account.journal"]
         self.payment_method_manual_in = self.env.ref(
@@ -16,13 +15,9 @@ class TestShopinvaderInvoicePayment(CommonInvoiceCase):
             {"name": "Bank", "type": "bank", "code": "BNK6278"}
         )
         self.invoice = self._confirm_and_invoice_sale(self.sale, payment=False)
-        self.payment_mode = self.env.ref(
-            "invader_payment_manual.payment_mode_check"
-        )
+        self.payment_mode = self.env.ref("invader_payment_manual.payment_mode_check")
         with self.work_on_services(partner=self.partner) as work:
-            self.payment_manual_service = work.component(
-                usage="payment_manual"
-            )
+            self.payment_manual_service = work.component(usage="payment_manual")
 
     def _check_number_of_payment_mode(self, response, expected_number):
         self.assertIn("available_methods", response["data"][0]["payment"])
@@ -50,9 +45,7 @@ class TestShopinvaderInvoicePayment(CommonInvoiceCase):
         Ensure available methods are ones set on the backend
         :return:
         """
-        response = self.service.dispatch(
-            "search", params={"id": self.invoice.id}
-        )
+        response = self.service.dispatch("search", params={"id": self.invoice.id})
         self._check_number_of_payment_mode(
             response, len(self.backend.payment_method_ids)
         )
@@ -73,9 +66,5 @@ class TestShopinvaderInvoicePayment(CommonInvoiceCase):
         self.assertEqual(len(self.invoice.transaction_ids), 1)
         transaction = self.invoice.transaction_ids
         self.assertIn(self.invoice.number, transaction.reference)
-        self.assertEqual(
-            self.payment_mode.payment_acquirer_id, transaction.acquirer_id
-        )
-        self.assertAlmostEqual(
-            residual, transaction.amount, places=self.precision
-        )
+        self.assertEqual(self.payment_mode.payment_acquirer_id, transaction.acquirer_id)
+        self.assertAlmostEqual(residual, transaction.amount, places=self.precision)
