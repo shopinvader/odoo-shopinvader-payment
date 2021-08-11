@@ -1,27 +1,28 @@
 # Copyright 2019 ACSONE SA/NV (<http://acsone.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-from odoo import _, exceptions, models
+from odoo import _, models
+from odoo.exceptions import UserError
 
 
 class AccountMove(models.Model):
     _name = "account.move"
     _inherit = [_name, "invader.payable"]
 
-    def _invader_prepare_payment_transaction_data(self, payment_mode):
+    def _invader_prepare_payment_transaction_data(self, acquirer_id):
         self.ensure_one()
-        allowed_payment_mode = self.shopinvader_backend_id.mapped(
-            "payment_method_ids.payment_mode_id"
+        allowed_acquirer = self.shopinvader_backend_id.mapped(
+            "payment_method_ids.acquirer_id"
         )
-        if payment_mode not in allowed_payment_mode:
-            raise exceptions.UserError(
-                _("Payment mode %s is not allowed on backend %s")
-                % (payment_mode.name, self.shopinvader_backend_id.name)
+        if acquirer_id not in allowed_acquirer:
+            raise UserError(
+                _("Acquirer %s is not allowed on backend %s")
+                % (acquirer_id.name, self.shopinvader_backend_id.name)
             )
         vals = {
-            "amount": self.residual,
+            "amount": self.amount_residual,
             "currency_id": self.currency_id.id,
             "partner_id": self.partner_id.id,
-            "acquirer_id": payment_mode.payment_acquirer_id.id,
+            "acquirer_id": acquirer_id.id,
             "invoice_ids": [(6, 0, self.ids)],
         }
         return vals
