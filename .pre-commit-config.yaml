@@ -1,10 +1,8 @@
 exclude: |
   (?x)
   # NOT INSTALLABLE ADDONS
-  ^invader_payment_stripe/|
   ^shopinvader_locomotive_payment_adyen/|
   ^shopinvader_payment_adyen/|
-  ^shopinvader_payment_stripe/|
   ^shopinvader_quotation_payment/|
   ^test_invader_payment/|
   ^test_shopinvader_payment/|
