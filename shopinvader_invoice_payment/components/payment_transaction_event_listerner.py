@@ -15,7 +15,8 @@ class AccountMovePaymentTransactionEventListener(Component):
         if not account_invoice.shopinvader_backend_id:
             return
         # In case of the invoice is not already validated
-        account_invoice.action_post()
+        if account_invoice.state != "posted":
+            account_invoice.action_post()
         try:
             sess_cart_id = request.httprequest.environ.get("HTTP_SESS_CART_ID")
         except RuntimeError:
