@@ -53,19 +53,16 @@ class InvoiceService(Component):
         return values
 
     def _get_payment_method_data(self, methods):
-        """
-        Build and return data (list of dict) of given payment methods
-        :param methods: shopinvader.payment recordset
-        :return: list of dict
-        """
         res = []
         for method in methods:
-            payment_mode = method.payment_mode_id
             res.append(
                 {
-                    "id": payment_mode.id,
-                    "name": payment_mode.name,
-                    "provider": payment_mode.payment_acquirer_id.provider,
+                    "id": method.acquirer_id.id,
+                    "name": method.acquirer_id.name,
+                    # fmt: off
+                    "provider":
+                        method.acquirer_id.provider,
+                    # fmt: on
                     "code": method.code,
                     "description": method.description,
                 }
