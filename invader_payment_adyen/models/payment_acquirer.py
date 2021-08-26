@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
 # Copyright 2019 ACSONE SA/NV (http://acsone.eu).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 import logging
 
 from Adyen.util import is_valid_hmac_notification
+
 from odoo import _, fields, models
 
 from ..services.exceptions import AdyenInvalidData
@@ -24,10 +24,12 @@ class PaymentAcquirer(models.Model):
 
     def _get_adyen_notification_message(self, transaction, notification_item):
         message = transaction.state_message
-        notification_message = "eventCode: {}, merchantReference: {}, pspReference: {}".format(
-            notification_item.get("eventCode"),
-            notification_item.get("merchantReference"),
-            notification_item.get("pspReference"),
+        notification_message = (
+            "eventCode: {}, merchantReference: {}, pspReference: {}".format(
+                notification_item.get("eventCode"),
+                notification_item.get("merchantReference"),
+                notification_item.get("pspReference"),
+            )
         )
         stamp = fields.Datetime.now()
         adyen_message = "\n" + stamp + ": " + str(notification_message)
@@ -47,14 +49,10 @@ class PaymentAcquirer(models.Model):
         :type notification_item: [type]
         """
         vals = {}
-        message = self._get_adyen_notification_message(
-            transaction, notification_item
-        )
+        message = self._get_adyen_notification_message(transaction, notification_item)
         vals.update({"state_message": message})
         if not transaction.acquirer_reference:
-            vals.update(
-                {"acquirer_reference": notification_item.get("pspReference")}
-            )
+            vals.update({"acquirer_reference": notification_item.get("pspReference")})
         return vals
 
     def _handle_adyen_notification_item(self, notification_item):
@@ -85,8 +83,7 @@ class PaymentAcquirer(models.Model):
             )
         if len(transaction) != 1:
             message = _(
-                "No payment transaction found with pspReference: %s"
-                % psp_reference
+                "No payment transaction found with pspReference: %s" % psp_reference
             )
             _logger.warning(message)
             raise AdyenInvalidData(message)
@@ -121,7 +118,5 @@ class PaymentAcquirer(models.Model):
                 # It will return a 200 code to Adyen, so the webhook will
                 # be marked as done on their side.
                 transaction._set_transaction_error(
-                    self._get_adyen_notification_message(
-                        transaction, notification_item
-                    )
+                    self._get_adyen_notification_message(transaction, notification_item)
                 )

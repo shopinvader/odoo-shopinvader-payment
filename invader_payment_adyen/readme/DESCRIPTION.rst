@@ -1,1 +1,1 @@
-This module implements rest servcies for Adyen payments.
+This module implements rest services for Adyen payments.

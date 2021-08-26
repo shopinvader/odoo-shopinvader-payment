@@ -1,18 +1,17 @@
-# -*- coding: utf-8 -*-
 # Copyright 2019 ACSONE SA/NV (http://acsone.eu).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 import logging
 
 from odoo import fields
+from odoo.tools.float_utils import float_round
+
 from odoo.addons.base_rest.components.service import (
     skip_secure_response,
     to_bool,
     to_int,
 )
 from odoo.addons.component.core import AbstractComponent
-from odoo.addons.shopinvader.shopinvader_response import shopinvader_agnostic
-from odoo.tools.float_utils import float_round
 
 _logger = logging.getLogger(__name__)
 
@@ -54,10 +53,10 @@ payment_completion_details = [
 
 def filter_completion_details(details):
     """
-        Filter authorized details in order to pass just those ones to the API
+    Filter authorized details in order to pass just those ones to the API
 
-        :param details: The details values as a dict
-        :type details: dict
+    :param details: The details values as a dict
+    :type details: dict
     """
     if not details:
         return
@@ -68,9 +67,8 @@ def filter_completion_details(details):
             unknown_params.append(key)
     if unknown_params:
         # Log unknown keys
-        message = (
-            "PaymentCompletionDetails contains unknown params: %s"
-            % ",".join([str(param) for param in unknown_params])
+        message = "PaymentCompletionDetails contains unknown params: %s" % ",".join(
+            [str(param) for param in unknown_params]
         )
         _logger.info(message)
     return details
@@ -161,11 +159,11 @@ class PaymentServiceAdyen(AbstractComponent):
         )
 
         # Adyen part
-        payment_mode = self.env["account.payment.mode"].browse(payment_mode_id)
-        self.payment_service._check_provider(payment_mode, "adyen")
+        acquirer = self.env["payment.acquirer"].browse(payment_mode_id)
+        self.payment_service._check_provider(acquirer, "adyen")
 
         transaction = transaction_obj.create(
-            payable._invader_prepare_payment_transaction_data(payment_mode)
+            payable._invader_prepare_payment_transaction_data(acquirer)
         )
         request = self._prepare_adyen_payment_methods_request(transaction)
         adyen = self._get_adyen_service(transaction)
@@ -269,15 +267,12 @@ class PaymentServiceAdyen(AbstractComponent):
             target, **params
         )
 
-        payment_mode = self.env["account.payment.mode"].browse(payment_mode_id)
-        payable._invader_set_payment_mode(payment_mode)
-        self.payment_service._check_provider(payment_mode, "adyen")
+        acquirer = self.env["payment.acquirer"].browse(payment_mode_id)
+        self.payment_service._check_provider(acquirer, "adyen")
 
         transaction = transaction_obj.browse(transaction_id)
         transaction.return_url = return_url
-        request = self._prepare_adyen_payments_request(
-            transaction, payment_method
-        )
+        request = self._prepare_adyen_payments_request(transaction, payment_method)
         adyen = self._get_adyen_service(transaction)
         response = adyen.checkout.payments(request)
         self._update_transaction_with_response(transaction, response)
@@ -285,9 +280,7 @@ class PaymentServiceAdyen(AbstractComponent):
         if result_code == "Authorised":
             transaction._set_transaction_done()
         else:
-            transaction.write(
-                {"state": ADYEN_TRANSACTION_STATUSES[result_code]}
-            )
+            transaction.write({"state": ADYEN_TRANSACTION_STATUSES[result_code]})
 
         return self._generate_adyen_response(
             response, payable, target, transaction, **params
@@ -418,13 +411,9 @@ class PaymentServiceAdyen(AbstractComponent):
             transaction._set_transaction_done()
         elif result_code in ("Cancelled", "Refused"):
             return_url = params.get("cancel_redirect")
-            transaction.write(
-                {"state": ADYEN_TRANSACTION_STATUSES[result_code]}
-            )
+            transaction.write({"state": ADYEN_TRANSACTION_STATUSES[result_code]})
         else:
-            transaction.write(
-                {"state": ADYEN_TRANSACTION_STATUSES[result_code]}
-            )
+            transaction.write({"state": ADYEN_TRANSACTION_STATUSES[result_code]})
         res = {}
         res["redirect_to"] = return_url
         return res
@@ -457,9 +446,7 @@ class PaymentServiceAdyen(AbstractComponent):
         """
 
         acquirer = transaction.acquirer_id
-        return acquirer.filtered(
-            lambda a: a.provider == "adyen"
-        ).adyen_merchant_account
+        return acquirer.filtered(lambda a: a.provider == "adyen").adyen_merchant_account
 
     def _update_additional_details(self, response):
         """
@@ -541,7 +528,6 @@ class PaymentServiceAdyen(AbstractComponent):
         return Validator(schema, allow_unknown=True)
 
     @skip_secure_response
-    @shopinvader_agnostic
     def webhook(self, **params):
         """
         Implement the webhook notification.
@@ -554,7 +540,5 @@ class PaymentServiceAdyen(AbstractComponent):
             notification_item = element.get("NotificationRequestItem")
             with self.env.cr.savepoint():
                 # Continue to handle items even if error
-                payment_acquirer_obj._handle_adyen_notification_item(
-                    notification_item
-                )
+                payment_acquirer_obj._handle_adyen_notification_item(notification_item)
         return "[accepted]"
