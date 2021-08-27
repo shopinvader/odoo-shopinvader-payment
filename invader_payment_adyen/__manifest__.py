@@ -12,6 +12,5 @@
     "depends": ["invader_payment", "payment_adyen"],
     "maintainers": ["rousseldenis"],
     "data": ["views/payment_acquirer.xml"],
-    "demo": ["demo/payment_demo.xml"],
     "external_dependencies": {"python": ["cerberus", "Adyen"], "bin": []},
 }

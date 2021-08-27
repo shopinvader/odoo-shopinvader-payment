@@ -31,7 +31,7 @@ class PaymentAcquirer(models.Model):
                 notification_item.get("pspReference"),
             )
         )
-        stamp = fields.Datetime.now()
+        stamp = str(fields.Datetime.now())
         adyen_message = "\n" + stamp + ": " + str(notification_message)
         if message:
             message += adyen_message

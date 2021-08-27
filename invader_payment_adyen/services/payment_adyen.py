@@ -6,6 +6,7 @@ import logging
 from odoo import fields
 from odoo.tools.float_utils import float_round
 
+from odoo.addons.base_rest import restapi
 from odoo.addons.base_rest.components.service import (
     skip_secure_response,
     to_bool,
@@ -390,6 +391,9 @@ class PaymentServiceAdyen(AbstractComponent):
         return Validator(schema, allow_unknown=True)
 
     @skip_secure_response
+    @restapi.method(
+        [(["/shopinvader/payment_adyen/paymentResult"], "GET")],
+    )
     def paymentResult(self, **params):
         """
         This is intended to manage callbacks after a merchant redirection
@@ -477,7 +481,7 @@ class PaymentServiceAdyen(AbstractComponent):
         if result_code:
             # Log resultCode of Adyen in transaction
             message = transaction.state_message
-            stamp = fields.Datetime.now()
+            stamp = str(fields.Datetime.now())
             adyen_message = "\n" + stamp + ": " + str(response.message)
             if message:
                 message += adyen_message
