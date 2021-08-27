@@ -1,18 +1,16 @@
-# -*- coding: utf-8 -*-
 # Copyright 2020 ACSONE SA/NV (<http://acsone.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 import mock
 from Adyen.client import AdyenResult
+
 from odoo.addons.shopinvader.tests.test_cart import CommonConnectedCartCase
 
 from .common import ShopinvaderAdyenCommon
 
 
-class TestShopinvaderAdyenService(
-    ShopinvaderAdyenCommon, CommonConnectedCartCase
-):
+class TestShopinvaderAdyenService(ShopinvaderAdyenCommon, CommonConnectedCartCase):
     def setUp(self, *args, **kwargs):
-        super(TestShopinvaderAdyenService, self).setUp(*args, **kwargs)
+        super().setUp(*args, **kwargs)
 
         with self.work_on_services(
             partner=self.partner, shopinvader_session=self.shopinvader_session
@@ -24,27 +22,21 @@ class TestShopinvaderAdyenService(
         # Simulate a "Received" resultCode from Adyen
         # Check if cart has changed typology
         # Check if transaction is set to pending
-        self.data.update({"payment_mode_id": self.account_payment_mode.id})
-        self.assertEquals("cart", self.cart.typology)
+        self.data.update({"payment_mode_id": self.acquirer.id})
+        self.assertEqual("cart", self.cart.typology)
         with mock.patch.object(
             self.payment_service, "_get_adyen_service"
         ) as mock_adyen:
             adyen = self._get_adyen_service()
             mock_adyen.return_value = adyen
-            with mock.patch.object(
-                adyen.checkout, "payment_methods"
-            ) as mock_methods:
+            with mock.patch.object(adyen.checkout, "payment_methods") as mock_methods:
                 result = self.payment_method_response
                 mock_methods.return_value = result
-                res = self.payment_service.dispatch(
-                    "paymentMethods", params=self.data
-                )
+                res = self.payment_service.dispatch("paymentMethods", params=self.data)
         transaction_id = res.get("transaction_id")
         methods = res.get("paymentMethods")
         sepa = [
-            method
-            for method in methods
-            if method.get("type") == "sepadirectdebit"
+            method for method in methods if method.get("type") == "sepadirectdebit"
         ][0]
         self.assertTrue(sepa)
         self.assertTrue(transaction_id)
@@ -58,46 +50,38 @@ class TestShopinvaderAdyenService(
                 self.data.update(
                     {
                         "transaction_id": transaction_id,
-                        "payment_mode_id": self.account_payment_mode.id,
+                        "payment_mode_id": self.acquirer.id,
                         "payment_method": sepa,
                         "return_url": "https://dummy",
                     }
                 )
-                res = self.payment_service.dispatch(
-                    "payments", params=self.data
-                )
+                res = self.payment_service.dispatch("payments", params=self.data)
 
         code = res.get("resultCode")
-        self.assertEquals("Received", code)
+        self.assertEqual("Received", code)
         transaction = self.env["payment.transaction"].browse(transaction_id)
-        self.assertEquals("pending", transaction.state)
-        self.assertEquals("sale", self.cart.typology)
+        self.assertEqual("pending", transaction.state)
+        self.assertEqual("sale", self.cart.typology)
 
     def test_payment_done(self):
         # Select a Credit Card payment method
         # Simulate a "Authorized" resultCode from Adyen
         # Check if cart has changed typology
         # Check if transaction is set to done
-        self.data.update({"payment_mode_id": self.account_payment_mode.id})
-        self.assertEquals("cart", self.cart.typology)
+        self.data.update({"payment_mode_id": self.acquirer.id})
+        self.assertEqual("cart", self.cart.typology)
         with mock.patch.object(
             self.payment_service, "_get_adyen_service"
         ) as mock_adyen:
             adyen = self._get_adyen_service()
             mock_adyen.return_value = adyen
-            with mock.patch.object(
-                adyen.checkout, "payment_methods"
-            ) as mock_methods:
+            with mock.patch.object(adyen.checkout, "payment_methods") as mock_methods:
                 result = self.payment_method_response
                 mock_methods.return_value = result
-                res = self.payment_service.dispatch(
-                    "paymentMethods", params=self.data
-                )
+                res = self.payment_service.dispatch("paymentMethods", params=self.data)
         transaction_id = res.get("transaction_id")
         methods = res.get("paymentMethods")
-        scheme = [
-            method for method in methods if method.get("type") == "scheme"
-        ][0]
+        scheme = [method for method in methods if method.get("type") == "scheme"][0]
         self.assertTrue(scheme)
         self.assertTrue(transaction_id)
         with mock.patch.object(
@@ -110,20 +94,21 @@ class TestShopinvaderAdyenService(
                 self.data.update(
                     {
                         "transaction_id": transaction_id,
-                        "payment_mode_id": self.account_payment_mode.id,
+                        "payment_mode_id": self.acquirer.id,
                         "payment_method": scheme,
                         "return_url": "https://dummy",
                     }
                 )
-                res = self.payment_service.dispatch(
-                    "payments", params=self.data
-                )
+                res = self.payment_service.dispatch("payments", params=self.data)
 
         code = res.get("resultCode")
-        self.assertEquals("Authorised", code)
+        self.assertEqual("Authorised", code)
         transaction = self.env["payment.transaction"].browse(transaction_id)
-        self.assertEquals("done", transaction.state)
-        self.assertEquals("sale", self.cart.typology)
+        self.assertEqual("done", transaction.state)
+        self.assertEqual("sale", self.cart.typology)
+        # Simulate the cron
+        transaction._post_process_after_done()
+        self.assertEqual("sale", self.cart.state)
 
     def _get_return_value(self):
         result = AdyenResult()
@@ -135,61 +120,48 @@ class TestShopinvaderAdyenService(
         return result
 
     def test_notification(self):
-        self.data.update({"payment_mode_id": self.account_payment_mode.id})
-        self.assertEquals("cart", self.cart.typology)
+        self.data.update({"payment_mode_id": self.acquirer.id})
+        self.assertEqual("cart", self.cart.typology)
         with mock.patch.object(
             self.payment_service, "_get_adyen_service"
         ) as mock_adyen:
             adyen = self._get_adyen_service()
             mock_adyen.return_value = adyen
-            with mock.patch.object(
-                adyen.checkout, "payment_methods"
-            ) as mock_methods:
+            with mock.patch.object(adyen.checkout, "payment_methods") as mock_methods:
                 result = self.payment_method_response
                 mock_methods.return_value = result
-                res = self.payment_service.dispatch(
-                    "paymentMethods", params=self.data
-                )
+                res = self.payment_service.dispatch("paymentMethods", params=self.data)
         self.transaction = self.env["payment.transaction"].browse(
             res.get("transaction_id")
         )
         request = self._get_notifications(self.transaction)
         with self.work_on_services(partner=self.partner) as work:
             self.service = work.component(usage="payment_adyen")
-        self.assertEquals("draft", self.transaction.state)
+        self.assertEqual("draft", self.transaction.state)
         self.service.dispatch("webhook", params=request)
 
-        self.assertEquals("done", self.transaction.state)
-        self.assertIn(
-            "pspReference: psp_reference_1", self.transaction.state_message
-        )
-        self.assertEqual(
-            "psp_reference_1", self.transaction.acquirer_reference
-        )
+        self.assertEqual("done", self.transaction.state)
+        self.assertEqual("psp_reference_1", self.transaction.acquirer_reference)
 
     def test_notification_failed(self):
-        self.data.update({"payment_mode_id": self.account_payment_mode.id})
-        self.assertEquals("cart", self.cart.typology)
+        self.data.update({"payment_mode_id": self.acquirer.id})
+        self.assertEqual("cart", self.cart.typology)
         with mock.patch.object(
             self.payment_service, "_get_adyen_service"
         ) as mock_adyen:
             adyen = self._get_adyen_service()
             mock_adyen.return_value = adyen
-            with mock.patch.object(
-                adyen.checkout, "payment_methods"
-            ) as mock_methods:
+            with mock.patch.object(adyen.checkout, "payment_methods") as mock_methods:
                 result = self.payment_method_response
                 mock_methods.return_value = result
-                res = self.payment_service.dispatch(
-                    "paymentMethods", params=self.data
-                )
+                res = self.payment_service.dispatch("paymentMethods", params=self.data)
         self.transaction = self.env["payment.transaction"].browse(
             res.get("transaction_id")
         )
         request = self._get_notifications(self.transaction, success=False)
         with self.work_on_services(partner=self.partner) as work:
             self.service = work.component(usage="payment_adyen")
-        self.assertEquals("draft", self.transaction.state)
+        self.assertEqual("draft", self.transaction.state)
         self.service.dispatch("webhook", params=request)
 
-        self.assertEquals("error", self.transaction.state)
+        self.assertEqual("error", self.transaction.state)

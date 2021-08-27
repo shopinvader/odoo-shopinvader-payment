@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2020 ACSONE SA/NV (<http://acsone.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 import Adyen
@@ -8,12 +7,12 @@ from Adyen.util import generate_notification_sig
 class ShopinvaderAdyenCommon(object):
     @classmethod
     def setUpClass(cls):
-        super(ShopinvaderAdyenCommon, cls).setUpClass()
+        super().setUpClass()
         cls.shopinvader_payment = cls.env.ref(
             "shopinvader_payment_adyen.shopinvader_payment_adyen"
         )
-        cls.account_payment_mode = cls.shopinvader_payment.payment_mode_id
-        cls.account_payment_mode.payment_acquirer_id.adyen_skin_hmac_key = (
+        cls.acquirer = cls.shopinvader_payment.acquirer_id
+        cls.acquirer.adyen_skin_hmac_key = (
             "1994F46BDCF6E02FC68EE6252B84F31FCB76CC46771A95C335EBB0BE036A0DBF"
         )
 
@@ -39,11 +38,13 @@ class ShopinvaderAdyenCommon(object):
         }
         cls.payments_response_scheme = Adyen.client.AdyenResult(message=vals)
 
+    @classmethod
     def _get_adyen_service(cls):
         adyen = Adyen.Adyen(platform="test", live_endpoint_prefix="prefix")
         adyen.client.xapikey = "TEST"
         return adyen
 
+    @classmethod
     def _get_notification_item(cls, transaction, success=True):
         item = {
             "NotificationRequestItem": {
@@ -69,11 +70,12 @@ class ShopinvaderAdyenCommon(object):
             item["NotificationRequestItem"],
             transaction.acquirer_id.adyen_skin_hmac_key,
         )
-        item["NotificationRequestItem"]["additionalData"][
-            "hmacSignature"
-        ] = signature
+        item["NotificationRequestItem"]["additionalData"]["hmacSignature"] = str(
+            signature.decode("utf-8")
+        )
         return item
 
+    @classmethod
     def _get_notifications(cls, transactions, success=True):
         notifications = {
             "live": "false",
