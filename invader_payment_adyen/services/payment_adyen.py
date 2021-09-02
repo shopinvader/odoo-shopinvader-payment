@@ -105,13 +105,13 @@ class PaymentServiceAdyen(AbstractComponent):
         :param transaction:
         :return:
         """
-        environment = transaction.acquirer_id.environment
-        return str(environment) if environment == "test" else "live"
+        state = transaction.acquirer_id.state
+        return "test" if state in ("disabled", "test") else "live"
 
     def _get_live_prefix(self, transaction):
-        environment = transaction.acquirer_id.environment
+        state = transaction.acquirer_id.state
         prefix = transaction.acquirer_id.adyen_live_endpoint_prefix
-        return str(prefix) if environment == "prod" else ""
+        return str(prefix) if state == "enabled" else ""
 
     def _validator_paymentMethods(self):
         res = self.payment_service._invader_get_target_validator()
