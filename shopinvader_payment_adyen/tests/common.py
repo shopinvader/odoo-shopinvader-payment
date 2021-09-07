@@ -40,8 +40,9 @@ class ShopinvaderAdyenCommon(object):
 
     @classmethod
     def _get_adyen_service(cls):
-        adyen = Adyen.Adyen(platform="test", live_endpoint_prefix="prefix")
-        adyen.client.xapikey = "TEST"
+        adyen = Adyen.Adyen(
+            platform="test", live_endpoint_prefix="prefix", xapikey="TEST"
+        )
         return adyen
 
     @classmethod
@@ -85,3 +86,15 @@ class ShopinvaderAdyenCommon(object):
             ],
         }
         return notifications
+
+    @classmethod
+    def _get_payment_result_params(cls, transaction):
+        params = {
+            "cancel_redirect": "/cart/checkout?canceled_payment=adyen",
+            "force_apply_redirection": "true",
+            "redirectResult": "redirectResult",
+            "success_redirect": "/cart/validation",
+            "target": "current_cart",
+            "transaction_id": transaction.id,
+        }
+        return params

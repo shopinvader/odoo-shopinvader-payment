@@ -138,8 +138,8 @@ class TestShopinvaderAdyenService(ShopinvaderAdyenCommon, CommonConnectedCartCas
         with self.work_on_services(partner=self.partner) as work:
             self.service = work.component(usage="payment_adyen")
         self.assertEqual("draft", self.transaction.state)
-        self.service.dispatch("webhook", params=request)
-
+        result = self.service.dispatch("webhook", params=request)
+        self.assertEqual("[accepted]", result)
         self.assertEqual("done", self.transaction.state)
         self.assertEqual("psp_reference_1", self.transaction.acquirer_reference)
 
@@ -165,3 +165,30 @@ class TestShopinvaderAdyenService(ShopinvaderAdyenCommon, CommonConnectedCartCas
         self.service.dispatch("webhook", params=request)
 
         self.assertEqual("error", self.transaction.state)
+
+    def test_payment_result(self):
+        self.data.update({"payment_mode_id": self.acquirer.id})
+        self.assertEqual("cart", self.cart.typology)
+        with mock.patch.object(
+            self.payment_service, "_get_adyen_service"
+        ) as mock_adyen:
+            adyen = self._get_adyen_service()
+            mock_adyen.return_value = adyen
+            with mock.patch.object(adyen.checkout, "payment_methods") as mock_methods:
+                result = self.payment_method_response
+                mock_methods.return_value = result
+                res = self.payment_service.dispatch("paymentMethods", params=self.data)
+        self.transaction = self.env["payment.transaction"].browse(
+            res.get("transaction_id")
+        )
+        self.assertEqual("draft", self.transaction.state)
+        params = self._get_payment_result_params(self.transaction)
+        with mock.patch.object(
+            self.payment_service, "_get_adyen_service"
+        ) as mock_adyen:
+            adyen = self._get_adyen_service()
+            mock_adyen.return_value = adyen
+            with mock.patch.object(adyen.checkout, "payments_details") as mock_methods:
+                result = self.payments_response_scheme
+                mock_methods.return_value = result
+                result = self.payment_service.dispatch("paymentResult", params=params)

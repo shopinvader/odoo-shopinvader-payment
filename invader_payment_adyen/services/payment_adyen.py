@@ -62,17 +62,19 @@ def filter_completion_details(details):
     if not details:
         return
     unknown_params = []
-    for key, _ in details.items():
+    new_details = {}
+    for key, value in details.items():
         if key not in payment_completion_details:
-            details.pop(key)
             unknown_params.append(key)
+        else:
+            new_details[key] = value
     if unknown_params:
         # Log unknown keys
         message = "PaymentCompletionDetails contains unknown params: %s" % ",".join(
             [str(param) for param in unknown_params]
         )
         _logger.info(message)
-    return details
+    return new_details
 
 
 class PaymentServiceAdyen(AbstractComponent):
@@ -95,8 +97,8 @@ class PaymentServiceAdyen(AbstractComponent):
         adyen = Adyen.Adyen(
             platform=self._get_platform(transaction),
             live_endpoint_prefix=self._get_live_prefix(transaction),
+            xapikey=self._get_adyen_api_key(transaction),
         )
-        adyen.client.xapikey = self._get_adyen_api_key(transaction)
         return adyen
 
     def _get_platform(self, transaction):
@@ -390,9 +392,10 @@ class PaymentServiceAdyen(AbstractComponent):
         schema = {"redirect_to": {"type": "string"}}
         return Validator(schema, allow_unknown=True)
 
-    @skip_secure_response
     @restapi.method(
-        [(["/shopinvader/payment_adyen/paymentResult"], "GET")],
+        [(["/paymentResult"], ["GET", "POST"])],
+        input_param=restapi.CerberusValidator("_validator_paymentResult"),
+        output_param=restapi.CerberusValidator("_validator_return_paymentResult"),
     )
     def paymentResult(self, **params):
         """
