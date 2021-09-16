@@ -209,7 +209,7 @@ class PaymentServiceStripe(AbstractComponent):
                     transaction, stripe_payment_intent_id
                 )
             if (
-                intent.status in ["suceeded", "authorized"]
+                intent.status in ["suceeded", "requires_capture"]
                 and intent.setup_future_usage
                 and not token
             ):
