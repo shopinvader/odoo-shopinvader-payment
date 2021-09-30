@@ -105,9 +105,7 @@ class PaymentServiceSips(AbstractComponent):
         acquirer = self.env["payment.acquirer"].browse(payment_mode_id)
         self.payment_service._check_provider(acquirer, "sips")
 
-        transaction_data = payable._invader_prepare_payment_transaction_data(
-            acquirer
-        )
+        transaction_data = payable._invader_prepare_payment_transaction_data(acquirer)
 
         transaction = self.env["payment.transaction"].create(transaction_data)
         data = _sips_make_data(
@@ -131,17 +129,13 @@ class PaymentServiceSips(AbstractComponent):
         assert acquirer.provider == "sips"
         data = {}
 
-        currency_code, currency_mult = SIPS_CURRENCY_CODES[
-            transaction.currency_id.name
-        ]
+        currency_code, currency_mult = SIPS_CURRENCY_CODES[transaction.currency_id.name]
         data["amount"] = int(transaction.amount * currency_mult)
         data["currencyCode"] = currency_code
         data["transactionReference"] = transaction.reference
         data["merchantId"] = acquirer.sips_merchant_id
         data["keyVersion"] = (
-            self.env["ir.config_parameter"]
-            .sudo()
-            .get_param("sips.key_version", "2")
+            self.env["ir.config_parameter"].sudo().get_param("sips.key_version", "2")
         )
         data["normalReturnUrl"] = normal_return_url
         data["automaticResponseUrl"] = automatic_response_url
@@ -163,16 +157,12 @@ class PaymentServiceSips(AbstractComponent):
         data = params.get("Data")
         seal = params.get("Seal")
         if not data or not seal:
-            _logger.warning(
-                "invalid SIPS automatic response: missing data or seal"
-            )
+            _logger.warning("invalid SIPS automatic response: missing data or seal")
             raise UserError(INVALID_DATA)
         data_o = _sips_parse_data(data)
         reference = data_o.get("transactionReference")
         if not reference:
-            _logger.warning(
-                "no transaction reference in SIPS automatic response"
-            )
+            _logger.warning("no transaction reference in SIPS automatic response")
             raise UserError(INVALID_DATA)
         transaction = self.env["payment.transaction"].search(
             [("reference", "=", reference)]
@@ -254,18 +244,14 @@ class PaymentServiceSips(AbstractComponent):
         schema = {"redirect_to": {"type": "string"}}
         return Validator(schema, allow_unknown=True)
 
-    def normal_return(
-        self, target, success_redirect, cancel_redirect, **params
-    ):
+    def normal_return(self, target, success_redirect, cancel_redirect, **params):
         """
         Service invoked in the user session, when the user returns to the
         merchant site from the SIPS payment site. It must return a redirect_to
         to the success or cancel url depending on transaction outcome.
         """
         _logger.info("SIPS normal_return: %s", params)
-        transaction = self._process_response(
-            in_customer_session=True, **params
-        )
+        transaction = self._process_response(in_customer_session=True, **params)
         res = {}
         if transaction.state == "done":
             res["redirect_to"] = success_redirect
