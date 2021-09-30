@@ -11,5 +11,5 @@
     "category": "e-commerce",
     "depends": ["invader_payment", "payment_sips", "base_rest"],
     "external_dependencies": {"python": ["cerberus"]},
-    "installable": True,
+    "installable": False,
 }
