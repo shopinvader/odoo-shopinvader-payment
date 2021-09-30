@@ -4,11 +4,14 @@
 import logging
 from hashlib import sha256
 
+import dateutil
 from cerberus import Validator
+
 from odoo import _, fields
+from odoo.exceptions import UserError
+
 from odoo.addons.base_rest.components.service import to_int
 from odoo.addons.component.core import AbstractComponent
-from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -64,6 +67,8 @@ class PaymentServiceSips(AbstractComponent):
         return self.component(usage="invader.payment")
 
     def _validator_prepare_payment(self):
+        # payment_mode_id: payment.acquirer id. Will be changed to acquirer_id.
+        # Let to ensure backward compatibility
         schema = {
             "payment_mode_id": {
                 "coerce": to_int,
@@ -97,21 +102,19 @@ class PaymentServiceSips(AbstractComponent):
             target, **params
         )
 
-        payment_mode = self.env["account.payment.mode"].browse(payment_mode_id)
-        self.payment_service._check_provider(payment_mode, "sips")
+        acquirer = self.env["payment.acquirer"].browse(payment_mode_id)
+        self.payment_service._check_provider(acquirer, "sips")
 
         transaction_data = payable._invader_prepare_payment_transaction_data(
-            payment_mode
+            acquirer
         )
 
         transaction = self.env["payment.transaction"].create(transaction_data)
-        payable._invader_set_payment_mode(payment_mode)
         data = _sips_make_data(
             self._prepare_sips_data(
                 transaction, normal_return_url, automatic_response_url
             )
         )
-        acquirer = transaction.acquirer_id
         seal = _sips_make_seal(data, acquirer.sips_secret)
         return {
             "sips_form_action_url": acquirer.sips_get_form_action_url(),
@@ -155,7 +158,7 @@ class PaymentServiceSips(AbstractComponent):
     def _validator_return_automatic_response(self):
         return {}
 
-    def _process_response(self, **params):
+    def _process_response(self, in_customer_session, **params):
         INVALID_DATA = _("invalid data")
         data = params.get("Data")
         seal = params.get("Seal")
@@ -195,17 +198,22 @@ class PaymentServiceSips(AbstractComponent):
                 data,
             )
             raise UserError(INVALID_DATA)
+        response_code = data_o.get("responseCode")
+        success = response_code == "00"
         if transaction.state == "draft":
             # if transaction is not draft, it means it has already been
             # processed by automatic_response or normal_return
-            response_code = data_o.get("responseCode")
-            success = response_code == "00"
+            transaction_date_time = data_o.get(
+                "transactionDateTime", fields.Datetime.now()
+            )
+            if isinstance(transaction_date_time, str):
+                transaction_date_time = dateutil.parser.parse(
+                    transaction_date_time
+                ).replace(tzinfo=None)
             tx_data = {
                 # XXX better field for acquirer_reference?
                 "acquirer_reference": data_o.get("transactionReference"),
-                "date": data_o.get(
-                    "transactionDateTime", fields.Datetime.now()
-                ),
+                "date": transaction_date_time,
                 "state_message": "SIPS response_code {}".format(response_code),
             }
             transaction.write(tx_data)
@@ -214,6 +222,12 @@ class PaymentServiceSips(AbstractComponent):
             else:
                 # XXX we may need to handle pending state?
                 transaction._set_transaction_cancel()
+        elif in_customer_session:
+            # If we are here this means the automatic response from SIPS
+            # came before the manual_response that comes through the browser.
+            # We want _confirm_and_invalidate_session() to run so the
+            # front receives last_sale and an empty cart.
+            transaction._notify_state_changed_event()
         return transaction
 
     def automatic_response(self, **params):
@@ -222,7 +236,7 @@ class PaymentServiceSips(AbstractComponent):
         with information on the transaction outcome.
         """
         _logger.info("SIPS automatic_response: %s", params)
-        self._process_response(**params)
+        self._process_response(in_customer_session=False, **params)
         return {}
 
     def _validator_normal_return(self):
@@ -249,7 +263,9 @@ class PaymentServiceSips(AbstractComponent):
         to the success or cancel url depending on transaction outcome.
         """
         _logger.info("SIPS normal_return: %s", params)
-        transaction = self._process_response(**params)
+        transaction = self._process_response(
+            in_customer_session=True, **params
+        )
         res = {}
         if transaction.state == "done":
             res["redirect_to"] = success_redirect
