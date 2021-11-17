@@ -70,6 +70,10 @@ class PaymentAcquirer(models.Model):
             message = _("pspReference not in webhook data!")
             _logger.warning(message)
             raise AdyenInvalidData(message)
+        event_code = notification_item.get("eventCode")
+        # TODO: Treat each event_code
+        if event_code != "AUTHORISATION":
+            return
         psp_reference = notification_item.get("pspReference")
         merchant_reference = notification_item.get("merchantReference")
         transaction = self.env["payment.transaction"].search(
@@ -101,7 +105,7 @@ class PaymentAcquirer(models.Model):
             )
             _logger.warning(message)
             raise AdyenInvalidData(message)
-        event_code = notification_item.get("eventCode")
+
         data = self._get_adyen_additional_data(transaction, notification_item)
         if data:
             transaction.write(data)

@@ -143,6 +143,35 @@ class TestShopinvaderAdyenService(ShopinvaderAdyenCommon, CommonConnectedCartCas
         self.assertEqual("done", self.transaction.state)
         self.assertEqual("psp_reference_1", self.transaction.acquirer_reference)
 
+    def test_notification_other(self):
+        """
+        Check something else than AUTHORISATION
+        """
+        self.data.update({"payment_mode_id": self.acquirer.id})
+        self.assertEqual("cart", self.cart.typology)
+        with mock.patch.object(
+            self.payment_service, "_get_adyen_service"
+        ) as mock_adyen:
+            adyen = self._get_adyen_service()
+            mock_adyen.return_value = adyen
+            with mock.patch.object(adyen.checkout, "payment_methods") as mock_methods:
+                result = self.payment_method_response
+                mock_methods.return_value = result
+                res = self.payment_service.dispatch("paymentMethods", params=self.data)
+        self.transaction = self.env["payment.transaction"].browse(
+            res.get("transaction_id")
+        )
+        request = self._get_notifications(self.transaction)
+        items = request["notificationItems"]
+        item = items[0]["NotificationRequestItem"]
+        item["eventCode"] = "REPORT_AVAILABLE"
+        with self.work_on_services(partner=self.partner) as work:
+            self.service = work.component(usage="payment_adyen")
+        self.assertEqual("draft", self.transaction.state)
+        result = self.service.dispatch("webhook", params=request)
+        self.assertEqual("[accepted]", result)
+        self.assertEqual("draft", self.transaction.state)
+
     def test_notification_failed(self):
         self.data.update({"payment_mode_id": self.acquirer.id})
         self.assertEqual("cart", self.cart.typology)
