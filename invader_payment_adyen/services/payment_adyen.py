@@ -414,13 +414,22 @@ class PaymentServiceAdyen(AbstractComponent):
         self._update_transaction_with_response(transaction, response)
         result_code = response.message.get("resultCode")
         return_url = params.get("success_redirect")
+        notify = False
         if result_code == "Authorised":
-            transaction._set_transaction_done()
+            if transaction.state == "draft":
+                transaction._set_transaction_done()
+            else:
+                notify = True
         elif result_code in ("Cancelled", "Refused"):
             return_url = params.get("cancel_redirect")
             transaction.write({"state": ADYEN_TRANSACTION_STATUSES[result_code]})
         else:
             transaction.write({"state": ADYEN_TRANSACTION_STATUSES[result_code]})
+
+        if notify:
+            # Payment state has been changed through another process
+            # (e.g. webhook). So, do the stuff for shopinvader_session
+            transaction._notify_state_changed_event()
         res = {}
         res["redirect_to"] = return_url
         return res
