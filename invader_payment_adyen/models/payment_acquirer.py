@@ -70,6 +70,15 @@ class PaymentAcquirer(models.Model):
             message = _("pspReference not in webhook data!")
             _logger.warning(message)
             raise AdyenInvalidData(message)
+        addionalData = notification_item.get("additionalData")
+        # Check if notification is for Ecommerce as you can have
+        # notifications for POS too if using terminals
+        # You have to add notification configuration in Adyen backend for
+        # shopperInteraction (Include Shopper Interaction)
+        if addionalData:
+            shopperInteraction = addionalData.get("shopperInteraction")
+            if shopperInteraction and shopperInteraction != "Ecommerce":
+                return
         event_code = notification_item.get("eventCode")
         # TODO: Treat each event_code
         if event_code != "AUTHORISATION":
