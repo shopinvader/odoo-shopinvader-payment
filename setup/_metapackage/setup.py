@@ -10,8 +10,10 @@ setuptools.setup(
     install_requires=[
         'odoo14-addon-invader_payment',
         'odoo14-addon-invader_payment_manual',
+        'odoo14-addon-invader_payment_stripe',
         'odoo14-addon-shopinvader_payment',
         'odoo14-addon-shopinvader_payment_manual',
+        'odoo14-addon-shopinvader_payment_stripe',
     ],
     classifiers=[
         'Programming Language :: Python',
