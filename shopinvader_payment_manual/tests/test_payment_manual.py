@@ -1,41 +1,20 @@
 # Copyright 2019 ACSONE SA/NV (http://acsone.eu).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-import contextlib
-from unittest.mock import Mock
 
-import odoo
 from odoo.exceptions import UserError
-from odoo.tools.misc import DotDict
 
-from odoo.addons.shopinvader.tests.test_cart import CommonConnectedCartCase
+from odoo.addons.shopinvader_payment.tests.common import CommonConnectedPaymentCase
 
 
-class ShopinvaderManualPaymentCase(CommonConnectedCartCase):
-    @contextlib.contextmanager
-    def _mock_request(self, cart_id):
-        request = Mock(
-            context={},
-            db=self.env.cr.dbname,
-            uid=None,
-            httprequest=Mock(
-                environ={"HTTP_SESS_CART_ID": cart_id}, headers={}
-            ),
-            session=DotDict(),
-        )
-
-        with contextlib.ExitStack() as s:
-            odoo.http._request_stack.push(request)
-            s.callback(odoo.http._request_stack.pop)
-            yield request
-
+class ShopinvaderManualPaymentCase(CommonConnectedPaymentCase):
     def setUp(self, *args, **kwargs):
-        super(ShopinvaderManualPaymentCase, self).setUp(*args, **kwargs)
+        super().setUp(*args, **kwargs)
         self.acquirer = self.env.ref("payment.payment_acquirer_transfer")
 
     @classmethod
     def setUpClass(cls):
-        super(ShopinvaderManualPaymentCase, cls).setUpClass()
+        super().setUpClass()
         cls.cart = cls.env.ref("shopinvader.sale_order_2")
         cls.shopinvader_session = {"cart_id": cls.cart.id}
         with cls.work_on_services(
