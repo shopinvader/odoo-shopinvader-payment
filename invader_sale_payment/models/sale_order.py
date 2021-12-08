@@ -2,7 +2,8 @@
 # Copyright 2019 ACSONE SA/NV
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class SaleOrder(models.Model):
@@ -62,3 +63,27 @@ class SaleOrder(models.Model):
                 }
             )
         return action
+
+    @api.multi
+    def action_confirm(self):
+        res = super(SaleOrder, self).action_confirm()
+        for order in self:
+            if order.payment_mode_id.capture_payment == "order_confirm":
+                order.authorized_transaction_ids.action_capture()
+        return res
+
+    @api.multi
+    def action_capture(self):
+        if any(self.mapped(lambda tx: tx.state != "authorized")):
+            raise ValidationError(
+                _(
+                    "Only transactions in the Authorized status"
+                    " can be captured."
+                )
+            )
+        for tx in self:
+            tx.capture_one_transaction()
+
+    @api.multi
+    def capture_one_transaction(self):
+        self.ensure_one()

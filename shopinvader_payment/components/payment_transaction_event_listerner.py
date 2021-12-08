@@ -12,6 +12,8 @@ class SaleOrderPaymentTransactionEventListener(Component):
     _apply_on = ["sale.order"]
 
     def _confirm_and_invalidate_session(self, sale_order):
+        if sale_order.typology != "cart":
+            return
         shopinvader_backend = sale_order.shopinvader_backend_id
         if not shopinvader_backend:
             return
@@ -33,4 +35,7 @@ class SaleOrderPaymentTransactionEventListener(Component):
         # end of awful code ....
 
     def on_payment_transaction_done(self, sale_order, transaction):
+        self._confirm_and_invalidate_session(sale_order)
+
+    def on_payment_transaction_authorized(self, sale_order, transaction):
         self._confirm_and_invalidate_session(sale_order)
