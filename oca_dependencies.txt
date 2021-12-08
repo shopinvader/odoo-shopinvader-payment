@@ -1,4 +1,5 @@
 bank-payment
 sale-workflow
 server-tools
-shopinvader https://github.com/shopinvader/odoo-shopinvader.git 10.0
+account-reconcile
+shopinvader https://github.com/acsone/odoo-shopinvader.git 10.0-update_with_shopinvader_invoice_payment
