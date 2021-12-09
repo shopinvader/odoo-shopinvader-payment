@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    Copyright 2021 Camptocamp SA (https://www.camptocamp.com).
+    @author Iván Todorovich <ivan.todorovich@camptocamp.com>
+    License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
+-->
+<odoo>
+
+    <record id="shopinvader_payment_view_tree" model="ir.ui.view">
+        <field name="model">shopinvader.payment</field>
+        <field
+            name="inherit_id"
+            ref="shopinvader_payment.shopinvader_payment_view_tree"
+        />
+        <field name="arch" type="xml">
+            <tree position="inside">
+                <field name="domain" optional="show" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="shopinvader_payment_view_form" model="ir.ui.view">
+        <field name="model">shopinvader.payment</field>
+        <field
+            name="inherit_id"
+            ref="shopinvader_payment.shopinvader_payment_view_form"
+        />
+        <field name="arch" type="xml">
+            <group name="configuration" position="inside">
+                <field
+                    name="domain"
+                    widget="domain"
+                    options="{'model': 'sale.order', 'in_dialog': True}"
+                />
+            </group>
+        </field>
+    </record>
+
+</odoo>
