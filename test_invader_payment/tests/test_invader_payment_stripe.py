@@ -75,3 +75,18 @@ class TestInvaderPaymentStripe(VCRMixin, TestCommonPayment):
             },
         )
         self.assertEqual(result, {"success": True})
+
+    def test_create(self):
+        result = self.service.dispatch(
+            "create",
+            params={
+                "target": "demo_partner",
+            },
+        )
+        self.assertEqual(result["requires_payment_method"], True)
+        transaction = self.env["payment.transaction"].search(
+            [("partner_id", "=", self.demo_partner.id)],
+            order="create_date desc",
+            limit=1,
+        )
+        self.assertEqual(transaction.state, "draft")

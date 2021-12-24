@@ -7,9 +7,11 @@ import stripe
 from cerberus import Validator
 
 from odoo import _
+from odoo.exceptions import ValidationError
 from odoo.tools.float_utils import float_round
 
 from odoo.addons.base_rest import restapi
+from odoo.addons.base_rest.components.service import to_int
 from odoo.addons.component.core import AbstractComponent
 from odoo.addons.payment_stripe.models.payment import INT_CURRENCIES
 
@@ -37,6 +39,34 @@ class PaymentServiceStripe(AbstractComponent):
     @property
     def payment_service(self):
         return self.component(usage="invader.payment")
+
+    def _validator_webhook(self):
+        res = {
+            "type": {"type": "string", "required": True},
+            "data": {
+                "type": "dict",
+                "required": True,
+                "schema": {
+                    "object": {
+                        "type": "dict",
+                        "required": True,
+                        "schema": {
+                            "id": {"type": "string", "required": True},
+                            "metadata": {
+                                "type": "dict",
+                                "schema": {"reference": {"type": "string"}},
+                            },
+                            "amount": {"type": "integer", "coerce": to_int},
+                        },
+                    }
+                },
+            },
+        }
+        return res
+
+    def _validator_create(self):
+        res = self.payment_service._invader_get_target_validator()
+        return res
 
     def _validator_confirm_payment(self):
         """
@@ -101,6 +131,63 @@ class PaymentServiceStripe(AbstractComponent):
 
         acquirer = transaction.acquirer_id
         return acquirer.filtered(lambda a: a.provider == "stripe").stripe_secret_key
+
+    @restapi.method(
+        [(["/webhook"], "POST")],
+        input_param=restapi.CerberusValidator("_validator_webhook"),
+        output_param={},
+    )
+    def webhook(self, **event):
+        acquirer = self.env.ref("payment.payment_acquirer_stripe")
+        acquirer._verify_stripe_signature()
+        # Handle the event
+        if event and event["type"] == "payment_intent.succeeded":
+            payment_intent = event["data"]["object"]  # contains a stripe.PaymentIntent
+            reference = payment_intent["metadata"].get("reference")
+            transaction = self.env["payment.transaction"].search(
+                [("reference", "=", reference)], limit=1
+            )
+            if not transaction:
+                raise ValidationError(
+                    _(
+                        "payment_intent.succeeded event received \
+                            for an unknown transaction: {}, {}"
+                    ).format(reference, payment_intent["id"])
+                )
+            _logger.info(_("Payment for {} succeeded").format(transaction.reference))
+            transaction.amount = payment_intent["amount"]
+            transaction._set_transaction_done()
+        # elif event["type"] == "payment_method.attached":
+        #    payment_method = event["data"]["object"]  # contains a stripe.PaymentMethod
+        # Then define and call a method to handle the successful attachment of a PaymentMethod.
+        # handle_payment_method_attached(payment_method)
+        else:
+            # Unexpected event type
+            _logger.warning("Unhandled event type {}".format(event["type"]))
+
+    @restapi.method(
+        [(["/create"], "POST")],
+        input_param=restapi.CerberusValidator("_validator_create"),
+        output_param=restapi.CerberusValidator("_validator_return_confirm_payment"),
+    )
+    # pylint: disable=W8106
+    def create(self, target, **params):
+        payable = self.payment_service._invader_find_payable_from_target(
+            target, **params
+        )
+        acquirer = self.env.ref("payment.payment_acquirer_stripe")
+
+        transaction = self.env["payment.transaction"].create(
+            payable._invader_prepare_payment_transaction_data(acquirer)
+        )
+        intent = self._prepare_stripe_intent(transaction, None)
+        transaction.write(
+            {
+                "acquirer_reference": intent.id,
+                "state": STRIPE_TRANSACTION_STATUSES[intent.status],
+            }
+        )
+        return self._generate_stripe_response(intent, payable, target, **params)
 
     @restapi.method(
         [(["/confirm_payment"], "POST")],
@@ -178,16 +265,21 @@ class PaymentServiceStripe(AbstractComponent):
         """
         metadata = {"reference": transaction.reference}
         currency = transaction.currency_id
-        intent = stripe.PaymentIntent.create(
-            payment_method=stripe_payment_method_id,
-            amount=self._get_formatted_amount(currency, transaction.amount),
-            currency=currency.name,
-            confirmation_method="manual",
-            confirm=True,
-            description=transaction.reference,
-            metadata=metadata,
-            api_key=self._get_stripe_private_key(transaction),
-        )
+        intent_kwargs = {
+            "api_key": self._get_stripe_private_key(transaction),
+            "amount": self._get_formatted_amount(currency, transaction.amount),
+            "currency": currency.name,
+            "description": transaction.reference,
+            "metadata": metadata,
+        }
+        # If there is no payment method, that means the initialization is done server-side
+        if stripe_payment_method_id:
+            intent_kwargs["payment_method"] = stripe_payment_method_id
+            intent_kwargs["confirmation_method"] = "manual"
+            intent_kwargs["confirm"] = True
+        else:
+            intent_kwargs["automatic_payment_methods"] = {"enabled": True}
+        intent = stripe.PaymentIntent.create(**intent_kwargs)
         return intent
 
     def _confirm_stripe_intent(self, transaction, stripe_payment_intent_id):
@@ -216,6 +308,12 @@ class PaymentServiceStripe(AbstractComponent):
                 # Tell the client to handle the action
                 return {
                     "requires_action": True,
+                    "payment_intent_client_secret": intent.client_secret,
+                }
+            elif intent.status == "requires_payment_method":
+                # Tell the client to handle the payment method choice
+                return {
+                    "requires_payment_method": True,
                     "payment_intent_client_secret": intent.client_secret,
                 }
             elif intent.status == "succeeded":
