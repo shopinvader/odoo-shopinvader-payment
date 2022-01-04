@@ -8,6 +8,7 @@ from cerberus import Validator
 
 from odoo import _
 from odoo.exceptions import ValidationError
+from odoo.http import request
 from odoo.tools.float_utils import float_round
 
 from odoo.addons.base_rest import restapi
@@ -17,6 +18,21 @@ from odoo.addons.payment_stripe.models.payment import INT_CURRENCIES
 
 _logger = logging.getLogger(__name__)
 
+# https://stripe.com/files/ips/ips_webhooks.txt
+STRIPE_WEBHOOK_IPS = [
+    "3.18.12.63",
+    "3.130.192.231",
+    "13.235.14.237",
+    "13.235.122.149",
+    "18.211.135.69",
+    "35.154.171.200",
+    "52.15.183.38",
+    "54.88.130.119",
+    "54.88.130.237",
+    "54.187.174.169",
+    "54.187.205.235",
+    "54.187.216.72",
+]
 # map Stripe transaction statuses to Odoo payment.transaction statuses
 STRIPE_TRANSACTION_STATUSES = {
     "canceled": "cancel",
@@ -132,20 +148,37 @@ class PaymentServiceStripe(AbstractComponent):
         acquirer = transaction.acquirer_id
         return acquirer.filtered(lambda a: a.provider == "stripe").stripe_secret_key
 
+    def _check_stripe_webhook_ip(self):
+        remote_addr = request.httprequest.remote_addr
+        if remote_addr not in STRIPE_WEBHOOK_IPS:
+            raise ValidationError(
+                _("The incoming IP is not in the Stripe Webhook list")
+            )
+
     @restapi.method(
         [(["/webhook"], "POST")],
         input_param=restapi.CerberusValidator("_validator_webhook"),
         output_param={},
+        auth="public",
     )
     def webhook(self, **event):
+        self._check_stripe_webhook_ip()
         acquirer = self.env.ref("payment.payment_acquirer_stripe")
-        acquirer._verify_stripe_signature()
+        acquirer.with_user(1)._verify_stripe_signature()
         # Handle the event
         if event and event["type"] == "payment_intent.succeeded":
             payment_intent = event["data"]["object"]  # contains a stripe.PaymentIntent
             reference = payment_intent["metadata"].get("reference")
-            transaction = self.env["payment.transaction"].search(
-                [("reference", "=", reference)], limit=1
+            transaction = (
+                self.env["payment.transaction"]
+                .with_user(1)
+                .search(
+                    [
+                        ("reference", "=", reference),
+                        ("acquirer_reference", "=", payment_intent["id"]),
+                    ],
+                    limit=1,
+                )
             )
             if not transaction:
                 raise ValidationError(
