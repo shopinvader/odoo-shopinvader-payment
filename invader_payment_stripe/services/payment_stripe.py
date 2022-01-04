@@ -7,32 +7,14 @@ import stripe
 from cerberus import Validator
 
 from odoo import _
-from odoo.exceptions import ValidationError
-from odoo.http import request
 from odoo.tools.float_utils import float_round
 
 from odoo.addons.base_rest import restapi
-from odoo.addons.base_rest.components.service import to_int
 from odoo.addons.component.core import AbstractComponent
 from odoo.addons.payment_stripe.models.payment import INT_CURRENCIES
 
 _logger = logging.getLogger(__name__)
 
-# https://stripe.com/files/ips/ips_webhooks.txt
-STRIPE_WEBHOOK_IPS = [
-    "3.18.12.63",
-    "3.130.192.231",
-    "13.235.14.237",
-    "13.235.122.149",
-    "18.211.135.69",
-    "35.154.171.200",
-    "52.15.183.38",
-    "54.88.130.119",
-    "54.88.130.237",
-    "54.187.174.169",
-    "54.187.205.235",
-    "54.187.216.72",
-]
 # map Stripe transaction statuses to Odoo payment.transaction statuses
 STRIPE_TRANSACTION_STATUSES = {
     "canceled": "cancel",
@@ -55,30 +37,6 @@ class PaymentServiceStripe(AbstractComponent):
     @property
     def payment_service(self):
         return self.component(usage="invader.payment")
-
-    def _validator_webhook(self):
-        res = {
-            "type": {"type": "string", "required": True},
-            "data": {
-                "type": "dict",
-                "required": True,
-                "schema": {
-                    "object": {
-                        "type": "dict",
-                        "required": True,
-                        "schema": {
-                            "id": {"type": "string", "required": True},
-                            "metadata": {
-                                "type": "dict",
-                                "schema": {"reference": {"type": "string"}},
-                            },
-                            "amount": {"type": "integer", "coerce": to_int},
-                        },
-                    }
-                },
-            },
-        }
-        return res
 
     def _validator_create(self):
         res = self.payment_service._invader_get_target_validator()
@@ -147,56 +105,6 @@ class PaymentServiceStripe(AbstractComponent):
 
         acquirer = transaction.acquirer_id
         return acquirer.filtered(lambda a: a.provider == "stripe").stripe_secret_key
-
-    def _check_stripe_webhook_ip(self):
-        remote_addr = request.httprequest.remote_addr
-        if remote_addr not in STRIPE_WEBHOOK_IPS:
-            raise ValidationError(
-                _("The incoming IP is not in the Stripe Webhook list")
-            )
-
-    @restapi.method(
-        [(["/webhook"], "POST")],
-        input_param=restapi.CerberusValidator("_validator_webhook"),
-        output_param={},
-        auth="public",
-    )
-    def webhook(self, **event):
-        self._check_stripe_webhook_ip()
-        acquirer = self.env.ref("payment.payment_acquirer_stripe")
-        acquirer.with_user(1)._verify_stripe_signature()
-        # Handle the event
-        if event and event["type"] == "payment_intent.succeeded":
-            payment_intent = event["data"]["object"]  # contains a stripe.PaymentIntent
-            reference = payment_intent["metadata"].get("reference")
-            transaction = (
-                self.env["payment.transaction"]
-                .with_user(1)
-                .search(
-                    [
-                        ("reference", "=", reference),
-                        ("acquirer_reference", "=", payment_intent["id"]),
-                    ],
-                    limit=1,
-                )
-            )
-            if not transaction:
-                raise ValidationError(
-                    _(
-                        "payment_intent.succeeded event received \
-                            for an unknown transaction: {}, {}"
-                    ).format(reference, payment_intent["id"])
-                )
-            _logger.info(_("Payment for {} succeeded").format(transaction.reference))
-            transaction.amount = payment_intent["amount"]
-            transaction._set_transaction_done()
-        # elif event["type"] == "payment_method.attached":
-        #    payment_method = event["data"]["object"]  # contains a stripe.PaymentMethod
-        # Then define and call a method to handle the successful attachment of a PaymentMethod.
-        # handle_payment_method_attached(payment_method)
-        else:
-            # Unexpected event type
-            _logger.warning("Unhandled event type {}".format(event["type"]))
 
     @restapi.method(
         [(["/create"], "POST")],
