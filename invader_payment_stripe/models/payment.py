@@ -46,6 +46,7 @@ class PaymentAcquirerStripe(models.Model):
                 ).format(reference, payment_intent["id"])
             )
         _logger.info(_("Payment for {} succeeded").format(transaction.reference))
-        transaction.amount = payment_intent["amount"]
+        if "amount" in payment_intent:
+            transaction.amount = payment_intent["amount"] / 100  # Amount is in cents
         transaction._set_transaction_done()
         return True
