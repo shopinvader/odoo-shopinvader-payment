@@ -1,10 +1,15 @@
 # Copyright 2019 ACSONE SA/NV
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+
+import logging
+
 from odoo.http import request
 
-from odoo.addons.base_rest.controllers.main import _PseudoCollection
 from odoo.addons.component.core import Component
 from odoo.addons.shopinvader import shopinvader_response
+from odoo.addons.shopinvader.utils import work_on_service_with_partner
+
+_logger = logging.getLogger(__name__)
 
 
 class SaleOrderPaymentTransactionEventListener(Component):
@@ -33,14 +38,25 @@ class SaleOrderPaymentTransactionEventListener(Component):
             # That should be the responsibility of the client
             # to request the cart info to be stored in its own cache
             # once the cache is reset.
-            collection = _PseudoCollection("shopinvader.backend", self.env)
-            work = self.work.work_on(collection=collection)
-            work.shopinvader_backend = shopinvader_backend
-            # another ugly hack: the partner here should be taken
-            # from current client request
-            work.partner = sale_order.partner_id
-            res = work.component(usage="cart")._to_json(sale_order)
-            response.set_store_cache("last_sale", res.get("data", {}))
+
+            invader_partner = sale_order.partner_id._get_invader_partner(
+                shopinvader_backend
+            )
+            if not invader_partner:
+                _logger.error(
+                    f"Could not find invader_partner for sale order {sale_order.id}"
+                )
+                return
+            if not invader_partner.active:
+                _logger.warning(
+                    f"Inactive invader_partner found for sale order {sale_order.id}"
+                )
+            with work_on_service_with_partner(
+                self.env, invader_partner
+            ) as work:
+                res = work.component(usage="cart")._to_json(sale_order)
+                response.set_store_cache("last_sale", res.get("data", {}))
+
             # end of awful code ....
 
     def on_payment_transaction_done(self, sale_order, transaction):
