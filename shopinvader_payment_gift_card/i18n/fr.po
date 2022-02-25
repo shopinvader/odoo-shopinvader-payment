@@ -1,0 +1,83 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* shopinvader_payment_gift_card
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-16 11:27+0000\n"
+"PO-Revision-Date: 2022-04-16 13:28+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 3.0.1\n"
+
+#. module: shopinvader_payment_gift_card
+#: model:ir.model.fields,field_description:shopinvader_payment_gift_card.field_gift_card__display_name
+#: model:ir.model.fields,field_description:shopinvader_payment_gift_card.field_payment_transaction__display_name
+#: model:ir.model.fields,field_description:shopinvader_payment_gift_card.field_sale_order__display_name
+#: model:ir.model.fields,field_description:shopinvader_payment_gift_card.field_sale_order_line__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: shopinvader_payment_gift_card
+#: model:ir.model,name:shopinvader_payment_gift_card.model_gift_card
+#: model:ir.model.fields,field_description:shopinvader_payment_gift_card.field_sale_order_line__gift_card_id
+msgid "Gift Card"
+msgstr "Carte Cadeau"
+
+#. module: shopinvader_payment_gift_card
+#: model:ir.model.fields,field_description:shopinvader_payment_gift_card.field_gift_card__id
+#: model:ir.model.fields,field_description:shopinvader_payment_gift_card.field_payment_transaction__id
+#: model:ir.model.fields,field_description:shopinvader_payment_gift_card.field_sale_order__id
+#: model:ir.model.fields,field_description:shopinvader_payment_gift_card.field_sale_order_line__id
+msgid "ID"
+msgstr ""
+
+#. module: shopinvader_payment_gift_card
+#: model:ir.model.fields,field_description:shopinvader_payment_gift_card.field_gift_card____last_update
+#: model:ir.model.fields,field_description:shopinvader_payment_gift_card.field_payment_transaction____last_update
+#: model:ir.model.fields,field_description:shopinvader_payment_gift_card.field_sale_order____last_update
+#: model:ir.model.fields,field_description:shopinvader_payment_gift_card.field_sale_order_line____last_update
+msgid "Last Modified on"
+msgstr "Dernière modification le"
+
+#. module: shopinvader_payment_gift_card
+#: model:ir.model.fields,field_description:shopinvader_payment_gift_card.field_sale_order__gift_card_line_ids
+msgid "List of Gift Card uses"
+msgstr "Liste des Utilisations Carte Cadeau"
+
+#. module: shopinvader_payment_gift_card
+#: model:ir.model,name:shopinvader_payment_gift_card.model_payment_transaction
+msgid "Payment Transaction"
+msgstr "Transaction"
+
+#. module: shopinvader_payment_gift_card
+#: model:ir.model.fields,field_description:shopinvader_payment_gift_card.field_sale_order__remain_amount
+msgid "Remaining Amount"
+msgstr "Montant Restant"
+
+#. module: shopinvader_payment_gift_card
+#: model:ir.model,name:shopinvader_payment_gift_card.model_sale_order
+msgid "Sales Order"
+msgstr "Bons de commande"
+
+#. module: shopinvader_payment_gift_card
+#: model:ir.model,name:shopinvader_payment_gift_card.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Lignes de bon de commande"
+
+#. module: shopinvader_payment_gift_card
+#: code:addons/shopinvader_payment_gift_card/services/cart.py:0
+#, python-format
+msgid ""
+"The Gift Card amount is higher than the current cart amount, impossible to "
+"use the gift card in that case."
+msgstr ""
+"Le montant de la carte-cadeau est supérieur au montant actuel du panier, "
+"impossible d’utiliser la carte-cadeau dans ce cas."
