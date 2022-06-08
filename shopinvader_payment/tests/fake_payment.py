@@ -47,7 +47,7 @@ class FakePaymentManual(AbstractComponent):
         output_param=restapi.CerberusValidator(Validator({})),
     )
     def add_payment(self, target, payment_mode_id, **params):
-        """ Prepare data for Manual payment submission """
+        """Prepare data for Manual payment submission"""
         transaction_obj = self.env["payment.transaction"]
         payable = self.payment_service._invader_find_payable_from_target(
             target, **params
@@ -102,7 +102,7 @@ class FakePaymentElectronic(AbstractComponent):
         output_param=restapi.CerberusValidator(Validator({})),
     )
     def add_payment(self, target, payment_mode_id, **params):
-        """ Prepare data for Manual payment submission """
+        """Prepare data for Manual payment submission"""
         transaction_obj = self.env["payment.transaction"]
         payable = self.payment_service._invader_find_payable_from_target(
             target, **params
