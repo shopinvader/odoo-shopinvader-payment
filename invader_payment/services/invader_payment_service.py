@@ -40,3 +40,55 @@ class InvaderPaymentService(Component):
                     "Payment mode acquirer mismatch should be " "'{}' instead of '{}'."
                 ).format(provider, acquirer.provider)
             )
+
+    def _get_transaction_validator(self):
+        """This is intended to be called by each implentation where transactions
+        dict is added to response
+
+        :return: _description_
+        :rtype: _type_
+        """
+        return {
+            "date": {"type": "datetime"},
+            "acquirer": {"type": "dict", "required": True},
+            "state": {
+                "type": "string",
+                "allowed": [
+                    "draft",
+                    "pending",
+                    "authorized",
+                    "done",
+                    "cancel",
+                    "error",
+                ],
+            },
+            "amount": {"type": "float"},
+        }
+
+    def _get_transactions_validator(self):
+        """This is intended to be called by each implentation where transactions
+        dict is added to response
+
+        :return: _description_
+        :rtype: _type_
+        """
+        return {
+            "transactions": {
+                "type": "list",
+                "schema": self._get_transaction_validator(),
+            }
+        }
+
+    def _json_parser(self):
+        res = [
+            "id",
+            "date",
+            ("acquirer_id:acquirer", ["id", "display_name:name"]),
+            "state",
+            "amount",
+        ]
+        return res
+
+    # Provide a way to retrieve transactions through payable object
+    def _to_json(self, transactions):
+        return {"transactions": transactions.jsonify(self._json_parser())}

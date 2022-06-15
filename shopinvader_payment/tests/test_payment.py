@@ -17,11 +17,21 @@ class ShopinvaderPaymentCase(CommonConnectedCartCase):
         ) as work:
             cls.cart_service = work.component(usage="cart")
 
+    def _set_transaction(self):
+        self.transaction = self.env["payment.transaction"].create(
+            {
+                "acquirer_id": self.fake_payment.acquirer_id.id,
+                "amount": self.cart.amount_total,
+                "currency_id": self.cart.currency_id.id,
+                "sale_order_ids": [(6, 0, self.cart.ids)],
+            }
+        )
+
     def _setup_payment_acquirer(self):
         vals = {"name": "Fake Acquirer", "provider": "manual"}
         acquirer_id = self.env["payment.acquirer"].create(vals)
         vals = {"acquirer_id": acquirer_id.id, "backend_id": self.backend.id}
-        self.env["shopinvader.payment"].create(vals)
+        self.fake_payment = self.env["shopinvader.payment"].create(vals)
 
     def test_no_acquirer(self):
         response = self.cart_service.dispatch("search", params={"id": self.cart.id})
@@ -42,3 +52,12 @@ class ShopinvaderPaymentCase(CommonConnectedCartCase):
         )
         self.assertEqual(1, len(items))
         self.assertEqual("Fake Acquirer", items[0].get("name"))
+
+    def test_transactions(self):
+        self._setup_payment_acquirer()
+        self._set_transaction()
+
+        response = self.cart_service.dispatch("search", params={"id": self.cart.id})
+        transactions = response.get("data").get("transactions")
+        transaction = transactions[0]
+        self.assertEqual("draft", transaction.get("state"))

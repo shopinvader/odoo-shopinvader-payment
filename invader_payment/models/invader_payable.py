@@ -16,3 +16,8 @@ class InvaderPayable(models.AbstractModel):
         :param acquirer_id: ``payment.acquirer`` record
         :return: dictionary suitable for ``payment.transaction`` ``create()``
         """
+
+    def _invader_get_transactions(self):
+        """
+        Return payment transaction recordset depending on the payable model
+        """

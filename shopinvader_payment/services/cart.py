@@ -18,5 +18,9 @@ class CartService(Component):
         :return:
         """
         values = super()._convert_one_sale(sale)
-        values.update({"payment": self._get_shopinvader_payment_data(sale)})
+        values.update(
+            {
+                "payment": self._get_shopinvader_payment_data(sale),
+            }
+        )
         return values

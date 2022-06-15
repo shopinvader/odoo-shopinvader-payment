@@ -27,3 +27,6 @@ class SaleOrder(models.Model):
             "sale_order_ids": [(6, 0, self.ids)],
         }
         return vals
+
+    def _invader_get_transactions(self):
+        return self.transaction_ids
