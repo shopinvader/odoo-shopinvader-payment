@@ -211,12 +211,18 @@ class PaymentServiceStripe(AbstractComponent):
             if (
                 intent.status in ["suceeded", "requires_capture"]
                 and intent.setup_future_usage
-                and not token
             ):
-                # Add payment token to parter
-                token = self._create_token_from_stripe_intent_confirm(
-                    payment_mode, intent
-                )
+                if not token:
+                    # When token can not be found via stripe_payment_method_id
+                    # Happens when save_card and second step
+                    token = self._get_token(
+                        payment_mode.payment_acquirer_id, intent.payment_method
+                    )
+                if not token:
+                    # Add payment token to parter when it does not exist
+                    token = self._create_token_from_stripe_intent_confirm(
+                        payment_mode, intent
+                    )
                 transaction.write({"payment_token_id": token.id})
             if intent.status == "succeeded":
                 # Handle post-payment fulfillment
