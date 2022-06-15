@@ -1,4 +1,5 @@
 bank-payment
 sale-workflow
 server-tools
+server-env
 shopinvader https://github.com/shopinvader/odoo-shopinvader.git 12.0
