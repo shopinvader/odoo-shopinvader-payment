@@ -1,0 +1,80 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* invader_invoice_payment
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: invader_invoice_payment
+#: model:ir.model.fields,field_description:invader_invoice_payment.field_payment_transaction__invoice_ids_nbr
+msgid "# of invoices"
+msgstr ""
+
+#. module: invader_invoice_payment
+#: model:ir.model.fields,field_description:invader_invoice_payment.field_account_bank_statement_line__authorized_transaction_ids
+#: model:ir.model.fields,field_description:invader_invoice_payment.field_account_move__authorized_transaction_ids
+#: model:ir.model.fields,field_description:invader_invoice_payment.field_account_payment__authorized_transaction_ids
+msgid "Authorized Transactions"
+msgstr ""
+
+#. module: invader_invoice_payment
+#: model:ir.model.fields,field_description:invader_invoice_payment.field_account_move__display_name
+#: model:ir.model.fields,field_description:invader_invoice_payment.field_payment_transaction__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: invader_invoice_payment
+#: model:ir.model.fields,field_description:invader_invoice_payment.field_account_move__id
+#: model:ir.model.fields,field_description:invader_invoice_payment.field_payment_transaction__id
+msgid "ID"
+msgstr ""
+
+#. module: invader_invoice_payment
+#: code:addons/invader_invoice_payment/models/payment_transaction.py:0
+#, python-format
+msgid "Invoice(s)"
+msgstr ""
+
+#. module: invader_invoice_payment
+#: model:ir.model.fields,field_description:invader_invoice_payment.field_payment_transaction__invoice_ids
+msgid "Invoices"
+msgstr ""
+
+#. module: invader_invoice_payment
+#: model:ir.model,name:invader_invoice_payment.model_account_move
+msgid "Journal Entry"
+msgstr ""
+
+#. module: invader_invoice_payment
+#: model:ir.model.fields,field_description:invader_invoice_payment.field_account_move____last_update
+#: model:ir.model.fields,field_description:invader_invoice_payment.field_payment_transaction____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: invader_invoice_payment
+#: model:ir.model.fields,field_description:invader_invoice_payment.field_account_bank_statement_line__payment_transaction_count
+#: model:ir.model.fields,field_description:invader_invoice_payment.field_account_move__payment_transaction_count
+#: model:ir.model.fields,field_description:invader_invoice_payment.field_account_payment__payment_transaction_count
+msgid "Number of payment transactions"
+msgstr ""
+
+#. module: invader_invoice_payment
+#: model:ir.model,name:invader_invoice_payment.model_payment_transaction
+msgid "Payment Transaction"
+msgstr ""
+
+#. module: invader_invoice_payment
+#: model:ir.model.fields,field_description:invader_invoice_payment.field_account_bank_statement_line__transaction_ids
+#: model:ir.model.fields,field_description:invader_invoice_payment.field_account_move__transaction_ids
+#: model:ir.model.fields,field_description:invader_invoice_payment.field_account_payment__transaction_ids
+#: model_terms:ir.ui.view,arch_db:invader_invoice_payment.account_move_form_view
+msgid "Transactions"
+msgstr ""
