@@ -84,6 +84,8 @@ class InvoiceService(Component):
         :return: dict
         """
         values = super()._to_json_invoice(invoice)
+        payment = self.work.component(usage="invader.payment")
+        values.update(payment._to_json(invoice._invader_get_transactions()))
         values.update({"payment": self._get_shopinvader_payment_data(invoice)})
         return values
 

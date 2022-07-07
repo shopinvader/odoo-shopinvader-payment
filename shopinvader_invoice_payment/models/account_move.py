@@ -33,3 +33,6 @@ class AccountMove(models.Model):
         newvals = self.play_onchanges(vals, vals.keys())
         vals.update(newvals)
         self.write(vals)
+
+    def _invader_get_transactions(self):
+        return self.transaction_ids

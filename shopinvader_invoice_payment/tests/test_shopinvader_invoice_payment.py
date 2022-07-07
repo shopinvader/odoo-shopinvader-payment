@@ -6,6 +6,16 @@ from odoo.addons.shopinvader_payment.tests.common import CommonPaymentCase
 
 # Keep that order as setup will fail either
 class TestShopinvaderInvoicePayment(CommonPaymentCase, CommonInvoiceCase):
+    def _set_transaction(self):
+        self.transaction = self.env["payment.transaction"].create(
+            {
+                "acquirer_id": self.acquirer_electronic.id,
+                "amount": self.invoice.amount_total,
+                "currency_id": self.invoice.currency_id.id,
+                "invoice_ids": [(6, 0, self.invoice.ids)],
+            }
+        )
+
     def setUp(self, *args, **kwargs):
         super().setUp(*args, **kwargs)
         self.journal_obj = self.env["account.journal"]
@@ -100,3 +110,11 @@ class TestShopinvaderInvoicePayment(CommonPaymentCase, CommonInvoiceCase):
         self.assertIn(str(self.invoice.name), transaction.reference)
         self.assertEqual(self.acquirer_electronic, transaction.acquirer_id)
         self.assertAlmostEqual(residual, transaction.amount, places=self.precision)
+
+    def test_transactions(self):
+        self._set_transaction()
+
+        response = self.service.dispatch("search", params={"id": self.invoice.id})
+        transactions = response.get("data")[0].get("transactions")
+        transaction = transactions[0]
+        self.assertEqual("draft", transaction.get("state"))
