@@ -8,6 +8,7 @@ setuptools.setup(
     description="Meta package for shopinvader-odoo-shopinvader-payment Odoo addons",
     version=version,
     install_requires=[
+        'odoo14-addon-invader_invoice_payment',
         'odoo14-addon-invader_payment',
         'odoo14-addon-invader_payment_manual',
         'odoo14-addon-invader_payment_stripe',
