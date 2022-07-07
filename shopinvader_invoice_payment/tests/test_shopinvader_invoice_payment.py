@@ -6,6 +6,16 @@ from odoo.addons.shopinvader_payment.tests.common import CommonPaymentCase
 
 # Keep that order as setup will fail either
 class TestShopinvaderInvoicePayment(CommonPaymentCase, CommonInvoiceCase):
+    def _set_transaction(self):
+        self.transaction = self.env["payment.transaction"].create(
+            {
+                "acquirer_id": self.acquirer_electronic.id,
+                "amount": self.invoice.amount_total,
+                "currency_id": self.invoice.currency_id.id,
+                "invoice_ids": [(6, 0, self.invoice.ids)],
+            }
+        )
+
     def setUp(self, *args, **kwargs):
         super().setUp(*args, **kwargs)
         self.journal_obj = self.env["account.journal"]
@@ -18,7 +28,9 @@ class TestShopinvaderInvoicePayment(CommonPaymentCase, CommonInvoiceCase):
         self.invoice = self._confirm_and_invoice_sale(self.sale, payment=False)
         self.backend.write({"invoice_access_open": True})
         with self.work_on_services(partner=self.partner) as work:
-            self.payment_manual_service = work.component(usage="fake_payment_manual")
+            self.payment_manual_service = work.component(
+                usage="fake_payment_manual"
+            )
         with self.work_on_services(partner=self.partner) as work:
             self.payment_electronic_service = work.component(
                 usage="fake_payment_electronic"
@@ -50,7 +62,9 @@ class TestShopinvaderInvoicePayment(CommonPaymentCase, CommonInvoiceCase):
         Ensure available methods are ones set on the backend
         :return:
         """
-        response = self.service.dispatch("search", params={"id": self.invoice.id})
+        response = self.service.dispatch(
+            "search", params={"id": self.invoice.id}
+        )
         self._check_number_of_payment_mode(
             response, len(self.backend.payment_method_ids)
         )
@@ -75,7 +89,9 @@ class TestShopinvaderInvoicePayment(CommonPaymentCase, CommonInvoiceCase):
         self.assertEqual(self.invoice.payment_state, "not_paid")
         self.assertIn(str(self.invoice.name), transaction.reference)
         self.assertEqual(self.acquirer_manual, transaction.acquirer_id)
-        self.assertAlmostEqual(residual, transaction.amount, places=self.precision)
+        self.assertAlmostEqual(
+            residual, transaction.amount, places=self.precision
+        )
 
     def test_pay_invoice_with_electronic(self):
         self.assertEqual(self.invoice.state, "posted")
@@ -99,4 +115,16 @@ class TestShopinvaderInvoicePayment(CommonPaymentCase, CommonInvoiceCase):
         self.assertEqual(self.invoice.payment_state, "paid")
         self.assertIn(str(self.invoice.name), transaction.reference)
         self.assertEqual(self.acquirer_electronic, transaction.acquirer_id)
-        self.assertAlmostEqual(residual, transaction.amount, places=self.precision)
+        self.assertAlmostEqual(
+            residual, transaction.amount, places=self.precision
+        )
+
+    def test_transactions(self):
+        self._set_transaction()
+
+        response = self.service.dispatch(
+            "search", params={"id": self.invoice.id}
+        )
+        transactions = response.get("data")[0].get("transactions")
+        transaction = transactions[0]
+        self.assertEqual("draft", transaction.get("state"))
