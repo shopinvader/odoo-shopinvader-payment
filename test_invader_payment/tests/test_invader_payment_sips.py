@@ -3,9 +3,10 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 import requests
+from vcr_unittest import VCRMixin
+
 from odoo import _
 from odoo.exceptions import UserError
-from vcr_unittest import VCRMixin
 
 from .common import TestCommonPayment
 
@@ -28,13 +29,9 @@ AUTOMATIC_RESPONSE_URL = (
 class TestInvaderPaymentSips(VCRMixin, TestCommonPayment):
     def setUp(self):
         super().setUp()
-        self.payment_mode = self.env.ref(
-            "invader_payment_sips.payment_mode_sips"
-        )
+        self.payment_mode = self.env.ref("invader_payment_sips.payment_mode_sips")
         acquirer = self.env.ref("payment.payment_acquirer_sips")
-        acquirer.write(
-            {"sips_secret": SECRET_KEY, "sips_merchant_id": MERCHAND_ID}
-        )
+        acquirer.write({"sips_secret": SECRET_KEY, "sips_merchant_id": MERCHAND_ID})
         self.env["ir.config_parameter"].set_param("sips.key_version", 1)
         self.service = self._get_service("payment_sips")
 

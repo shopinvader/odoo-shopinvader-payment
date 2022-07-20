@@ -1,0 +1,89 @@
+interactions:
+- request:
+    body: amount=500&currency=EUR&description=Fake&metadata[reference]=Fake&automatic_payment_methods[enabled]=True
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '105'
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Idempotency-Key:
+      - a1f9c604-0e17-4f05-98d5-4947d80c04e4
+      User-Agent:
+      - Stripe/v1 PythonBindings/2.63.0
+      X-Stripe-Client-Telemetry:
+      - '{"last_request_metrics": {"request_id": "req_ZLYX9UjuPV7UAP", "request_duration_ms":
+        428}}'
+      X-Stripe-Client-User-Agent:
+      - '{"bindings_version": "2.63.0", "lang": "python", "publisher": "stripe", "httplib":
+        "requests", "lang_version": "3.7.3", "platform": "Linux-5.15.5-76051505-generic-x86_64-with-debian-10.6",
+        "uname": "Linux dev-noukies 5.15.5-76051505-generic #202111250933~1638201579~21.04~09f1aa7-Ubuntu
+        SMP Tue Nov 30 02: x86_64 "}'
+    method: POST
+    uri: https://api.stripe.com/v1/payment_intents
+  response:
+    body:
+      string: "{\n  \"id\": \"pi_3K9rmv2eZvKYlo2C1RPRWdwQ\",\n  \"object\": \"payment_intent\"\
+        ,\n  \"amount\": 500,\n  \"amount_capturable\": 0,\n  \"amount_received\"\
+        : 0,\n  \"application\": null,\n  \"application_fee_amount\": null,\n  \"\
+        automatic_payment_methods\": {\n    \"enabled\": true\n  },\n  \"canceled_at\"\
+        : null,\n  \"cancellation_reason\": null,\n  \"capture_method\": \"automatic\"\
+        ,\n  \"charges\": {\n    \"object\": \"list\",\n    \"data\": [\n\n    ],\n\
+        \    \"has_more\": false,\n    \"total_count\": 0,\n    \"url\": \"/v1/charges?payment_intent=pi_3K9rmv2eZvKYlo2C1RPRWdwQ\"\
+        \n  },\n  \"client_secret\": \"pi_3K9rmv2eZvKYlo2C1RPRWdwQ_secret_ISpNqjEjRe1yYomOcnrJgSTOR\"\
+        ,\n  \"confirmation_method\": \"automatic\",\n  \"created\": 1640267817,\n\
+        \  \"currency\": \"eur\",\n  \"customer\": null,\n  \"description\": \"Fake\"\
+        ,\n  \"invoice\": null,\n  \"last_payment_error\": null,\n  \"livemode\":\
+        \ false,\n  \"metadata\": {\n    \"reference\": \"Fake\"\n  },\n  \"next_action\"\
+        : null,\n  \"on_behalf_of\": null,\n  \"payment_method\": null,\n  \"payment_method_options\"\
+        : {\n    \"card\": {\n      \"installments\": null,\n      \"network\": null,\n\
+        \      \"request_three_d_secure\": \"automatic\"\n    }\n  },\n  \"payment_method_types\"\
+        : [\n    \"card\"\n  ],\n  \"processing\": null,\n  \"receipt_email\": null,\n\
+        \  \"review\": null,\n  \"setup_future_usage\": null,\n  \"shipping\": null,\n\
+        \  \"source\": null,\n  \"statement_descriptor\": null,\n  \"statement_descriptor_suffix\"\
+        : null,\n  \"status\": \"requires_payment_method\",\n  \"transfer_data\":\
+        \ null,\n  \"transfer_group\": null\n}\n"
+    headers:
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1406'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 23 Dec 2021 13:56:57 GMT
+      Server:
+      - nginx
+      Strict-Transport-Security:
+      - max-age=31556926; includeSubDomains; preload
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-methods:
+      - GET, POST, HEAD, OPTIONS, DELETE
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - Request-Id, Stripe-Manage-Version, X-Stripe-External-Auth-Required, X-Stripe-Privileged-Session-Required
+      access-control-max-age:
+      - '300'
+      cache-control:
+      - no-cache, no-store
+      idempotency-key:
+      - a1f9c604-0e17-4f05-98d5-4947d80c04e4
+      original-request:
+      - req_bHEB8qyWLqjHtS
+      request-id:
+      - req_bHEB8qyWLqjHtS
+      stripe-should-retry:
+      - 'false'
+      stripe-version:
+      - '2019-02-19'
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -11,9 +11,7 @@ from .common import TestCommonPayment
 class TestInvaderPaymentManual(TestCommonPayment):
     def setUp(self):
         super().setUp()
-        self.payment_mode = self.env.ref(
-            "invader_payment_manual.payment_mode_check"
-        )
+        self.payment_mode = self.env.ref("invader_payment_manual.payment_mode_check")
         self.service = self._get_service("payment_manual")
 
     def test_add_payment(self):
