@@ -192,7 +192,7 @@ class PaymentServiceAdyen(AbstractComponent):
             "countryCode": transaction.partner_id.country_id.code,
             "amount": {
                 "value": self._get_formatted_amount(currency, amount),
-                "currency": currency.symbol,
+                "currency": currency.name,
             },
             "channel": "Web",
         }
