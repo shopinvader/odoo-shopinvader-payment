@@ -11,7 +11,7 @@ class CartService(Component):
 
     def _get_available_payment_methods(self, cart):
         for line in cart.order_line:
-            if line.product_id.only_quotation:
+            if line.product_id.shop_only_quotation:
                 # If we have a product that required a quotation in the cart
                 # (product without public price) we remove all payment
                 # method as it's not possible to pay it.
