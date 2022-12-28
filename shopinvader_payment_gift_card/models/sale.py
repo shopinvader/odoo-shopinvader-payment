@@ -8,13 +8,6 @@ from odoo import api, fields, models
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
-    gift_card_line_ids = fields.One2many(
-        "gift.card.line",
-        inverse_name="sale_order_id",
-        string="List of Gift Card uses",
-        readonly=True,
-    )
-
     remain_amount = fields.Float("Remaining Amount", compute="_compute_remain_amount")
 
     @api.depends("gift_card_line_ids", "gift_card_line_ids.amount_used", "amount_total")
@@ -33,9 +26,3 @@ class SaleOrder(models.Model):
         if self.gift_card_line_ids:
             vals["amount"] = self.remain_amount
         return vals
-
-
-class SaleOrderLine(models.Model):
-    _inherit = "sale.order.line"
-
-    gift_card_id = fields.Many2one("gift.card")
