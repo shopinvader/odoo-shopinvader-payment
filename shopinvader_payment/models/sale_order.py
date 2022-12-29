@@ -19,8 +19,9 @@ class SaleOrder(models.Model):
                 % (acquirer_id.name, self.shopinvader_backend_id.name)
             )
         self.ensure_one()
+        paid_amount = sum(self.transaction_ids.filtered(lambda l: l.state in ["authorized", "done"]).mapped("amount"))
         vals = {
-            "amount": self.amount_total,
+            "amount": self.amount_total - paid_amount,
             "currency_id": self.currency_id.id,
             "partner_id": self.partner_id.id,
             "acquirer_id": acquirer_id.id,
