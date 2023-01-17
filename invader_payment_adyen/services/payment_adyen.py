@@ -105,10 +105,9 @@ class PaymentServiceAdyen(AbstractComponent):
         """
         Return 'test' or 'live' depending on acquirer value
         :param transaction:
-        :return:
+        :return: str
         """
-        state = transaction.acquirer_id.state
-        return "test" if state in ("disabled", "test") else "live"
+        return transaction._get_platform()
 
     def _get_live_prefix(self, transaction):
         state = transaction.acquirer_id.state
@@ -481,11 +480,25 @@ class PaymentServiceAdyen(AbstractComponent):
         """
         Hook to be able to enrich transaction with response
         additionalData
-        :param vals:
-        :param response:
-        :return:
+        Payment result can contains payment method brand
         """
-        return {}
+        res = {}
+        if response.message.get("action", {}).get("paymentMethodType"):
+            payment_method = response.message.get("action", {}).get(
+                "paymentMethodType"
+            )
+            res.update({"adyen_payment_method": payment_method})
+        if response.message.get("paymentMethod", {}).get("type"):
+            payment_method = response.message.get("paymentMethod", {}).get(
+                "type"
+            )
+            res.update({"adyen_payment_method": payment_method})
+        if response.message.get("paymentMethod", {}).get("brand"):
+            payment_method = response.message.get("paymentMethod", {}).get(
+                "brand"
+            )
+            res.update({"adyen_payment_method": payment_method})
+        return res
 
     def _update_transaction_with_response(self, transaction, response):
         """
@@ -499,7 +512,9 @@ class PaymentServiceAdyen(AbstractComponent):
         payment_data = response.message.get("paymentData")
         if payment_data:
             vals.update({"adyen_payment_data": payment_data})
-        psp_reference = response.message.get("pspReference")
+        psp_reference = response.message.get("pspReference") or getattr(
+            response, "psp", ""
+        )
         if psp_reference:
             vals.update({"acquirer_reference": psp_reference})
         result_code = response.message.get("resultCode")

@@ -23,6 +23,28 @@ class InvaderPayable(models.AbstractModel):
         Return payment transaction recordset depending on the payable model
         """
 
+    def _invader_get_transactions_done(self):
+        """
+        Return only transactions considered as "done".
+        - state = "done"
+        - state = "authorized" (depending on the provider)
+        """
+        acquirer_authorize = (
+            self.env["payment.acquirer"]
+            ._get_feature_support()
+            .get("authorize", [])
+        )
+        transactions = self._invader_get_transactions()
+        transactions_done = transactions.filtered(
+            lambda tr: tr.state == "done"
+        )
+        if acquirer_authorize:
+            transactions_done |= transactions.filtered(
+                lambda tr: tr.acquirer_id.provider in acquirer_authorize
+                and tr.state == "authorized"
+            )
+        return transactions_done
+
     def _get_payable_lines(self):
         """
         Return payable lines

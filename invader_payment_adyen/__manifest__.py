@@ -14,6 +14,7 @@
     "data": [
         "data/decimal_precision.xml",
         "views/payment_acquirer.xml",
+        "views/payment_transaction.xml",
     ],
     "external_dependencies": {"python": ["cerberus", "Adyen"], "bin": []},
 }

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2023 ACSONE SA/NV
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+<!--    Wizard used to do manual capture on invader.payble recordset.-->
+<!--    You just have to implement the action to enable it.-->
+    <record model="ir.ui.view" id="adyen_klarna_capture_manual_wizard">
+        <field
+            name="name"
+        >adyen.klarna.capture.manual (in invader_payment_adyen_klarna_capture)</field>
+        <field name="model">adyen.klarna.capture.manual</field>
+        <field name="arch" type="xml">
+            <form string="Shopinvader Variant Binding Wizard">
+                <group>
+                    <group>
+                        <field name="reference" />
+                        <field name="amount" />
+                    </group>
+                </group>
+                <footer>
+                    <button
+                        string="Capture"
+                        name="do_capture"
+                        type="object"
+                        class="oe_highlight"
+                        confirm="Are you sure to capture this amount ?"
+                    />
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+<!--    Example of action to use it on sale.order-->
+<!--    <record model="ir.actions.act_window" id="adyen_klarna_capture_manual_act_window">-->
+<!--        <field name="name">Adyen Klarna - Capture now</field>-->
+<!--        <field name="res_model">adyen.klarna.capture.manual</field>-->
+<!--        <field name="view_mode">form</field>-->
+<!--        <field name="target">new</field>-->
+<!--        <field name="view_id" ref="invader_payment_adyen_klarna_capture.adyen_klarna_capture_manual_wizard" />-->
+<!--        <field name="binding_model_id" ref="sale.model_sale_order" />-->
+<!--        <field name="groups_id" eval="[(4, ref('account.group_account_invoice'))]" />-->
+<!--    </record>-->
+</odoo>
