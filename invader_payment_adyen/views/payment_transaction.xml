@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2023 ACSONE SA/NV
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record model="ir.ui.view" id="payment_transaction_form_view">
+        <field name="name">payment.transaction.form (in invader_payment_adyen)</field>
+        <field name="model">payment.transaction</field>
+        <field name="inherit_id" ref="payment.transaction_form" />
+        <field name="priority" eval="90" />
+        <field name="arch" type="xml">
+            <field name="date" position="after">
+                <field name="adyen_payment_method" />
+              </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="payment_transaction_tree_view">
+        <field name="name">payment.transaction.tree (in invader_payment_adyen)</field>
+        <field name="model">payment.transaction</field>
+        <field name="inherit_id" ref="payment.transaction_list" />
+        <field name="priority" eval="90" />
+        <field name="arch" type="xml">
+            <field name="acquirer_id" position="after">
+            <field name="adyen_payment_method" />
+          </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="payment_transaction_search_view">
+        <field name="name">payment.transaction.search (in invader_payment_adyen)</field>
+        <field name="model">payment.transaction</field>
+        <field name="inherit_id" ref="payment.transaction" />
+        <field name="priority" eval="90" />
+        <field name="arch" type="xml">
+            <field name="partner_name" position="after">
+                <field name="adyen_payment_method" />
+                <group expand="0" string="Group By">
+                  <filter
+                        string="Adyen Payment Method"
+                        name="group_adyen_payment_method"
+                        domain="[('adyen_payment_method', '!=', False)]"
+                        context="{'group_by':'adyen_payment_method'}"
+                    />
+                </group>
+            </field>
+        </field>
+    </record>
+</odoo>

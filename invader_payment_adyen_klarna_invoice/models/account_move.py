@@ -17,9 +17,6 @@ class AccountMove(models.Model):
         return self.partner_shipping_id or self._get_klarna_shopper()
 
     def _get_klarna_internal_ref(self):
-        """
-        Get the delivery address of the payable (res.partner) for Klarna
-        """
         return self.ref or self.name
 
     def _prepare_adyen_payment_klarna_line(

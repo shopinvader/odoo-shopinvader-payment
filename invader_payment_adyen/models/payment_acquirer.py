@@ -57,6 +57,20 @@ class PaymentAcquirer(models.Model):
             vals.update(
                 {"acquirer_reference": notification_item.get("pspReference")}
             )
+        if transaction.acquirer_id.provider == "adyen":
+            payment_method = False
+            if notification_item.get("action"):
+                payment_method = notification_item.get("action")
+                if isinstance(payment_method, dict):
+                    payment_method = payment_method.get("paymentMethodType")
+            if notification_item.get("paymentMethod"):
+                payment_method = notification_item.get("paymentMethod")
+                if isinstance(payment_method, dict):
+                    payment_method = payment_method.get(
+                        "brand"
+                    ) or payment_method.get("type")
+            if payment_method:
+                vals.update({"adyen_payment_method": payment_method})
         return vals
 
     def _handle_adyen_notification_item(self, notification_item):

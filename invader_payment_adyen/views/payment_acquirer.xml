@@ -6,16 +6,10 @@
         <field name="inherit_id" ref="payment_adyen.acquirer_form_adyen" />
         <field name="arch" type="xml">
             <field name="adyen_merchant_account" position="after">
-                <group attrs="{'invisible': [('provider', '!=', 'adyen')]}">
-                    <field
-                        name="adyen_api_key"
-                        attrs="{'required':[('provider', '=', 'adyen')]}"
-                    />
-                    <field
-                        name="adyen_live_endpoint_prefix"
-                        attrs="{'required':[('provider', '=', 'adyen'), ('state', '=', 'enabled')]}"
-                    />
-                </group>
+                <field
+                    name="adyen_live_endpoint_prefix"
+                    attrs="{'required':[('provider', '=', 'adyen'), ('state', '=', 'enabled')]}"
+                />
             </field>
         </field>
     </record>

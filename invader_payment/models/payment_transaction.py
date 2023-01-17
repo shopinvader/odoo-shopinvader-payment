@@ -7,6 +7,12 @@ class PaymentTransaction(models.Model):
 
     _inherit = "payment.transaction"
 
+    def _get_platform(self):
+        """
+        :return: str
+        """
+        return ""
+
     def _get_invader_payables(self):
         """
         Returns the invader_payable objects this transaction applies to
@@ -33,14 +39,14 @@ class PaymentTransaction(models.Model):
         self.ensure_one()
         return None
 
-    @api.model
-    def create(self, vals):
-        record = super(PaymentTransaction, self).create(vals)
-        record._notify_state_changed_event()
-        return record
+    @api.model_create_multi
+    def create(self, list_vals):
+        records = super().create(list_vals)
+        records._notify_state_changed_event()
+        return records
 
     def write(self, vals):
-        res = super(PaymentTransaction, self).write(vals)
+        res = super().write(vals)
         if "state" in vals:
             self._notify_state_changed_event()
         return res

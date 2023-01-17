@@ -31,6 +31,9 @@ class AccountMovePaymentTransactionEventListener(Component):
     def on_payment_transaction_done(self, account_invoice, transaction):
         self._confirm_and_invalidate_session(account_invoice)
 
+    def on_payment_transaction_authorized(self, account_invoice, transaction):
+        self._confirm_and_invalidate_session(account_invoice)
+
     def on_payment_transaction_pending(self, account_invoice, transaction):
         if transaction.acquirer_id.provider == "transfer":
             self._confirm_and_invalidate_session(account_invoice)
