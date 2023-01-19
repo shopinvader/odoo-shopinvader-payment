@@ -1,4 +1,3 @@
---extra-index-url=https://wheelhouse.shopinvader.com/simple
 # test requirements
 vcrpy-unittest
 unittest2
