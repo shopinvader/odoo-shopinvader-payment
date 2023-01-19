@@ -5,7 +5,7 @@
 {
     "name": "Shopinvader Payment Condition",
     "summary": "Filter available payment methods based on order conditions",
-    "version": "14.0.1.0.1",
+    "version": "14.0.1.0.2",
     "author": "Camptocamp SA",
     "maintainers": ["ivantodorovich"],
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
