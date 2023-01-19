@@ -10,6 +10,10 @@ class ShopinvaderPaymentCase(CommonConnectedCartCase):
         super().setUp()
         # TODO: This should be in setUpClass, but it needs to be changed
         #       in CommonConnectedCartCase first.
+
+        # Deactivate existing payment methods first
+        self.env["shopinvader.payment"].search([]).unlink()
+
         self.acquirer_a, self.acquirer_b = self.env["payment.acquirer"].create(
             [
                 {"name": "Fake Acquirer A", "provider": "manual"},
