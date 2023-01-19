@@ -80,7 +80,9 @@ class PaymentServiceStripe(AbstractComponent):
         :return: int
         """
         res = int(
-            amount if currency.name in INT_CURRENCIES else float_round(amount * 100, 2)
+            amount
+            if currency.name in INT_CURRENCIES
+            else float_round(amount * 100, 2)
         )
         return res
 
@@ -107,7 +109,9 @@ class PaymentServiceStripe(AbstractComponent):
         """
 
         acquirer = transaction.acquirer_id
-        return acquirer.filtered(lambda a: a.provider == "stripe").stripe_secret_key
+        return acquirer.filtered(
+            lambda a: a.provider == "stripe"
+        ).stripe_secret_key
 
     def confirm_payment(self, target, **params):
         """
@@ -163,15 +167,21 @@ class PaymentServiceStripe(AbstractComponent):
                 # Handle post-payment fulfillment
                 transaction._set_transaction_done()
             else:
-                transaction.write({"state": STRIPE_TRANSACTION_STATUSES[intent.status]})
-            return self._generate_stripe_response(intent, payable, target, **params)
+                transaction.write(
+                    {"state": STRIPE_TRANSACTION_STATUSES[intent.status]}
+                )
+            return self._generate_stripe_response(
+                intent, payable, target, **params
+            )
 
         except Exception as e:
             _logger.error("Error confirming stripe payment", exc_info=True)
             if transaction:
                 # Odoo does not like to change not draft transaction to error
                 transaction.write({"state": "draft"})
-                transaction._set_transaction_error(_("Exception: {}".format(e)))
+                transaction._set_transaction_error(
+                    _("Exception: {}".format(e))
+                )
             return self._generate_stripe_error_response(target, **params)
 
     def _prepare_stripe_intent(self, transaction, stripe_payment_method_id):
