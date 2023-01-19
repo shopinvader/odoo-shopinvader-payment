@@ -23,11 +23,11 @@ addon | version | maintainers | summary
 --- | --- | --- | ---
 [invader_invoice_payment](invader_invoice_payment/) | 14.0.1.0.1 |  | Invader addon to make invoice payment
 [invader_payment](invader_payment/) | 14.0.1.0.1 |  | Payment integration for Shopinvader
-[invader_payment_adyen](invader_payment_adyen/) | 14.0.1.0.0 | [![rousseldenis](https://github.com/rousseldenis.png?size=30px)](https://github.com/rousseldenis) | Adds a new payment service for Adyen
+[invader_payment_adyen](invader_payment_adyen/) | 14.0.1.0.1 | [![rousseldenis](https://github.com/rousseldenis.png?size=30px)](https://github.com/rousseldenis) | Adds a new payment service for Adyen
 [invader_payment_manual](invader_payment_manual/) | 14.0.1.0.0 |  | REST Services for manual payment like bank transfer, check ... (base module)
 [invader_payment_stripe](invader_payment_stripe/) | 14.0.1.0.1 |  | REST Services for Stripe Payments (base module)
 [shopinvader_payment](shopinvader_payment/) | 14.0.1.2.1 |  | Payment integration for Shopinvader
-[shopinvader_payment_adyen](shopinvader_payment_adyen/) | 14.0.1.0.0 | [![rousseldenis](https://github.com/rousseldenis.png?size=30px)](https://github.com/rousseldenis) | Shopinvader REST Services for Adyen Payments
+[shopinvader_payment_adyen](shopinvader_payment_adyen/) | 14.0.1.0.1 | [![rousseldenis](https://github.com/rousseldenis.png?size=30px)](https://github.com/rousseldenis) | Shopinvader REST Services for Adyen Payments
 [shopinvader_payment_condition](shopinvader_payment_condition/) | 14.0.1.0.2 | [![ivantodorovich](https://github.com/ivantodorovich.png?size=30px)](https://github.com/ivantodorovich) | Filter available payment methods based on order conditions
 [shopinvader_payment_manual](shopinvader_payment_manual/) | 14.0.1.0.1 |  | REST Services for manual payment (like bank transfer, check...)
 [shopinvader_payment_stripe](shopinvader_payment_stripe/) | 14.0.1.0.1 |  | Shopinvader REST Services for Stripe Payments
