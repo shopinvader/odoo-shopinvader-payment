@@ -8,7 +8,9 @@ from odoo.addons.shopinvader.tests.test_cart import CommonConnectedCartCase
 from .common import ShopinvaderAdyenCommon
 
 
-class TestShopinvaderAdyenService(ShopinvaderAdyenCommon, CommonConnectedCartCase):
+class TestShopinvaderAdyenService(
+    ShopinvaderAdyenCommon, CommonConnectedCartCase
+):
     def setUp(self, *args, **kwargs):
         super().setUp(*args, **kwargs)
 
@@ -29,14 +31,20 @@ class TestShopinvaderAdyenService(ShopinvaderAdyenCommon, CommonConnectedCartCas
         ) as mock_adyen:
             adyen = self._get_adyen_service()
             mock_adyen.return_value = adyen
-            with mock.patch.object(adyen.checkout, "payment_methods") as mock_methods:
+            with mock.patch.object(
+                adyen.checkout, "payment_methods"
+            ) as mock_methods:
                 result = self.payment_method_response
                 mock_methods.return_value = result
-                res = self.payment_service.dispatch("paymentMethods", params=self.data)
+                res = self.payment_service.dispatch(
+                    "paymentMethods", params=self.data
+                )
         transaction_id = res.get("transaction_id")
         methods = res.get("paymentMethods")
         sepa = [
-            method for method in methods if method.get("type") == "sepadirectdebit"
+            method
+            for method in methods
+            if method.get("type") == "sepadirectdebit"
         ][0]
         self.assertTrue(sepa)
         self.assertTrue(transaction_id)
@@ -55,7 +63,9 @@ class TestShopinvaderAdyenService(ShopinvaderAdyenCommon, CommonConnectedCartCas
                         "return_url": "https://dummy",
                     }
                 )
-                res = self.payment_service.dispatch("payments", params=self.data)
+                res = self.payment_service.dispatch(
+                    "payments", params=self.data
+                )
 
         code = res.get("resultCode")
         self.assertEqual("Received", code)
@@ -75,13 +85,19 @@ class TestShopinvaderAdyenService(ShopinvaderAdyenCommon, CommonConnectedCartCas
         ) as mock_adyen:
             adyen = self._get_adyen_service()
             mock_adyen.return_value = adyen
-            with mock.patch.object(adyen.checkout, "payment_methods") as mock_methods:
+            with mock.patch.object(
+                adyen.checkout, "payment_methods"
+            ) as mock_methods:
                 result = self.payment_method_response
                 mock_methods.return_value = result
-                res = self.payment_service.dispatch("paymentMethods", params=self.data)
+                res = self.payment_service.dispatch(
+                    "paymentMethods", params=self.data
+                )
         transaction_id = res.get("transaction_id")
         methods = res.get("paymentMethods")
-        scheme = [method for method in methods if method.get("type") == "scheme"][0]
+        scheme = [
+            method for method in methods if method.get("type") == "scheme"
+        ][0]
         self.assertTrue(scheme)
         self.assertTrue(transaction_id)
         with mock.patch.object(
@@ -99,7 +115,9 @@ class TestShopinvaderAdyenService(ShopinvaderAdyenCommon, CommonConnectedCartCas
                         "return_url": "https://dummy",
                     }
                 )
-                res = self.payment_service.dispatch("payments", params=self.data)
+                res = self.payment_service.dispatch(
+                    "payments", params=self.data
+                )
 
         code = res.get("resultCode")
         self.assertEqual("Authorised", code)
@@ -127,10 +145,14 @@ class TestShopinvaderAdyenService(ShopinvaderAdyenCommon, CommonConnectedCartCas
         ) as mock_adyen:
             adyen = self._get_adyen_service()
             mock_adyen.return_value = adyen
-            with mock.patch.object(adyen.checkout, "payment_methods") as mock_methods:
+            with mock.patch.object(
+                adyen.checkout, "payment_methods"
+            ) as mock_methods:
                 result = self.payment_method_response
                 mock_methods.return_value = result
-                res = self.payment_service.dispatch("paymentMethods", params=self.data)
+                res = self.payment_service.dispatch(
+                    "paymentMethods", params=self.data
+                )
         self.transaction = self.env["payment.transaction"].browse(
             res.get("transaction_id")
         )
@@ -141,7 +163,9 @@ class TestShopinvaderAdyenService(ShopinvaderAdyenCommon, CommonConnectedCartCas
         result = self.service.dispatch("webhook", params=request)
         self.assertEqual("[accepted]", result)
         self.assertEqual("done", self.transaction.state)
-        self.assertEqual("psp_reference_1", self.transaction.acquirer_reference)
+        self.assertEqual(
+            "psp_reference_1", self.transaction.acquirer_reference
+        )
 
     def test_notification_other(self):
         """
@@ -154,10 +178,14 @@ class TestShopinvaderAdyenService(ShopinvaderAdyenCommon, CommonConnectedCartCas
         ) as mock_adyen:
             adyen = self._get_adyen_service()
             mock_adyen.return_value = adyen
-            with mock.patch.object(adyen.checkout, "payment_methods") as mock_methods:
+            with mock.patch.object(
+                adyen.checkout, "payment_methods"
+            ) as mock_methods:
                 result = self.payment_method_response
                 mock_methods.return_value = result
-                res = self.payment_service.dispatch("paymentMethods", params=self.data)
+                res = self.payment_service.dispatch(
+                    "paymentMethods", params=self.data
+                )
         self.transaction = self.env["payment.transaction"].browse(
             res.get("transaction_id")
         )
@@ -180,10 +208,14 @@ class TestShopinvaderAdyenService(ShopinvaderAdyenCommon, CommonConnectedCartCas
         ) as mock_adyen:
             adyen = self._get_adyen_service()
             mock_adyen.return_value = adyen
-            with mock.patch.object(adyen.checkout, "payment_methods") as mock_methods:
+            with mock.patch.object(
+                adyen.checkout, "payment_methods"
+            ) as mock_methods:
                 result = self.payment_method_response
                 mock_methods.return_value = result
-                res = self.payment_service.dispatch("paymentMethods", params=self.data)
+                res = self.payment_service.dispatch(
+                    "paymentMethods", params=self.data
+                )
         self.transaction = self.env["payment.transaction"].browse(
             res.get("transaction_id")
         )
@@ -203,10 +235,14 @@ class TestShopinvaderAdyenService(ShopinvaderAdyenCommon, CommonConnectedCartCas
         ) as mock_adyen:
             adyen = self._get_adyen_service()
             mock_adyen.return_value = adyen
-            with mock.patch.object(adyen.checkout, "payment_methods") as mock_methods:
+            with mock.patch.object(
+                adyen.checkout, "payment_methods"
+            ) as mock_methods:
                 result = self.payment_method_response
                 mock_methods.return_value = result
-                res = self.payment_service.dispatch("paymentMethods", params=self.data)
+                res = self.payment_service.dispatch(
+                    "paymentMethods", params=self.data
+                )
         self.transaction = self.env["payment.transaction"].browse(
             res.get("transaction_id")
         )
@@ -217,7 +253,11 @@ class TestShopinvaderAdyenService(ShopinvaderAdyenCommon, CommonConnectedCartCas
         ) as mock_adyen:
             adyen = self._get_adyen_service()
             mock_adyen.return_value = adyen
-            with mock.patch.object(adyen.checkout, "payments_details") as mock_methods:
+            with mock.patch.object(
+                adyen.checkout, "payments_details"
+            ) as mock_methods:
                 result = self.payments_response_scheme
                 mock_methods.return_value = result
-                result = self.payment_service.dispatch("paymentResult", params=params)
+                result = self.payment_service.dispatch(
+                    "paymentResult", params=params
+                )

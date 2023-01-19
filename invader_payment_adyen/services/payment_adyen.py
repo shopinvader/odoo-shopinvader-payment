@@ -70,8 +70,9 @@ def filter_completion_details(details):
             new_details[key] = value
     if unknown_params:
         # Log unknown keys
-        message = "PaymentCompletionDetails contains unknown params: %s" % ",".join(
-            [str(param) for param in unknown_params]
+        message = (
+            "PaymentCompletionDetails contains unknown params: %s"
+            % ",".join([str(param) for param in unknown_params])
         )
         _logger.info(message)
     return new_details
@@ -275,7 +276,9 @@ class PaymentServiceAdyen(AbstractComponent):
 
         transaction = transaction_obj.browse(transaction_id)
         transaction.return_url = return_url
-        request = self._prepare_adyen_payments_request(transaction, payment_method)
+        request = self._prepare_adyen_payments_request(
+            transaction, payment_method
+        )
         adyen = self._get_adyen_service(transaction)
         response = adyen.checkout.payments(request)
         self._update_transaction_with_response(transaction, response)
@@ -283,7 +286,9 @@ class PaymentServiceAdyen(AbstractComponent):
         if result_code == "Authorised":
             transaction._set_transaction_done()
         else:
-            transaction.write({"state": ADYEN_TRANSACTION_STATUSES[result_code]})
+            transaction.write(
+                {"state": ADYEN_TRANSACTION_STATUSES[result_code]}
+            )
 
         return self._generate_adyen_response(
             response, payable, target, transaction, **params
@@ -395,7 +400,9 @@ class PaymentServiceAdyen(AbstractComponent):
     @restapi.method(
         [(["/paymentResult"], ["GET", "POST"])],
         input_param=restapi.CerberusValidator("_validator_paymentResult"),
-        output_param=restapi.CerberusValidator("_validator_return_paymentResult"),
+        output_param=restapi.CerberusValidator(
+            "_validator_return_paymentResult"
+        ),
     )
     def paymentResult(self, **params):
         """
@@ -422,9 +429,13 @@ class PaymentServiceAdyen(AbstractComponent):
                 notify = True
         elif result_code in ("Cancelled", "Refused"):
             return_url = params.get("cancel_redirect")
-            transaction.write({"state": ADYEN_TRANSACTION_STATUSES[result_code]})
+            transaction.write(
+                {"state": ADYEN_TRANSACTION_STATUSES[result_code]}
+            )
         else:
-            transaction.write({"state": ADYEN_TRANSACTION_STATUSES[result_code]})
+            transaction.write(
+                {"state": ADYEN_TRANSACTION_STATUSES[result_code]}
+            )
 
         if notify:
             # Payment state has been changed through another process
@@ -462,7 +473,9 @@ class PaymentServiceAdyen(AbstractComponent):
         """
 
         acquirer = transaction.acquirer_id
-        return acquirer.filtered(lambda a: a.provider == "adyen").adyen_merchant_account
+        return acquirer.filtered(
+            lambda a: a.provider == "adyen"
+        ).adyen_merchant_account
 
     def _update_additional_details(self, response):
         """
@@ -556,5 +569,7 @@ class PaymentServiceAdyen(AbstractComponent):
             notification_item = element.get("NotificationRequestItem")
             with self.env.cr.savepoint():
                 # Continue to handle items even if error
-                payment_acquirer_obj._handle_adyen_notification_item(notification_item)
+                payment_acquirer_obj._handle_adyen_notification_item(
+                    notification_item
+                )
         return "[accepted]"

@@ -71,9 +71,9 @@ class ShopinvaderAdyenCommon(object):
             item["NotificationRequestItem"],
             transaction.acquirer_id.adyen_skin_hmac_key,
         )
-        item["NotificationRequestItem"]["additionalData"]["hmacSignature"] = str(
-            signature.decode("utf-8")
-        )
+        item["NotificationRequestItem"]["additionalData"][
+            "hmacSignature"
+        ] = str(signature.decode("utf-8"))
         return item
 
     @classmethod
