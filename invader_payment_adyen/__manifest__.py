@@ -9,7 +9,7 @@
     "license": "AGPL-3",
     "author": "ACSONE SA/NV,Odoo Community Association (OCA)",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
-    "depends": ["invader_payment", "payment_adyen"],
+    "depends": ["invader_payment", "payment_adyen_paybylink"],
     "maintainers": ["rousseldenis"],
     "data": ["views/payment_acquirer.xml"],
     "external_dependencies": {"python": ["cerberus", "Adyen"], "bin": []},

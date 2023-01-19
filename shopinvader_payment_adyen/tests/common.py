@@ -12,7 +12,7 @@ class ShopinvaderAdyenCommon(object):
             "shopinvader_payment_adyen.shopinvader_payment_adyen"
         )
         cls.acquirer = cls.shopinvader_payment.acquirer_id
-        cls.acquirer.adyen_skin_hmac_key = (
+        cls.acquirer.adyen_hmac_key = (
             "1994F46BDCF6E02FC68EE6252B84F31FCB76CC46771A95C335EBB0BE036A0DBF"
         )
 
@@ -69,7 +69,7 @@ class ShopinvaderAdyenCommon(object):
         }
         signature = generate_notification_sig(
             item["NotificationRequestItem"],
-            transaction.acquirer_id.adyen_skin_hmac_key,
+            transaction.acquirer_id.adyen_hmac_key,
         )
         item["NotificationRequestItem"]["additionalData"][
             "hmacSignature"

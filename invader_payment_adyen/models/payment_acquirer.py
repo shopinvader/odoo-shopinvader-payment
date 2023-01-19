@@ -106,7 +106,7 @@ class PaymentAcquirer(models.Model):
             _logger.warning(message)
             raise AdyenInvalidData(message)
         if not is_valid_hmac_notification(
-            notification_item, transaction.acquirer_id.adyen_skin_hmac_key
+            notification_item, transaction.acquirer_id.adyen_hmac_key
         ):
             message = _("Transaction Data is not safe!")
             _logger.warning(message)
