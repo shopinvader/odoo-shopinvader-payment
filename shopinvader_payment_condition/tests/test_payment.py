@@ -16,7 +16,9 @@ class ShopinvaderPaymentCase(CommonConnectedCartCase):
                 {"name": "Fake Acquirer B", "provider": "manual"},
             ]
         )
-        self.payment_a, self.payment_b = self.env["shopinvader.payment"].create(
+        self.payment_a, self.payment_b = self.env[
+            "shopinvader.payment"
+        ].create(
             [
                 {
                     "acquirer_id": self.acquirer_a.id,
@@ -32,7 +34,9 @@ class ShopinvaderPaymentCase(CommonConnectedCartCase):
 
     def test_acquirer_available(self):
         self.cart.partner_invoice_id.country_id = self.env.ref("base.fr")
-        data = self.service.dispatch("search", params={"id": self.cart.id})["data"]
+        data = self.service.dispatch("search", params={"id": self.cart.id})[
+            "data"
+        ]
         available_method_ids = {
             p["id"] for p in data["payment"]["available_methods"]["items"]
         }
@@ -44,7 +48,9 @@ class ShopinvaderPaymentCase(CommonConnectedCartCase):
 
     def test_acquirer_filtered_out(self):
         self.cart.partner_invoice_id.country_id = self.env.ref("base.ch")
-        data = self.service.dispatch("search", params={"id": self.cart.id})["data"]
+        data = self.service.dispatch("search", params={"id": self.cart.id})[
+            "data"
+        ]
         available_method_ids = {
             p["id"] for p in data["payment"]["available_methods"]["items"]
         }

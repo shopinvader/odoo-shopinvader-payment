@@ -55,7 +55,9 @@ class AccountMove(models.Model):
             "res_model": "payment.transaction",
         }
         if self.payment_transaction_count == 1:
-            action.update({"res_id": self.transaction_ids.id, "view_mode": "form"})
+            action.update(
+                {"res_id": self.transaction_ids.id, "view_mode": "form"}
+            )
         else:
             action.update(
                 {

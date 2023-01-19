@@ -16,7 +16,9 @@ class PaymentManual(AbstractComponent):
     _name = "payment.service.manual"
     _inherit = "base.rest.service"
     _usage = "payment_manual"
-    _description = "REST Services for manual payments (bank transfer, check...)"
+    _description = (
+        "REST Services for manual payments (bank transfer, check...)"
+    )
 
     @property
     def payment_service(self):

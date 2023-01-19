@@ -34,21 +34,34 @@ class ShopinvaderPaymentCase(CommonConnectedCartCase):
         self.fake_payment = self.env["shopinvader.payment"].create(vals)
 
     def test_no_acquirer(self):
-        response = self.cart_service.dispatch("search", params={"id": self.cart.id})
+        response = self.cart_service.dispatch(
+            "search", params={"id": self.cart.id}
+        )
         self.assertEqual(
             0,
-            response.get("data").get("payment").get("available_methods").get("count"),
+            response.get("data")
+            .get("payment")
+            .get("available_methods")
+            .get("count"),
         )
 
     def test_acquirer(self):
         self._setup_payment_acquirer()
-        response = self.cart_service.dispatch("search", params={"id": self.cart.id})
+        response = self.cart_service.dispatch(
+            "search", params={"id": self.cart.id}
+        )
         self.assertEqual(
             1,
-            response.get("data").get("payment").get("available_methods").get("count"),
+            response.get("data")
+            .get("payment")
+            .get("available_methods")
+            .get("count"),
         )
         items = (
-            response.get("data").get("payment").get("available_methods").get("items")
+            response.get("data")
+            .get("payment")
+            .get("available_methods")
+            .get("items")
         )
         self.assertEqual(1, len(items))
         self.assertEqual("Fake Acquirer", items[0].get("name"))
@@ -57,7 +70,9 @@ class ShopinvaderPaymentCase(CommonConnectedCartCase):
         self._setup_payment_acquirer()
         self._set_transaction()
 
-        response = self.cart_service.dispatch("search", params={"id": self.cart.id})
+        response = self.cart_service.dispatch(
+            "search", params={"id": self.cart.id}
+        )
         transactions = response.get("data").get("transactions")
         transaction = transactions[0]
         self.assertEqual("draft", transaction.get("state"))

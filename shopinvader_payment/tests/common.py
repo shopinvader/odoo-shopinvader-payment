@@ -13,9 +13,13 @@ class CommonPaymentCase:
     @classmethod
     def _build_payment_components(cls):
         FakePaymentManual._build_component(cls._components_registry)
-        PaymentServiceManualShopinvader._build_component(cls._components_registry)
+        PaymentServiceManualShopinvader._build_component(
+            cls._components_registry
+        )
         FakePaymentElectronic._build_component(cls._components_registry)
-        PaymentServiceElectronicShopinvader._build_component(cls._components_registry)
+        PaymentServiceElectronicShopinvader._build_component(
+            cls._components_registry
+        )
 
     @classmethod
     def setUpClass(cls):

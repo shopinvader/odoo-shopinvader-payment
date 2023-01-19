@@ -51,7 +51,9 @@ class SaleOrderPaymentTransactionEventListener(Component):
                 _logger.warning(
                     f"Inactive invader_partner found for sale order {sale_order.id}"
                 )
-            with work_on_service_with_partner(self.env, invader_partner) as work:
+            with work_on_service_with_partner(
+                self.env, invader_partner
+            ) as work:
                 res = work.component(usage="cart")._to_json(sale_order)
                 response.set_store_cache("last_sale", res.get("data", {}))
 

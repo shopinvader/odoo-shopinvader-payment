@@ -46,7 +46,9 @@ class ShopinvaderStripePaymentCase(CommonConnectedCartCase):
             )
         self.assertEqual(1, len(self.cart.transaction_ids))
         self.assertEqual("done", self.cart.transaction_ids.state)
-        self.assertEqual("test_response", self.cart.transaction_ids.acquirer_reference)
+        self.assertEqual(
+            "test_response", self.cart.transaction_ids.acquirer_reference
+        )
         # Simulating automatic confirmation cron (The transaction has to
         # be done for 10 minutes at least)
         self.cart.transaction_ids.write(
