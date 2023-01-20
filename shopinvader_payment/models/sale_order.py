@@ -6,8 +6,7 @@ from odoo.exceptions import UserError
 
 
 class SaleOrder(models.Model):
-    _name = "sale.order"
-    _inherit = ["sale.order", "invader.payable"]
+    _inherit = "sale.order"
 
     def _invader_prepare_payment_transaction_data(self, acquirer_id):
         allowed_acquirer = self.shopinvader_backend_id.mapped(
@@ -18,15 +17,4 @@ class SaleOrder(models.Model):
                 _("Acquirer %s is not allowed on backend %s")
                 % (acquirer_id.name, self.shopinvader_backend_id.name)
             )
-        self.ensure_one()
-        vals = {
-            "amount": self.amount_total,
-            "currency_id": self.currency_id.id,
-            "partner_id": self.partner_id.id,
-            "acquirer_id": acquirer_id.id,
-            "sale_order_ids": [(6, 0, self.ids)],
-        }
-        return vals
-
-    def _invader_get_transactions(self):
-        return self.transaction_ids
+        return super()._invader_prepare_payment_transaction_data(acquirer_id)

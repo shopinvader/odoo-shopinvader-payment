@@ -7,11 +7,9 @@ import stripe
 from cerberus import Validator
 
 from odoo import _
-from odoo.tools.float_utils import float_round
 
 from odoo.addons.base_rest.components.service import to_int
 from odoo.addons.component.core import AbstractComponent
-from odoo.addons.payment_stripe.models.payment import INT_CURRENCIES
 
 _logger = logging.getLogger(__name__)
 
@@ -73,18 +71,15 @@ class PaymentServiceStripe(AbstractComponent):
             allow_unknown=True,
         )
 
-    def _get_formatted_amount(self, currency, amount):
+    def _get_formatted_amount(self, transaction, amount):
         """
         The expected amount format by Stripe
         :param amount: float
         :return: int
         """
-        res = int(
-            amount
-            if currency.name in INT_CURRENCIES
-            else float_round(amount * 100, 2)
+        return self.env["invader.payable"]._get_formatted_amount(
+            transaction, amount
         )
-        return res
 
     def _get_stripe_transaction_from_intent(self, intent):
         """
@@ -195,7 +190,7 @@ class PaymentServiceStripe(AbstractComponent):
         currency = transaction.currency_id
         intent = stripe.PaymentIntent.create(
             payment_method=stripe_payment_method_id,
-            amount=self._get_formatted_amount(currency, transaction.amount),
+            amount=self._get_formatted_amount(transaction, transaction.amount),
             currency=currency.name,
             confirmation_method="manual",
             confirm=True,
