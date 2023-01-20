@@ -15,7 +15,7 @@
     "depends": [
         "shopinvader",
         "onchange_helper",
-        "invader_payment",
+        "invader_payment_sale",
         "component_event",
     ],
     "data": [

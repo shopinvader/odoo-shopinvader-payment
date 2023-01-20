@@ -4,7 +4,8 @@ from odoo import api, fields, models
 
 
 class AccountMove(models.Model):
-    _inherit = "account.move"
+    _name = "account.move"
+    _inherit = [_name, "invader.payable"]
 
     transaction_ids = fields.Many2many(
         comodel_name="payment.transaction",
@@ -66,3 +67,24 @@ class AccountMove(models.Model):
                 }
             )
         return action
+
+    def _invader_prepare_payment_transaction_data(self, acquirer_id):
+        self.ensure_one()
+        vals = {
+            "amount": self.amount_residual,
+            "currency_id": self.currency_id.id,
+            "partner_id": self.partner_id.id,
+            "acquirer_id": acquirer_id.id,
+            "invoice_ids": [(6, 0, self.ids)],
+        }
+        return vals
+
+    def _invader_set_payment_mode(self, payment_mode):
+        self.ensure_one()
+        vals = {"payment_mode_id": payment_mode.id}
+        newvals = self.play_onchanges(vals, vals.keys())
+        vals.update(newvals)
+        self.write(vals)
+
+    def _invader_get_transactions(self):
+        return self.transaction_ids

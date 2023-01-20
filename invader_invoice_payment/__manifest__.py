@@ -8,6 +8,6 @@
     "category": "e-commerce",
     "version": "14.0.1.0.1",
     "license": "AGPL-3",
-    "depends": ["account", "payment"],
+    "depends": ["account", "payment", "onchange_helper", "invader_payment"],
     "data": ["views/account_move.xml"],
 }

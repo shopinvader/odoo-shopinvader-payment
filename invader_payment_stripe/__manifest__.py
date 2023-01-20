@@ -11,5 +11,6 @@
     "license": "AGPL-3",
     "external_dependencies": {"python": ["cerberus", "stripe"], "bin": []},
     "depends": ["invader_payment", "payment_stripe", "base_rest"],
+    "data": ["data/decimal_precision.xml"],
     "installable": True,
 }

@@ -47,3 +47,21 @@ class PaymentTransaction(models.Model):
                 }
             )
         return action
+
+    def _get_invoice_not_payable_states(self):
+        """
+        Get invoice states where it's not possible to pay.
+        :return: list of str
+        """
+        return ["paid", "cancel"]
+
+    def _get_invader_payables(self):
+        """
+        Inherit to return invoices to pay
+        :return: recordset
+        """
+        self.ensure_one()
+        if self.invoice_ids:
+            states = self._get_invoice_not_payable_states()
+            return self.invoice_ids.filtered(lambda i: i.state not in states)
+        return super()._get_invader_payables()

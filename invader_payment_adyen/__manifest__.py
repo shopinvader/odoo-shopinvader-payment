@@ -11,6 +11,9 @@
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "depends": ["invader_payment", "payment_adyen_paybylink", "base_rest"],
     "maintainers": ["rousseldenis"],
-    "data": ["views/payment_acquirer.xml"],
+    "data": [
+        "data/decimal_precision.xml",
+        "views/payment_acquirer.xml",
+    ],
     "external_dependencies": {"python": ["cerberus", "Adyen"], "bin": []},
 }
