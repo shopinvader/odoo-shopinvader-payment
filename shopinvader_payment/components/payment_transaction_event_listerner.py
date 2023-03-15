@@ -60,4 +60,7 @@ class SaleOrderPaymentTransactionEventListener(Component):
             # end of awful code ....
 
     def on_payment_transaction_done(self, sale_order, transaction):
-        self._confirm_and_invalidate_session(sale_order)
+        # TODO: remove _confirm_and_invalidate_session if everything works
+        #self._confirm_and_invalidate_session(sale_order)
+        # instantly post_process_order
+        transaction._post_process_after_done()
