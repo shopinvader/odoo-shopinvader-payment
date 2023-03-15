@@ -11,6 +11,7 @@ class StockPicking(models.Model):
         Inherit to automatically execute the klarna capture when the picking is validated
         """
         result = super().button_validate()
-        if self.picking_type_id.code == "outgoing" and self.sale_id:
-            self.sale_id._trigger_klarna_capture()
+        for picking in self:
+            if picking.picking_type_id.code == "outgoing" and picking.sale_id:
+                picking.sale_id._trigger_klarna_capture()
         return result
