@@ -4,7 +4,7 @@
 {
     "name": "Shopinvader Payment",
     "summary": "Payment integration for Shopinvader",
-    "version": "14.0.1.0.1",
+    "version": "14.0.1.0.2",
     "category": "e-commerce",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "author": "ACSONE SA/NV",
