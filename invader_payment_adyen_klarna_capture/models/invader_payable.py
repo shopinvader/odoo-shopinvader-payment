@@ -84,7 +84,7 @@ class InvaderPayable(models.AbstractModel):
             return False
         # The "klarna" payment method is used to pay later
         # /!\ "klarna" != "klarna_account" etc
-        elif "klarna" not in transaction.adyen_payment_method:
+        elif "klarna" not in (transaction.adyen_payment_method or ""):
             return False
         # If the transaction is already into a final state,
         # the capture can't be done.
