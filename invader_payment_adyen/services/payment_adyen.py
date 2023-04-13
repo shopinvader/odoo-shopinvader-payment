@@ -3,8 +3,6 @@
 
 import logging
 
-from odoo import fields
-
 from odoo.addons.base_rest import restapi
 from odoo.addons.base_rest.components.service import (
     skip_secure_response,
@@ -16,7 +14,6 @@ from odoo.addons.component.core import AbstractComponent
 _logger = logging.getLogger(__name__)
 
 try:
-    import Adyen
     from cerberus import Validator
 except ImportError as err:
     _logger.debug(err)
@@ -94,25 +91,7 @@ class PaymentServiceAdyen(AbstractComponent):
         :param transaction:
         :return:
         """
-        adyen = Adyen.Adyen(
-            platform=self._get_platform(transaction),
-            live_endpoint_prefix=self._get_live_prefix(transaction),
-            xapikey=self._get_adyen_api_key(transaction),
-        )
-        return adyen
-
-    def _get_platform(self, transaction):
-        """
-        Return 'test' or 'live' depending on acquirer value
-        :param transaction:
-        :return: str
-        """
-        return transaction._get_platform()
-
-    def _get_live_prefix(self, transaction):
-        state = transaction.acquirer_id.state
-        prefix = transaction.acquirer_id.adyen_live_endpoint_prefix
-        return str(prefix) if state == "enabled" else ""
+        return transaction._get_adyen_service()
 
     def _validator_paymentMethods(self):
         res = self.payment_service._invader_get_target_validator()
@@ -300,23 +279,7 @@ class PaymentServiceAdyen(AbstractComponent):
         :param payment_method:
         :return:
         """
-        currency = transaction.currency_id
-        amount = transaction.amount
-        request = {
-            "merchantAccount": self._get_adyen_merchant_account(transaction),
-            "countryCode": transaction.partner_country_id.code,
-            "reference": transaction.reference,
-            "amount": {
-                "value": self._get_formatted_amount(transaction, amount),
-                "currency": currency.name,
-            },
-            "channel": "Web",
-            "paymentMethod": payment_method,
-            "returnUrl": transaction.return_url,
-            "additionalData": {"executeThreeD": True},
-        }
-
-        return request
+        return transaction._prepare_adyen_payments_request(payment_method)
 
     def _prepare_payment_details(self, transaction, **params):
         """
@@ -453,16 +416,6 @@ class PaymentServiceAdyen(AbstractComponent):
             transaction, amount
         )
 
-    def _get_adyen_api_key(self, transaction):
-        """
-        Return adyen api key depending on payment.transaction recordset
-        :param transaction: payment.transaction
-        :return: string
-        """
-
-        acquirer = transaction.acquirer_id
-        return acquirer.filtered(lambda a: a.provider == "adyen").adyen_api_key
-
     def _get_adyen_merchant_account(self, transaction):
         """
         Return adyen merchant account depending on
@@ -471,34 +424,21 @@ class PaymentServiceAdyen(AbstractComponent):
         :return: string
         """
 
-        acquirer = transaction.acquirer_id
-        return acquirer.filtered(
-            lambda a: a.provider == "adyen"
-        ).adyen_merchant_account
+        return transaction._get_adyen_merchant_account()
 
     def _update_additional_details(self, response):
         """
         Hook to be able to enrich transaction with response
         additionalData
-        Payment result can contains payment method brand
+        Deprecated. Should be filled on the transaction
+        :param vals:
+        :param response:
+        :return:
         """
-        res = {}
-        if response.message.get("action", {}).get("paymentMethodType"):
-            payment_method = response.message.get("action", {}).get(
-                "paymentMethodType"
-            )
-            res.update({"adyen_payment_method": payment_method})
-        if response.message.get("paymentMethod", {}).get("type"):
-            payment_method = response.message.get("paymentMethod", {}).get(
-                "type"
-            )
-            res.update({"adyen_payment_method": payment_method})
-        if response.message.get("paymentMethod", {}).get("brand"):
-            payment_method = response.message.get("paymentMethod", {}).get(
-                "brand"
-            )
-            res.update({"adyen_payment_method": payment_method})
-        return res
+        _logger.warning(
+            "DEPRECATED: You should use _update_additional_details() on the transaction"
+        )
+        return {}
 
     def _update_transaction_with_response(self, transaction, response):
         """
@@ -508,27 +448,10 @@ class PaymentServiceAdyen(AbstractComponent):
         :return:
         """
         vals = {}
+        # Only for backward compatibility. Following line should be removed
         vals.update(self._update_additional_details(response))
-        payment_data = response.message.get("paymentData")
-        if payment_data:
-            vals.update({"adyen_payment_data": payment_data})
-        psp_reference = response.message.get("pspReference") or getattr(
-            response, "psp", ""
-        )
-        if psp_reference:
-            vals.update({"acquirer_reference": psp_reference})
-        result_code = response.message.get("resultCode")
-        if result_code:
-            # Log resultCode of Adyen in transaction
-            message = transaction.state_message
-            stamp = str(fields.Datetime.now())
-            adyen_message = "\n" + stamp + ": " + str(response.message)
-            if message:
-                message += adyen_message
-            else:
-                message = adyen_message
-            vals.update({"state_message": message})
         transaction.update(vals)
+        return transaction._update_with_adyen_response(response)
 
     def _generate_adyen_response(
         self, response, payable, target, transaction=False, **params

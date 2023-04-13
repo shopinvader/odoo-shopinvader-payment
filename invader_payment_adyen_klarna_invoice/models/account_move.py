@@ -7,14 +7,11 @@ from odoo.fields import first
 class AccountMove(models.Model):
     _inherit = "account.move"
 
-    def _get_klarna_shopper(self):
+    def _get_shopper(self):
         return self.partner_id
 
-    def _get_klarna_billing(self):
-        return self._get_klarna_shopper()
-
     def _get_klarna_delivery(self):
-        return self.partner_shipping_id or self._get_klarna_shopper()
+        return self.partner_shipping_id or super()._get_klarna_delivery()
 
     def _get_klarna_internal_ref(self):
         return self.ref or self.name
