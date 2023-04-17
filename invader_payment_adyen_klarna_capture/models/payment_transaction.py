@@ -14,7 +14,7 @@ class PaymentTransaction(models.Model):
         The capture is done later (manually or not).
         """
         adyen_klarna_trx = self.filtered(
-            lambda tr: tr.adyen_payment_method == "klarna"
+            lambda tr: "klarna" in (tr.adyen_payment_method or "")
             and tr.state == "draft"
         )
         others_trx = self - adyen_klarna_trx
