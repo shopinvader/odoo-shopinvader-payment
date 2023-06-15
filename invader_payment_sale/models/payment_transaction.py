@@ -12,4 +12,4 @@ class PaymentTransaction(models.Model):
         self.ensure_one()
         if self.sale_order_ids:
             return self.sale_order_ids
-        return super(PaymentTransaction, self)._get_invader_payables()
+        return super()._get_invader_payables()

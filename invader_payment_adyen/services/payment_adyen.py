@@ -4,7 +4,6 @@
 import logging
 
 from odoo import fields
-from odoo.tools.float_utils import float_round
 
 from odoo.addons.base_rest import restapi
 from odoo.addons.base_rest.components.service import (
@@ -191,8 +190,8 @@ class PaymentServiceAdyen(AbstractComponent):
             "merchantAccount": self._get_adyen_merchant_account(transaction),
             "countryCode": transaction.partner_id.country_id.code,
             "amount": {
-                "value": self._get_formatted_amount(currency, amount),
-                "currency": currency.symbol,
+                "value": self._get_formatted_amount(transaction, amount),
+                "currency": currency.name,
             },
             "channel": "Web",
         }
@@ -309,7 +308,7 @@ class PaymentServiceAdyen(AbstractComponent):
             "countryCode": transaction.partner_country_id.code,
             "reference": transaction.reference,
             "amount": {
-                "value": self._get_formatted_amount(currency, amount),
+                "value": self._get_formatted_amount(transaction, amount),
                 "currency": currency.name,
             },
             "channel": "Web",
@@ -445,14 +444,15 @@ class PaymentServiceAdyen(AbstractComponent):
         res["redirect_to"] = return_url
         return res
 
-    def _get_formatted_amount(self, currency, amount):
+    def _get_formatted_amount(self, transaction, amount):
         """
         The expected amount format by Adyen
         :param amount: float
         :return: int
         """
-        res = int(float_round(amount, 2) * 100)
-        return res
+        return self.env["invader.payable"]._get_formatted_amount(
+            transaction, amount
+        )
 
     def _get_adyen_api_key(self, transaction):
         """
