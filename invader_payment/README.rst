@@ -13,14 +13,11 @@ Shopinvader Payment
 .. |badge2| image:: https://img.shields.io/badge/licence-AGPL--3-blue.png
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
-.. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fodoo--shopinvader--payment-lightgray.png?logo=github
-    :target: https://github.com/OCA/odoo-shopinvader-payment/tree/14.0/invader_payment
-    :alt: OCA/odoo-shopinvader-payment
-.. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/odoo-shopinvader-payment-14-0/odoo-shopinvader-payment-14-0-invader_payment
-    :alt: Translate me on Weblate
+.. |badge3| image:: https://img.shields.io/badge/github-shopinvader%2Fodoo--shopinvader--payment-lightgray.png?logo=github
+    :target: https://github.com/shopinvader/odoo-shopinvader-payment/tree/14.0/invader_payment
+    :alt: shopinvader/odoo-shopinvader-payment
 
-|badge1| |badge2| |badge3| |badge4| 
+|badge1| |badge2| |badge3| 
 
 Base module for implementing e-commerce payment methods.
 This module mostly provides an abstract component (InvaderPaymentService)
@@ -34,10 +31,10 @@ and an abstract model (InvaderPayable).
 Bug Tracker
 ===========
 
-Bugs are tracked on `GitHub Issues <https://github.com/OCA/odoo-shopinvader-payment/issues>`_.
+Bugs are tracked on `GitHub Issues <https://github.com/shopinvader/odoo-shopinvader-payment/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us smashing it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/odoo-shopinvader-payment/issues/new?body=module:%20invader_payment%0Aversion:%2014.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/shopinvader/odoo-shopinvader-payment/issues/new?body=module:%20invader_payment%0Aversion:%2014.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -59,16 +56,6 @@ Denis Roussel <denis.roussel@acsone.eu>
 Maintainers
 ~~~~~~~~~~~
 
-This module is maintained by the OCA.
+This module is part of the `shopinvader/odoo-shopinvader-payment <https://github.com/shopinvader/odoo-shopinvader-payment/tree/14.0/invader_payment>`_ project on GitHub.
 
-.. image:: https://odoo-community.org/logo.png
-   :alt: Odoo Community Association
-   :target: https://odoo-community.org
-
-OCA, or the Odoo Community Association, is a nonprofit organization whose
-mission is to support the collaborative development of Odoo features and
-promote its widespread use.
-
-This module is part of the `OCA/odoo-shopinvader-payment <https://github.com/OCA/odoo-shopinvader-payment/tree/14.0/invader_payment>`_ project on GitHub.
-
-You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.
+You are welcome to contribute.
