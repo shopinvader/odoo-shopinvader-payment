@@ -90,6 +90,7 @@ class AccountPaymentOrder(models.Model):
         if (
             self.payment_method_id.code == "sepa_direct_debit"
             and self.payment_type == "inbound"
+            and self.payment_method_id.payment_acquirer_id.provider == "adyen"
         ):
             return False, False
         return super().generate_payment_file()
@@ -129,24 +130,17 @@ class AccountPaymentOrder(models.Model):
             ]
         )
         # Sepa is compute not stored so filter manually
-        for payment_order in payment_orders.filtered(lambda p: p.sepa):
+        # + filter only to adyen
+        for payment_order in payment_orders.filtered(
+            lambda p: p.sepa
+            and p.payment_method_id.payment_acquirer_id.provider == "adyen"
+        ):
             payment_order._generate_transaction_adyen()
             payment_order.open2generated()
             payment_order.generated2uploaded()
 
     def _generate_transaction_adyen(self):
-        acquirer = self.env["payment.acquirer"].search(
-            [
-                (
-                    "company_id",
-                    "=",
-                    self.payment_mode_id.company_id.id,
-                ),
-                ("provider", "=", "adyen"),
-            ],
-            limit=1,
-        )
         transaction_data = self._invader_prepare_payment_transaction_data(
-            acquirer
+            self.payment_method_id.payment_acquirer_id
         )
         return self.env["payment.transaction"].create(transaction_data)
