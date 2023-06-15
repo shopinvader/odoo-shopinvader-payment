@@ -66,7 +66,6 @@ msgid "Description"
 msgstr ""
 
 #. module: shopinvader_payment
-#: model:ir.model.fields,field_description:shopinvader_payment.field_payment_transaction__display_name
 #: model:ir.model.fields,field_description:shopinvader_payment.field_sale_order__display_name
 #: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_backend__display_name
 #: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_payment__display_name
@@ -74,7 +73,6 @@ msgid "Display Name"
 msgstr ""
 
 #. module: shopinvader_payment
-#: model:ir.model.fields,field_description:shopinvader_payment.field_payment_transaction__id
 #: model:ir.model.fields,field_description:shopinvader_payment.field_sale_order__id
 #: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_backend__id
 #: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_payment__id
@@ -82,7 +80,6 @@ msgid "ID"
 msgstr ""
 
 #. module: shopinvader_payment
-#: model:ir.model.fields,field_description:shopinvader_payment.field_payment_transaction____last_update
 #: model:ir.model.fields,field_description:shopinvader_payment.field_sale_order____last_update
 #: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_backend____last_update
 #: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_payment____last_update
@@ -119,11 +116,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:shopinvader_payment.field_shopinvader_backend__payment_method_ids
 #: model_terms:ir.ui.view,arch_db:shopinvader_payment.shopinvader_backend_view_form
 msgid "Payment Method"
-msgstr ""
-
-#. module: shopinvader_payment
-#: model:ir.model,name:shopinvader_payment.model_payment_transaction
-msgid "Payment Transaction"
 msgstr ""
 
 #. module: shopinvader_payment
