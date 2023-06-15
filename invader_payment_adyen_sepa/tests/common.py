@@ -41,7 +41,7 @@ class TestCommon(SavepointCase):
         cls.AccountAccount = cls.env["account.account"]
         cls.AccountPaymentLineCreate = cls.env["account.payment.line.create"]
         cls.belgium = cls.env.ref("base.be")
-        product = cls.env.ref("product.product_product_4")
+        product = cls.env.ref("product.product_product_4").copy()
         product.write({"company_id": cls.company_fr.id})
         cls.acquirer = cls.PaymentAcquirer.create(
             {
@@ -54,11 +54,11 @@ class TestCommon(SavepointCase):
                 .search([("type", "=", "qweb")], limit=1)
                 .id,
                 "adyen_live_endpoint_prefix": os.environ.get(
-                    "ADYEN_API_PREFIX", ""
+                    "ADYEN_API_PREFIX", "def"
                 ),
-                "adyen_api_key": os.environ.get("ADYEN_API_KEY", ""),
+                "adyen_api_key": os.environ.get("ADYEN_API_KEY", "abc"),
                 "adyen_merchant_account": os.environ.get(
-                    "ADYEN_MERCHANT_ACCOUNT", ""
+                    "ADYEN_MERCHANT_ACCOUNT", "xxx"
                 ),
             }
         )
@@ -111,6 +111,7 @@ class TestCommon(SavepointCase):
                 "payment_type": "inbound",
                 "bank_account_required": True,
                 "mandate_required": True,
+                "payment_acquirer_id": cls.acquirer.id,
             }
         )
         cls.journal = cls.AccountJournal.create(

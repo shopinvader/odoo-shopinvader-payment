@@ -17,6 +17,7 @@
     "data": [
         "data/ir_cron.xml",
         "views/account_payment_order.xml",
+        "views/account_payment_method.xml",
     ],
-    "external_dependencies": {"python": ["Adyen"], "bin": []},
+    "external_dependencies": {"python": ["Adyen"]},
 }
