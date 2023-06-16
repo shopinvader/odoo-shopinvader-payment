@@ -25,6 +25,8 @@ addon | version | maintainers | summary
 [invader_payment](invader_payment/) | 14.0.1.0.3 |  | Payment integration for Shopinvader
 [invader_payment_adyen](invader_payment_adyen/) | 14.0.1.0.2 | [![rousseldenis](https://github.com/rousseldenis.png?size=30px)](https://github.com/rousseldenis) | Adds a new payment service for Adyen
 [invader_payment_adyen_klarna](invader_payment_adyen_klarna/) | 14.0.1.0.1 |  | Adds Klarna payment mode for Adyen
+[invader_payment_adyen_klarna_capture](invader_payment_adyen_klarna_capture/) | 14.0.1.0.0 |  | Klarna payment mode - Capture payment
+[invader_payment_adyen_klarna_capture_delivery](invader_payment_adyen_klarna_capture_delivery/) | 14.0.1.0.0 |  | Klarna payment mode - Capture payment during Picking out validation
 [invader_payment_adyen_klarna_invoice](invader_payment_adyen_klarna_invoice/) | 14.0.1.0.1 |  | Enable Adyen klarna payment for invoices
 [invader_payment_adyen_klarna_sale](invader_payment_adyen_klarna_sale/) | 14.0.1.0.1 |  | Enable Adyen klarna payment for sales
 [invader_payment_manual](invader_payment_manual/) | 14.0.1.0.0 |  | REST Services for manual payment like bank transfer, check ... (base module)
