@@ -4,7 +4,7 @@
 {
     "name": "Invader Payment Adyen - Klarna capture payment",
     "summary": "Klarna payment mode - Capture payment",
-    "version": "14.0.1.0.0",
+    "version": "14.0.1.0.1",
     "license": "AGPL-3",
     "author": "ACSONE SA/NV,Odoo Community Association (OCA)",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
