@@ -67,7 +67,7 @@ class ShopinvaderAdyenCommon(object):
                 "eventDate": "2020-11-23T11:14:12+01:00",
             }
         }
-        signature = generate_notification_sig(
+        signature = cls._adyen_generate_notification_sig(
             item["NotificationRequestItem"],
             transaction.acquirer_id.adyen_hmac_key,
         )
@@ -75,6 +75,24 @@ class ShopinvaderAdyenCommon(object):
             "hmacSignature"
         ] = str(signature.decode("utf-8"))
         return item
+
+    @classmethod
+    def _adyen_generate_notification_sig(cls, notification_request_item, hmac):
+        return generate_notification_sig(
+            notification_request_item,
+            hmac,
+        )
+
+    def _regenerate_signature(self, request):
+        for element in request.get("notificationItems"):
+            notification_req_item = element.get("NotificationRequestItem")
+            signature = self._adyen_generate_notification_sig(
+                notification_req_item,
+                self.transaction.acquirer_id.adyen_hmac_key,
+            )
+            notification_req_item["additionalData"]["hmacSignature"] = str(
+                signature.decode("utf-8")
+            )
 
     @classmethod
     def _get_notifications(cls, transactions, success=True):
