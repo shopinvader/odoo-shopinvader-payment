@@ -23,21 +23,8 @@ class PaymentAcquirer(models.Model):
     )
 
     def _get_adyen_notification_message(self, transaction, notification_item):
-        message = transaction.state_message
-        notification_message = (
-            "eventCode: {}, merchantReference: {}, pspReference: {}".format(
-                notification_item.get("eventCode"),
-                notification_item.get("merchantReference"),
-                notification_item.get("pspReference"),
-            )
-        )
-        stamp = str(fields.Datetime.now())
-        adyen_message = "\n" + stamp + ": " + str(notification_message)
-        if message:
-            message += adyen_message
-        else:
-            message = adyen_message
-        return message
+        # Keep the function for backward compatibility
+        return transaction._get_adyen_notification_message(notification_item)
 
     def _get_adyen_additional_data(self, transaction, notification_item):
         """Allows to update transaction details with additional data
@@ -49,14 +36,28 @@ class PaymentAcquirer(models.Model):
         :type notification_item: [type]
         """
         vals = {}
-        message = self._get_adyen_notification_message(
-            transaction, notification_item
+        message = transaction._get_adyen_notification_message(
+            notification_item
         )
         vals.update({"state_message": message})
         if not transaction.acquirer_reference:
             vals.update(
                 {"acquirer_reference": notification_item.get("pspReference")}
             )
+        if transaction.acquirer_id.provider == "adyen":
+            payment_method = False
+            if notification_item.get("action"):
+                payment_method = notification_item.get("action")
+                if isinstance(payment_method, dict):
+                    payment_method = payment_method.get("paymentMethodType")
+            if notification_item.get("paymentMethod"):
+                payment_method = notification_item.get("paymentMethod")
+                if isinstance(payment_method, dict):
+                    payment_method = payment_method.get(
+                        "brand"
+                    ) or payment_method.get("type")
+            if payment_method:
+                vals.update({"adyen_payment_method": payment_method})
         return vals
 
     def _handle_adyen_notification_item(self, notification_item):
@@ -84,9 +85,6 @@ class PaymentAcquirer(models.Model):
             if shopperInteraction and shopperInteraction != "Ecommerce":
                 return
         event_code = notification_item.get("eventCode")
-        # TODO: Treat each event_code
-        if event_code != "AUTHORISATION":
-            return
         psp_reference = notification_item.get("pspReference")
         merchant_reference = notification_item.get("merchantReference")
         transaction = self.env["payment.transaction"].search(
@@ -124,19 +122,22 @@ class PaymentAcquirer(models.Model):
         if data:
             transaction.write(data)
         if event_code == "AUTHORISATION":
-            success = notification_item.get("success")
-            success = True if success == "true" else False
-            if success and transaction.state != "done":
-                # Set to done if not already. Don't raise, just pass
-                # It will return a 200 code to Adyen, so the webhook will
-                # be marked as done on their side.
-                transaction._set_transaction_done()
-            elif not success and transaction.state == "draft":
-                # Set to error if draft. Don't raise, just pass
-                # It will return a 200 code to Adyen, so the webhook will
-                # be marked as done on their side.
-                transaction._set_transaction_error(
-                    self._get_adyen_notification_message(
-                        transaction, notification_item
-                    )
-                )
+            transaction._handle_adyen_notification_item_authorized(
+                notification_item
+            )
+        elif event_code == "REFUND":
+            transaction._handle_adyen_notification_item_refund(
+                notification_item
+            )
+        elif event_code == "CANCELLATION":
+            transaction._handle_adyen_notification_item_cancel(
+                notification_item
+            )
+        elif event_code == "CAPTURE":
+            transaction._handle_adyen_notification_item_capture(
+                notification_item
+            )
+        elif event_code == "CAPTURE_FAILED":
+            transaction._handle_adyen_notification_item_capture_failed(
+                notification_item
+            )

@@ -61,3 +61,6 @@ class SaleOrderPaymentTransactionEventListener(Component):
 
     def on_payment_transaction_done(self, sale_order, transaction):
         self._confirm_and_invalidate_session(sale_order)
+
+    def on_payment_transaction_authorized(self, sale_order, transaction):
+        self._confirm_and_invalidate_session(sale_order)

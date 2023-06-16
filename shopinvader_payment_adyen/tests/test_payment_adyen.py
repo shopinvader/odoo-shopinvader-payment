@@ -193,6 +193,8 @@ class TestShopinvaderAdyenService(
         items = request["notificationItems"]
         item = items[0]["NotificationRequestItem"]
         item["eventCode"] = "REPORT_AVAILABLE"
+        # As the content has been edited, re-generate the signature
+        self._regenerate_signature(request)
         with self.work_on_services(partner=self.partner) as work:
             self.service = work.component(usage="payment_adyen")
         self.assertEqual("draft", self.transaction.state)
