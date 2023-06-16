@@ -6,7 +6,7 @@
     "author": "ACSONE SA/NV",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "category": "e-commerce",
-    "version": "14.0.1.0.2",
+    "version": "14.0.1.0.3",
     "license": "AGPL-3",
     "external_dependencies": {"python": ["cerberus", "unidecode"]},
     "depends": [
