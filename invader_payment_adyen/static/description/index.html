@@ -421,22 +421,22 @@ on the Adyen backend and intended to be passed to the drop-in widget.</p>
 </li>
 </ul>
 <pre class="code python literal-block">
-<span class="p">{</span>
- <span class="s2">&quot;paymentMethods&quot;</span><span class="p">:[</span>
-  <span class="p">{</span>
-    <span class="s2">&quot;details&quot;</span><span class="p">:[</span><span class="o">...</span><span class="p">],</span>
-    <span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;Credit Card&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;scheme&quot;</span>
-    <span class="o">...</span>
-  <span class="p">},</span>
-  <span class="p">{</span>
-    <span class="s2">&quot;details&quot;</span><span class="p">:[</span><span class="o">...</span><span class="p">],</span>
-    <span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;SEPA Direct Debit&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;sepadirectdebit&quot;</span>
-  <span class="p">},</span>
-  <span class="o">...</span>
-  <span class="p">]</span>
-<span class="p">}</span>
+<span class="p">{</span><span class="w">
+</span> <span class="s2">&quot;paymentMethods&quot;</span><span class="p">:[</span><span class="w">
+</span>  <span class="p">{</span><span class="w">
+</span>    <span class="s2">&quot;details&quot;</span><span class="p">:[</span><span class="o">...</span><span class="p">],</span><span class="w">
+</span>    <span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;Credit Card&quot;</span><span class="p">,</span><span class="w">
+</span>    <span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;scheme&quot;</span><span class="w">
+</span>    <span class="o">...</span><span class="w">
+</span>  <span class="p">},</span><span class="w">
+</span>  <span class="p">{</span><span class="w">
+</span>    <span class="s2">&quot;details&quot;</span><span class="p">:[</span><span class="o">...</span><span class="p">],</span><span class="w">
+</span>    <span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;SEPA Direct Debit&quot;</span><span class="p">,</span><span class="w">
+</span>    <span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;sepadirectdebit&quot;</span><span class="w">
+</span>  <span class="p">},</span><span class="w">
+</span>  <span class="o">...</span><span class="w">
+</span>  <span class="p">]</span><span class="w">
+</span><span class="p">}</span>
 </pre>
 <ul>
 <li><p class="first">payments</p>
@@ -462,24 +462,24 @@ on the Adyen backend and intended to be passed to the drop-in widget.</p>
 </li>
 </ul>
 <pre class="code python literal-block">
-<span class="p">{</span>
-  <span class="s2">&quot;resultCode&quot;</span><span class="p">:</span><span class="s2">&quot;IdentifyShopper&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;action&quot;</span><span class="p">:{</span>
-    <span class="s2">&quot;paymentMethodType&quot;</span><span class="p">:</span><span class="s2">&quot;scheme&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;token&quot;</span><span class="p">:</span><span class="s2">&quot;eyJ0aHJlZURTTWV0aG9kTm90aWZpY...&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;threeDS2Fingerprint&quot;</span>
-  <span class="p">},</span>
-  <span class="s2">&quot;authentication&quot;</span><span class="p">:{</span>
-    <span class="s2">&quot;threeds2.fingerprintToken&quot;</span><span class="p">:</span><span class="s2">&quot;eyJ0aHJlZURTTWV0aG9kTm90aWZpY...&quot;</span>
-  <span class="p">},</span>
-  <span class="s2">&quot;details&quot;</span><span class="p">:[</span>
-    <span class="p">{</span>
-      <span class="s2">&quot;key&quot;</span><span class="p">:</span><span class="s2">&quot;threeds2.fingerprint&quot;</span><span class="p">,</span>
-      <span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;text&quot;</span>
-    <span class="p">}</span>
-  <span class="p">],</span>
-  <span class="s2">&quot;paymentData&quot;</span><span class="p">:</span><span class="s2">&quot;Ab02b4c0!BQABAgCuZFJrQOjSsl\/zt+...&quot;</span>
-<span class="p">}</span>
+<span class="p">{</span><span class="w">
+</span>  <span class="s2">&quot;resultCode&quot;</span><span class="p">:</span><span class="s2">&quot;IdentifyShopper&quot;</span><span class="p">,</span><span class="w">
+</span>  <span class="s2">&quot;action&quot;</span><span class="p">:{</span><span class="w">
+</span>    <span class="s2">&quot;paymentMethodType&quot;</span><span class="p">:</span><span class="s2">&quot;scheme&quot;</span><span class="p">,</span><span class="w">
+</span>    <span class="s2">&quot;token&quot;</span><span class="p">:</span><span class="s2">&quot;eyJ0aHJlZURTTWV0aG9kTm90aWZpY...&quot;</span><span class="p">,</span><span class="w">
+</span>    <span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;threeDS2Fingerprint&quot;</span><span class="w">
+</span>  <span class="p">},</span><span class="w">
+</span>  <span class="s2">&quot;authentication&quot;</span><span class="p">:{</span><span class="w">
+</span>    <span class="s2">&quot;threeds2.fingerprintToken&quot;</span><span class="p">:</span><span class="s2">&quot;eyJ0aHJlZURTTWV0aG9kTm90aWZpY...&quot;</span><span class="w">
+</span>  <span class="p">},</span><span class="w">
+</span>  <span class="s2">&quot;details&quot;</span><span class="p">:[</span><span class="w">
+</span>    <span class="p">{</span><span class="w">
+</span>      <span class="s2">&quot;key&quot;</span><span class="p">:</span><span class="s2">&quot;threeds2.fingerprint&quot;</span><span class="p">,</span><span class="w">
+</span>      <span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;text&quot;</span><span class="w">
+</span>    <span class="p">}</span><span class="w">
+</span>  <span class="p">],</span><span class="w">
+</span>  <span class="s2">&quot;paymentData&quot;</span><span class="p">:</span><span class="s2">&quot;Ab02b4c0!BQABAgCuZFJrQOjSsl\/zt+...&quot;</span><span class="w">
+</span><span class="p">}</span>
 </pre>
 <ul>
 <li><p class="first">payment_details</p>
@@ -502,14 +502,14 @@ on the Adyen backend and intended to be passed to the drop-in widget.</p>
 </li>
 </ul>
 <pre class="code python literal-block">
-<span class="p">{</span>
- <span class="n">data</span><span class="p">:</span> <span class="p">{</span>
-    <span class="n">details</span><span class="p">:</span> <span class="p">{</span>
-      <span class="n">threeds2</span><span class="o">.</span><span class="n">fingerprint</span><span class="p">:</span> <span class="s2">&quot;eyJ0aHJlZURTQ29tcEluZCI6IlkifQ==&quot;</span>
-    <span class="p">},</span>
-    <span class="n">paymentData</span><span class="p">:</span> <span class="s2">&quot;Ab02b4c0!BQABAgAKspbjN8+5...&quot;</span>
- <span class="p">}</span>
-<span class="p">}</span>
+<span class="p">{</span><span class="w">
+</span> <span class="n">data</span><span class="p">:</span> <span class="p">{</span><span class="w">
+</span>    <span class="n">details</span><span class="p">:</span> <span class="p">{</span><span class="w">
+</span>      <span class="n">threeds2</span><span class="o">.</span><span class="n">fingerprint</span><span class="p">:</span> <span class="s2">&quot;eyJ0aHJlZURTQ29tcEluZCI6IlkifQ==&quot;</span><span class="w">
+</span>    <span class="p">},</span><span class="w">
+</span>    <span class="n">paymentData</span><span class="p">:</span> <span class="s2">&quot;Ab02b4c0!BQABAgAKspbjN8+5...&quot;</span><span class="w">
+</span> <span class="p">}</span><span class="w">
+</span><span class="p">}</span>
 </pre>
 </div>
 <div class="section" id="bug-tracker">
