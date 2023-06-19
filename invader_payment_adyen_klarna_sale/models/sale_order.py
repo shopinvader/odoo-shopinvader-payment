@@ -16,6 +16,9 @@ class SaleOrder(models.Model):
         return self.partner_shipping_id or self._get_klarna_shopper()
 
     def _get_klarna_internal_ref(self):
+        """
+        Get the reference for Klarna
+        """
         return self.reference or self.name
 
     def _prepare_adyen_payment_klarna_line(

@@ -41,25 +41,25 @@ class InvaderPayable(models.AbstractModel):
         """
         Get the shopper of the payable (res.partner) for Klarna
         """
-        raise NotImplementedError()
+        return self._get_shopper()
 
     def _get_klarna_billing(self):
         """
         Get the billing address of the payable (res.partner) for Klarna
         """
-        raise NotImplementedError()
+        return self._get_billing_partner()
 
     def _get_klarna_delivery(self):
         """
         Get the delivery address of the payable (res.partner) for Klarna
         """
-        raise NotImplementedError()
+        return self._get_delivery_partner()
 
     def _get_klarna_internal_ref(self):
         """
         Get the delivery address of the payable (res.partner) for Klarna
         """
-        raise NotImplementedError()
+        return self._get_internal_ref()
 
     def _prepare_adyen_payment_klarna(self, transaction, payment_method):
         values = self._klarna_shopper_info(self._get_klarna_shopper())

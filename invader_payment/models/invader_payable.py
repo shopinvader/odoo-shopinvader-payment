@@ -50,6 +50,21 @@ class InvaderPayable(models.AbstractModel):
         Return payable lines
         """
 
+    def _get_shopper_partner(self):
+        raise NotImplementedError()
+
+    def _get_billing_partner(self):
+        return self._get_shopper_partner()
+
+    def _get_delivery_partner(self):
+        return self._get_shopper_partner()
+
+    def _get_internal_ref(self):
+        """
+        Get the reference to put on the transaction
+        """
+        raise NotImplementedError()
+
     @api.model
     def _get_formatted_amount(self, transaction, amount):
         """
