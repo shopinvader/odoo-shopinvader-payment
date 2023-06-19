@@ -19,16 +19,29 @@ msgid "Adyen Klarna capture Mixin"
 msgstr ""
 
 #. module: invader_payment_adyen_klarna
+#: model:ir.model.fields,field_description:invader_payment_adyen_klarna.field_payment_transaction__adyen_payment_data
+msgid "Adyen Payment Data"
+msgstr ""
+
+#. module: invader_payment_adyen_klarna
 #: model:ir.model.fields,field_description:invader_payment_adyen_klarna.field_invader_payable__display_name
+#: model:ir.model.fields,field_description:invader_payment_adyen_klarna.field_payment_transaction__display_name
 msgid "Display Name"
 msgstr ""
 
 #. module: invader_payment_adyen_klarna
 #: model:ir.model.fields,field_description:invader_payment_adyen_klarna.field_invader_payable__id
+#: model:ir.model.fields,field_description:invader_payment_adyen_klarna.field_payment_transaction__id
 msgid "ID"
 msgstr ""
 
 #. module: invader_payment_adyen_klarna
 #: model:ir.model.fields,field_description:invader_payment_adyen_klarna.field_invader_payable____last_update
+#: model:ir.model.fields,field_description:invader_payment_adyen_klarna.field_payment_transaction____last_update
 msgid "Last Modified on"
+msgstr ""
+
+#. module: invader_payment_adyen_klarna
+#: model:ir.model,name:invader_payment_adyen_klarna.model_payment_transaction
+msgid "Payment Transaction"
 msgstr ""
