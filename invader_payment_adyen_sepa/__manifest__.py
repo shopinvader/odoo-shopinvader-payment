@@ -4,7 +4,7 @@
 {
     "name": "Invader Payment Adyen - Sepa",
     "summary": """Manage SEPA payment by Adyen""",
-    "version": "14.0.1.0.1",
+    "version": "14.0.1.0.2",
     "license": "AGPL-3",
     "author": "ACSONE SA/NV,Odoo Community Association (OCA)",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
