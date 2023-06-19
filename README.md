@@ -22,14 +22,14 @@ Available addons
 addon | version | maintainers | summary
 --- | --- | --- | ---
 [invader_invoice_payment](invader_invoice_payment/) | 14.0.1.0.2 |  | Invader addon to make invoice payment
-[invader_payment](invader_payment/) | 14.0.1.0.4 |  | Payment integration for Shopinvader
-[invader_payment_adyen](invader_payment_adyen/) | 14.0.1.0.3 | [![rousseldenis](https://github.com/rousseldenis.png?size=30px)](https://github.com/rousseldenis) | Adds a new payment service for Adyen
-[invader_payment_adyen_klarna](invader_payment_adyen_klarna/) | 14.0.1.0.1 |  | Adds Klarna payment mode for Adyen
-[invader_payment_adyen_klarna_capture](invader_payment_adyen_klarna_capture/) | 14.0.1.0.1 |  | Klarna payment mode - Capture payment
+[invader_payment](invader_payment/) | 14.0.1.0.5 |  | Payment integration for Shopinvader
+[invader_payment_adyen](invader_payment_adyen/) | 14.0.1.0.4 | [![rousseldenis](https://github.com/rousseldenis.png?size=30px)](https://github.com/rousseldenis) | Adds a new payment service for Adyen
+[invader_payment_adyen_klarna](invader_payment_adyen_klarna/) | 14.0.1.0.2 |  | Adds Klarna payment mode for Adyen
+[invader_payment_adyen_klarna_capture](invader_payment_adyen_klarna_capture/) | 14.0.1.0.2 |  | Klarna payment mode - Capture payment
 [invader_payment_adyen_klarna_capture_delivery](invader_payment_adyen_klarna_capture_delivery/) | 14.0.1.0.1 |  | Klarna payment mode - Capture payment during Picking out validation
-[invader_payment_adyen_klarna_invoice](invader_payment_adyen_klarna_invoice/) | 14.0.1.0.2 |  | Enable Adyen klarna payment for invoices
-[invader_payment_adyen_klarna_sale](invader_payment_adyen_klarna_sale/) | 14.0.1.0.2 |  | Enable Adyen klarna payment for sales
-[invader_payment_adyen_sepa](invader_payment_adyen_sepa/) | 14.0.1.0.1 |  | Manage SEPA payment by Adyen
+[invader_payment_adyen_klarna_invoice](invader_payment_adyen_klarna_invoice/) | 14.0.1.0.3 |  | Enable Adyen klarna payment for invoices
+[invader_payment_adyen_klarna_sale](invader_payment_adyen_klarna_sale/) | 14.0.1.0.3 |  | Enable Adyen klarna payment for sales
+[invader_payment_adyen_sepa](invader_payment_adyen_sepa/) | 14.0.1.0.2 |  | Manage SEPA payment by Adyen
 [invader_payment_manual](invader_payment_manual/) | 14.0.1.0.0 |  | REST Services for manual payment like bank transfer, check ... (base module)
 [invader_payment_sale](invader_payment_sale/) | 14.0.1.0.1 |  | Implements sale order as payable
 [invader_payment_stripe](invader_payment_stripe/) | 14.0.1.0.2 |  | REST Services for Stripe Payments (base module)
