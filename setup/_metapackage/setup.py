@@ -16,6 +16,7 @@ setuptools.setup(
         'odoo14-addon-invader_payment_adyen_klarna_capture_delivery',
         'odoo14-addon-invader_payment_adyen_klarna_invoice',
         'odoo14-addon-invader_payment_adyen_klarna_sale',
+        'odoo14-addon-invader_payment_adyen_sepa',
         'odoo14-addon-invader_payment_manual',
         'odoo14-addon-invader_payment_sale',
         'odoo14-addon-invader_payment_stripe',
