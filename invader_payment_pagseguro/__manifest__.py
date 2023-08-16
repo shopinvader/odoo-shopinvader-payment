@@ -14,7 +14,6 @@
         "invader_payment",
         "payment_pagseguro",
         "base_rest",
-        "erplivre_stock_picking_invoicing",
     ],
     "demo": ["demo/res_partner.xml"],
     "data": [
