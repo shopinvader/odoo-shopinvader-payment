@@ -1,0 +1,34 @@
+interactions:
+- request:
+    body: '{"reference_id": "14", "description": "S00021-1", "amount": {"value": 855500,
+      "currency": "BRL"}, "payment_method": {"type": "CREDIT_CARD", "installments":
+      1, "capture": false, "card": {"encrypted": "VaseeE7rr"}}}'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']      
+      Connection: [keep-alive]
+      Content-Length: ['213']
+      Content-Type: [application/json]
+      User-Agent: [python-requests/2.21.0]
+      x-api-version: ['4.0']
+    method: POST
+    uri: https://sandbox.api.pagseguro.com/charges
+  response:
+    body: {string: '{"error_messages":[{"code":"40002","message":"Encrypted card already
+        used","description":"invalid_parameter","parameter_name":"payment_method.card.encrypted"}]}'}
+    headers:
+      Connection: [keep-alive]
+      Content-Length: ['160']
+      Content-Type: [application/json]
+      Date: ['Wed, 16 Aug 2023 20:53:08 GMT']
+      Via: [1.1 9ddde8455c4ba7bc43d40686741b038e.cloudfront.net (CloudFront)]
+      X-Amz-Cf-Id: [5moVEn9LaCY_WOrpX6esPjCLFg2Ld-X3heH3ZsWkVjCOHmHHIslNqA==]
+      X-Amz-Cf-Pop: [GRU1-C2]
+      X-Cache: [Error from cloudfront]
+      x-amz-apigw-id: [JxWQQHK5oAMF26A=]
+      x-amzn-Remapped-Connection: [keep-alive]
+      x-amzn-Remapped-Content-Length: ['160']
+      x-amzn-Remapped-Date: ['Wed, 16 Aug 2023 20:53:08 GMT']
+      x-amzn-RequestId: [9415e929-4539-456b-bbc4-1a1861f20465]
+    status: {code: 400, message: Bad Request}
+version: 1

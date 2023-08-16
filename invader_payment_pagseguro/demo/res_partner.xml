@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright 2022 KMEE
+  ~ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+  -->
+<odoo>
+    <data>
+
+        <record id="pagseguro_customer_1" model="res.partner">
+            <field name="name">Jose da Silva</field>
+            <field name="cnpj_cpf">137.225.234-78</field>
+            <field name="email">jose@email.com</field>
+            <field name="street_name">Avenida Brigadeiro Faria Lima</field>
+            <field name="street_number">1384</field>
+            <field name="district">Pinheiros</field>
+            <field name="city_id" ref="l10n_br_base.city_3550308" />
+            <field name="state_id" ref="base.state_br_sp" />
+            <field name="country_id" ref="base.br" />
+            <field name="zip">01452002</field>
+        </record>
+
+    </data>
+</odoo>

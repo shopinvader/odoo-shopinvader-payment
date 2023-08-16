@@ -1,0 +1,33 @@
+interactions:
+- request:
+    body: '{"reference_id": "14", "description": "S00021-1", "amount": {"value": 855500,
+      "currency": "BRL"}, "payment_method": {"type": "CREDIT_CARD", "installments":
+      1, "capture": false, "card": {"encrypted": "Zq5ImQXUnZxn6+EoNOsH6zTRbLZOAKrUcnRFiYltBfjh2KwhwIOlLvy8i+Iv6tnLXrs6Q8PMKepQW+UaSp0rWUjZgNChU9gXTDOQqABilZGEFuYKIOZJ3DotPvYIZ8w171kO5PcAyeEnWuzX1987gAIs1iOxGsjLRMiRD7BdTtC0kYnpYNHgHaJ/N8caiWIoHq9oXuaMBQTydQb9tu22LaG4x2flkmQngGepRlacRxJLOZvPfM6qiqwBPA5pwMQzD87iKkkW+6siz+67NryjKDXDaYctAZzmBokDWvED5cWg+M57xSHkifdx6kj9Upt5VCtvugSk61gUxAHyubdVOA=="}}}'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']      
+      Connection: [keep-alive]
+      Content-Length: ['548']
+      Content-Type: [application/json]
+      User-Agent: [python-requests/2.21.0]
+      x-api-version: ['4.0']
+    method: POST
+    uri: https://sandbox.api.pagseguro.com/charges
+  response:
+    body: {string: '{"id":"CHAR_A92938A7-26FF-45AE-B802-2024F3EF2DBF","reference_id":"14","status":"AUTHORIZED","created_at":"2023-08-16T17:53:09.206-03:00","description":"S00021-1","amount":{"value":855500,"currency":"BRL","summary":{"total":855500,"paid":0,"refunded":0}},"payment_response":{"code":"20000","message":"SUCESSO","reference":"032416400102"},"payment_method":{"type":"CREDIT_CARD","installments":1,"capture":false,"capture_before":"2023-08-21T17:53:09-03:00","card":{"brand":"visa","first_digits":"411111","last_digits":"1111","exp_month":"12","exp_year":"2030","holder":{"name":"VISA"}},"soft_descriptor":"IntegracaoPagsegu"},"notification_urls":["https://webhook.site/140d3eaf-72ca-4ea6-8ec0-2c6624262419"],"links":[{"rel":"SELF","href":"https://sandbox.api.pagseguro.com/charges/CHAR_A92938A7-26FF-45AE-B802-2024F3EF2DBF","media":"application/json","type":"GET"},{"rel":"CHARGE.CANCEL","href":"https://sandbox.api.pagseguro.com/charges/CHAR_A92938A7-26FF-45AE-B802-2024F3EF2DBF/cancel","media":"application/json","type":"POST"},{"rel":"CHARGE.CAPTURE","href":"https://sandbox.api.pagseguro.com/charges/CHAR_A92938A7-26FF-45AE-B802-2024F3EF2DBF/capture","media":"application/json","type":"POST"}]}'}
+    headers:
+      Connection: [keep-alive]
+      Content-Length: ['1194']
+      Content-Type: [application/json]
+      Date: ['Wed, 16 Aug 2023 20:53:10 GMT']
+      Via: [1.1 be058bcb1dbe0c534febc75507fc667a.cloudfront.net (CloudFront)]
+      X-Amz-Cf-Id: [Hu7Fdk4Ynyu2xmtVH_5dPvQkHGXqY8yPDkZrebbHtwzFDwElS7ct1A==]
+      X-Amz-Cf-Pop: [GRU1-C2]
+      X-Cache: [Miss from cloudfront]
+      x-amz-apigw-id: [JxWQWHlQoAMFX9g=]
+      x-amzn-Remapped-Connection: [keep-alive]
+      x-amzn-Remapped-Content-Length: ['1194']
+      x-amzn-Remapped-Date: ['Wed, 16 Aug 2023 20:53:10 GMT']
+      x-amzn-RequestId: [d9d3e45b-3617-4159-86ff-4aa8ca84c66a]
+    status: {code: 201, message: Created}
+version: 1
