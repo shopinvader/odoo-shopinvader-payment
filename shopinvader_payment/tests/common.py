@@ -24,7 +24,9 @@ class CommonConnectedPaymentCase(CommonConnectedCartCase):
             context={},
             db=self.env.cr.dbname,
             uid=None,
-            httprequest=Mock(environ={"HTTP_SESS_CART_ID": cart_id}, headers={}),
+            httprequest=Mock(
+                environ={"HTTP_SESS_CART_ID": cart_id}, headers={}
+            ),
             session=DotDict(),
         )
 

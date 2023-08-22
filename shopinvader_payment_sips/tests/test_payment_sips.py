@@ -55,4 +55,6 @@ class ShopinvaderSipsPaymentCase(CommonConnectedPaymentCase):
             self.assertIn("cart", res["store_cache"])
             self.assertEqual(res["store_cache"]["cart"], {})
             self.assertIn("last_sale", res["store_cache"])
-            self.assertEqual(res["store_cache"]["last_sale"]["id"], self.cart.id)
+            self.assertEqual(
+                res["store_cache"]["last_sale"]["id"], self.cart.id
+            )
