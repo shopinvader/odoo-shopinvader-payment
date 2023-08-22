@@ -1,12 +1,39 @@
 # Copyright 2021 ACSONE SA/NV (<http://acsone.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import contextlib
+from unittest.mock import Mock
+
+import odoo
+from odoo.tools.misc import DotDict
+
+from odoo.addons.shopinvader.tests.test_cart import CommonConnectedCartCase
+
 from .fake_payment import (
     FakePaymentElectronic,
     FakePaymentManual,
     PaymentServiceElectronicShopinvader,
     PaymentServiceManualShopinvader,
 )
+
+
+class CommonConnectedPaymentCase(CommonConnectedCartCase):
+    @contextlib.contextmanager
+    def _mock_request(self, cart_id):
+        request = Mock(
+            context={},
+            db=self.env.cr.dbname,
+            uid=None,
+            httprequest=Mock(
+                environ={"HTTP_SESS_CART_ID": cart_id}, headers={}
+            ),
+            session=DotDict(),
+        )
+
+        with contextlib.ExitStack() as s:
+            odoo.http._request_stack.push(request)
+            s.callback(odoo.http._request_stack.pop)
+            yield request
 
 
 class CommonPaymentCase:

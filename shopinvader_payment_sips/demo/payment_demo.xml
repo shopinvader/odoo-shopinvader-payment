@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo noupdate="1">
+
+    <record id="shopinvader_payment_sips" model="shopinvader.payment">
+        <field name="sequence">20</field>
+        <field name="acquirer_id" ref="payment.payment_acquirer_sips" />
+        <field name="code">sips</field>
+        <field name="backend_id" ref="shopinvader.backend_1" />
+        <field name="notification">sale_confirmation</field>
+    </record>
+
+</odoo>

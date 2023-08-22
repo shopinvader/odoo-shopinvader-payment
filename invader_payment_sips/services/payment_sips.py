@@ -97,7 +97,7 @@ class PaymentServiceSips(AbstractComponent):
         automatic_response_url,
         **params
     ):
-        """ Prepare data for SIPS payment submission """
+        """Prepare data for SIPS payment submission"""
         payable = self.payment_service._invader_find_payable_from_target(
             target, **params
         )

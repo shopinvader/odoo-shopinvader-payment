@@ -1,10 +1,8 @@
 exclude: |
   (?x)
   # NOT INSTALLABLE ADDONS
-  ^invader_payment_sips/|
   ^shopinvader_locomotive_payment_adyen/|
   ^shopinvader_payment_paypal/|
-  ^shopinvader_payment_sips/|
   ^shopinvader_quotation_payment/|
   ^test_invader_payment/|
   ^test_shopinvader_payment/|
@@ -46,6 +44,11 @@ repos:
       - id: oca-update-pre-commit-excluded-addons
       - id: oca-fix-manifest-website
         args: ["https://github.com/shopinvader/odoo-shopinvader-payment"]
+  - repo: https://github.com/OCA/odoo-pre-commit-hooks
+    rev: v0.0.25
+    hooks:
+      - id: oca-checks-odoo-module
+      - id: oca-checks-po
   - repo: https://github.com/myint/autoflake
     rev: v1.4
     hooks:
