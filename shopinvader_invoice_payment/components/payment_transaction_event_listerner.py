@@ -3,7 +3,7 @@
 from odoo.http import request
 
 from odoo.addons.component.core import Component
-from odoo.addons.shopinvader import shopinvader_response
+from odoo.addons.shopinvader_restapi import shopinvader_response
 
 
 class AccountMovePaymentTransactionEventListener(Component):
