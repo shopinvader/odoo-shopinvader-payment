@@ -13,7 +13,7 @@
     "installable": True,
     "external_dependencies": {"python": ["cerberus", "unidecode"], "bin": []},
     "depends": [
-        "shopinvader",
+        "shopinvader_restapi",
         "onchange_helper",
         "invader_payment_sale",
         "component_event",
