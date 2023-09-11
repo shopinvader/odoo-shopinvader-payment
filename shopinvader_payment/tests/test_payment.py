@@ -2,14 +2,14 @@
 # @author Sébastien BEAU <sebastien.beau@akretion.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo.addons.shopinvader.tests.test_cart import CommonConnectedCartCase
+from odoo.addons.shopinvader_restapi.tests.test_cart import CommonConnectedCartCase
 
 
 class ShopinvaderPaymentCase(CommonConnectedCartCase):
     @classmethod
     def setUpClass(cls):
         super(ShopinvaderPaymentCase, cls).setUpClass()
-        cls.cart = cls.env.ref("shopinvader.sale_order_2")
+        cls.cart = cls.env.ref("shopinvader_restapi.sale_order_2")
         cls.shopinvader_session = {"cart_id": cls.cart.id}
 
         with cls.work_on_services(
