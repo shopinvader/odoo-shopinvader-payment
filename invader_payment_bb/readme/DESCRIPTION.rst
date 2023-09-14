@@ -1,1 +1,1 @@
-REST Services for Bank of Brazil Payments (base module without controller).
+REST Services for Banco do Brasil Payments (base module without controller).

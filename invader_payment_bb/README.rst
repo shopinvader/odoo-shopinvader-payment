@@ -1,5 +1,5 @@
 ============================================
-Bank of Brazil Payment Acquirer (REST, Base)
+Banco do Brasil Payment Acquirer (REST, Base)
 ============================================
 
 .. 
@@ -22,7 +22,7 @@ Bank of Brazil Payment Acquirer (REST, Base)
 
 |badge1| |badge2| |badge3|
 
-REST Services for Bank of Brazil Payments (base module without controller).
+REST Services for Banco do Brasil Payments (base module without controller).
 
 **Table of contents**
 

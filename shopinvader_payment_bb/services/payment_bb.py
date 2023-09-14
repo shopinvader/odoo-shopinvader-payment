@@ -5,7 +5,7 @@ from odoo.addons.component.core import Component
 
 
 class PaymentServiceBbShopinvader(Component):
-    """Expose Bacnk of Brazil payment service under /shopinvader endpoint"""
+    """Expose Banco do Brasil payment service under /shopinvader endpoint"""
 
     _name = "payment.service.bb.shopinvader"
     _inherit = ["payment.service.bb", "base.shopinvader.service"]

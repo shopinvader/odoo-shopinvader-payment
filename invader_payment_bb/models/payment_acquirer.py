@@ -8,7 +8,7 @@ class PaymentAcquirer(models.Model):
     _inherit = "payment.acquirer"
 
     provider = fields.Selection(
-        selection_add=[("BB", "Banck of Brazil")],
+        selection_add=[("BB", "Banco do Brasil")],
         required=True,
         ondelete={"BB": "set default"},
     )

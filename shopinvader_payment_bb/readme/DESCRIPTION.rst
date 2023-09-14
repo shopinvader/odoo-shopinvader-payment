@@ -1,1 +1,1 @@
-REST Services for Bank of Brazil Payments (/shopinvader route).
+REST Services for Banco do Brasil Payments (/shopinvader route).

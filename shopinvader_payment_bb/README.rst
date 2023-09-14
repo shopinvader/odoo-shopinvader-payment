@@ -22,7 +22,7 @@
 
 |badge1| |badge2| |badge3|
 
-REST Services for Bank of Brazil Payments (/shopinvader route).
+REST Services for Banco do Brasil Payments (/shopinvader route).
 
 **Table of contents**
 

@@ -3,7 +3,7 @@
 
 {
     "name": "",
-    "summary": "Shopinvader REST Services for Banck of Brazil Payments",
+    "summary": "Shopinvader REST Services for Banco do Brasil Payments",
     "version": "14.0.0.0.0",
     "author": "KMEE INFORMATICA LTDA",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",

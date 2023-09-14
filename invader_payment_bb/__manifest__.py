@@ -1,8 +1,8 @@
 #  Copyright 2023 KMEE
 #  License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 {
-    "name": "Bank of Brazil Payment Acquirer (REST, Base)",
-    "summary": "REST Services for Bank of Brazil Payments (base module)",
+    "name": "Banco do Brasil Payment Acquirer (REST, Base)",
+    "summary": "REST Services for Banco do Brasil Payments (base module)",
     "version": "14.0.0.0.0",
     "category": "e-commerce",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",

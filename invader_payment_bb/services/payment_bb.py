@@ -13,7 +13,7 @@ class PaymentServicePagseguro(AbstractComponent):
     _name = "payment.service.bb"
     _inherit = "base.rest.service"
     _usage = "payment_bacen_pix"
-    _description = "REST Services for Bank of Brazil payments"
+    _description = "REST Services for Banco do Brasil payments"
 
     @property
     def payment_service(self):
@@ -27,7 +27,7 @@ class PaymentServicePagseguro(AbstractComponent):
 
     def _get_payment_mode(self):
         """Returns payment mode from id.
-        Checks if payment mode has Banck of Brazil acquirer.
+        Checks if payment mode has Banco do Brasil acquirer.
         """
         payment_mode = self.env.ref(
             "payment_bacen_pix.payment_acquirer_bacenpix"
