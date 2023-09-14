@@ -67,7 +67,6 @@ class PaymentServicePagseguro(AbstractComponent):
             if re.search(r"[!#$%&*]", tx_id):
                 return {"result": False, "error": "Invalid characters"}
             res = self._create_transaction(payable, token, acquirer, tx_id)
-            # payable._invader_set_payment_mode(payment_mode) v12
             self._set_payment_mode(res, payment_mode)
 
         except (UserError, ValidationError) as e:
