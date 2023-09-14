@@ -1,0 +1,64 @@
+interactions:
+- request:
+    body: '{"grant_type": "client_credentials", "scope": "cob.write cob.read pix.read
+      pix.write"}'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['86']
+      Content-Type: [application/json]
+      User-Agent: [python-requests/2.21.0]
+    method: POST
+    uri: https://oauth.sandbox.bb.com.br/oauth/token?client_id=eyJpZCI6IjE0MWNhMTQtZDM1Yy00IiwiY29kaWdvUHVibGljYWRvciI6MCwiY29kaWdvU29mdHdhcmUiOjU5OTc2LCJzZXF1ZW5jaWFsSW5zdGFsYWNhbyI6MX0&client_secret=eyJpZCI6IjM5Y2YyMWMtODcyOC00MmIzLSIsImNvZGlnb1B1YmxpY2Fkb3IiOjAsImNvZGlnb1NvZnR3YXJlIjo1OTk3Niwic2VxdWVuY2lhbEluc3RhbGFjYW8iOjEsInNlcXVlbmNpYWxDcmVkZW5jaWFsIjoxLCJhbWJpZW50ZSI6ImhvbW9sb2dhY2FvIiwiaWF0IjoxNjgxNjc1NDQxOTk2fQ
+  response:
+    body: {string: '{"access_token":"EMCUit8roHFHo5G-dlRdZjxxTxSiT1kk4VkcwMn_2rfJaZi4HNJ7re0ZnRcpdg82Ffo6FrCJPuvnGeCBZ23cLw.j0lMbddUk9EM8g6y_BVc0QNpW0qUT-rdzVPYPvCKOWIxjLRwmA7QCTo_29eX52wl4HWgbvwUCTp5bG-0iKxe3TZndEoc-8V6BBcBG5G-IjYuaDHM4_iNkEMstyzeiYT-weEHQ_corc1bo7gu5OvVfnBXzVWkY-7RaiF49lowlVu6_nYPYMc6rrdCP8YF1GPpKwJ0-90-q7a4vlNY2vkG9TQBVT4rrm1r6svjFKEzJcpYtU4mwd5YRKne77Ba9gDv2GJa_00CVCVIXF8k0Jdv_x0Sz2ZsN53VgT871DUVxCGUxGax6kio5Cbo4jWOHEFJTFVmMwbkqW8SY7Ff5Es73eA0qYJzE3CKb4Gla-ev7ZTJxGmTep_Y_gU58YTDYEYjV95kq1aozwrQJd0LMzn7wOnKorMmrGpbzy0ZOFXaMQCjdNDQh8AZn-O-encuyJ3Vb3j3gVEKCxcSjbDyaq5dPtg3naO4IC9opAWtEV5WE0zaYmJXdcyLV-Mnm2YEDJ90qHoS3QVY4B3VugooS8lt6hi2CCD86O0chR2mtDPXDvmG9AneVQYhp8vnxewhkm5Qw2npQnZcebBae3LwOLY8x2jn4ypoC1Y77u1Uz0ClrTNuYE_u4_2CbeHcefAyCoyUZ_QhZXf4_oQnAZoyGwYFDAe9fLeEbScEtxTjMPlT53xXoiFvflq_GRKLptEzDfgw0Lrcw28D3xzAliHZ79Oln1wmTDiB5rXV8p5NQ1MXQ5rLNgK_2M5WQdG2_QXG-RFqXaljwKPc1K-8UZFTmnPzHI70SlYsZiWYDzM4p-Eb_5Stg9J-h355-naSZ9ftjygVZhPM5-trbcGiDZZaZatLV-j2yxoAjOTduVJZ1TAEQIpl-1jWsbs0irtnQWeQkx83FcNC0NuAzckgZNUXRQJcGRx61lnbQ-CUqyRH-1AMQOCN3yu0i6sf4QAn8munFk7yt5w3rFMvKGbssh1-Cm0Rmg1q3f4S7oVt5A7PEE2VrUdLxPX-emJ9ota3gy6--0gE.WPovvGJRFpEdLM0Ut41twHvwxwWHVpm-mQfFSLMawOGngwiYIQk08qzrTGmLSk2zcsW1I_Y5L0sidQAH9fbFPA","token_type":"Bearer","expires_in":600,"scope":"pix.read
+        pix.write cob.write cob.read"}'}
+    headers:
+      Access-Control-Allow-Origin: ['*']
+      Connection: [keep-alive]
+      Content-Length: ['1304']
+      Content-Security-Policy: [frame-ancestors 'self';]
+      Content-Type: [application/json; charset=utf-8]
+      Date: ['Thu, 14 Sep 2023 12:20:46 GMT']
+      ETag: [W/"518-pzSDVCFc6VPx+hvMgu3k8tsdOVw"]
+      Strict-Transport-Security: [max-age=15724800; includeSubDomains]
+      X-Content-Type-Options: [nosniff]
+      X-DNS-Prefetch-Control: ['off']
+      X-Download-Options: [noopen]
+      X-Frame-Options: [SAMEORIGIN]
+      X-XSS-Protection: [1; mode=block]
+    status: {code: 201, message: Created}
+- request:
+    body: '{"calendario": {"expiracao": "3600"}, "devedor": {"cpf": "93311176049",
+      "nome": "Osiris"}, "valor": {"original": "8555.0"}, "chave": "7f6844d0-de89-47e5-9ef7-e0a35a681615"}'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['172']
+      Content-Type: [application/json]
+      User-Agent: [python-requests/2.21.0]
+    method: PUT
+    uri: https://api.sandbox.bb.com.br/pix/v1/cob/?txid=93311176049&gw-dev-app-key=93e76d03f7afb6817133e7027e6487aa
+  response:
+    body: {string: '{"status":"ATIVA","calendario":{"criacao":"2023-09-14T09:08:01.40-03:00","expiracao":"3600"},"location":"qrcodepix-h.bb.com.br/pix/v2/8fa49453-7ff0-4ddd-b8a8-2a672af9af0d","textoImagemQRcode":"00020101021226870014br.gov.bcb.pix2565qrcodepix-h.bb.com.br/pix/v2/8fa49453-7ff0-4ddd-b8a8-2a672af9af0d5204000053039865802BR5920ALAN
+        GUIACHERO BUENO6008BRASILIA62070503***630407BD","txid":"GG2luaVJwbuYCR5Fobj9ypbqwuxzrrF8Uxn","revisao":0,"devedor":{"cpf":"93311176049","nome":"Osiris"},"valor":{"original":"8555.00"},"chave":"7f6844d0-de89-47e5-9ef7-e0a35a681615","solicitacaoPagador":"Solicitacao
+        Pix"}'}
+    headers:
+      Access-Control-Allow-Origin: ['*']
+      Connection: [keep-alive]
+      Content-Length: ['596']
+      Content-Security-Policy: [frame-ancestors 'self';]
+      Content-Type: [application/json; charset=utf-8]
+      Date: ['Thu, 14 Sep 2023 12:20:47 GMT']
+      ETag: [W/"254-kJwj+unE1aop3bQqEYMLU0ozSYQ"]
+      Strict-Transport-Security: [max-age=15724800; includeSubDomains]
+      X-Content-Type-Options: [nosniff]
+      X-DNS-Prefetch-Control: ['off']
+      X-Download-Options: [noopen]
+      X-Frame-Options: [SAMEORIGIN]
+      X-XSS-Protection: [1; mode=block]
+      response-type: [sandbox]
+    status: {code: 200, message: OK}
+version: 1
