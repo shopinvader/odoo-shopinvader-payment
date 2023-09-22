@@ -9,15 +9,6 @@ class AccountPaymentMethod(models.Model):
 
     _inherit = "account.payment.method"
 
-    provider = fields.Selection(
-        selection="_get_provider_options",
-        string="Provider",
-        required=True,
+    acquirer_id = fields.Many2one(
+        "payment.acquirer", required=True, ondelete="restrict"
     )
-
-    def _get_provider_options(self):
-        payment_acquirer = self.env["payment.acquirer"]
-        options = payment_acquirer.fields_get(["provider"])["provider"][
-            "selection"
-        ]
-        return options

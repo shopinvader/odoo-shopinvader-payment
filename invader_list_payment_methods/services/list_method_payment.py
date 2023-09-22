@@ -39,13 +39,12 @@ class PaymentServiceListMethod(AbstractComponent):
             methods_payment_ids = self.env["account.payment.method"].search(
                 [
                     (
-                        "provider",
+                        "acquirer_id",
                         "=",
-                        shopinvader_payment_id.acquirer_id.provider,
+                        shopinvader_payment_id.acquirer_id.id,
                     )
                 ]
             )
-            acquirer_name = shopinvader_payment_id.acquirer_id.name
 
             provider_methods = []
             for method in methods_payment_ids:
@@ -57,7 +56,8 @@ class PaymentServiceListMethod(AbstractComponent):
                 provider_methods.append(method_data)
 
             payment_method = {
-                "provider": acquirer_name,
+                "id": shopinvader_payment_id.acquirer_id.id,
+                "acquirer": shopinvader_payment_id.acquirer_id.name,
                 "method": provider_methods,
             }
 
@@ -72,7 +72,13 @@ class PaymentServiceListMethod(AbstractComponent):
                 "schema": {
                     "type": "dict",
                     "schema": {
-                        "provider": {
+                        "id": {
+                            "type": "integer",
+                            "min": 1,
+                            "required": True,
+                            "nullable": True,
+                        },
+                        "acquirer": {
                             "type": "string",
                             "required": True,
                             "nullable": True,
