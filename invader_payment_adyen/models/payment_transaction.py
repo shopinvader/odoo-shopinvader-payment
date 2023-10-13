@@ -203,7 +203,8 @@ class PaymentTransaction(models.Model):
         payment_data = response.message.get("paymentData")
         if payment_data:
             vals.update({"adyen_payment_data": payment_data})
-        psp_reference = response.message.get("pspReference")
+        # In some strange case, we doesn't have this pspReference
+        psp_reference = response.message.get("pspReference") or response.psp
         if psp_reference:
             vals.update({"acquirer_reference": psp_reference})
         result_code = response.message.get("resultCode")
