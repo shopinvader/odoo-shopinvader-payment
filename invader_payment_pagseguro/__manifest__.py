@@ -1,4 +1,5 @@
 #  Copyright 2022 KMEE
+# @author Cristiano Rodrigues <cristiano.rodrigues@kmee.com.br>
 #  License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 {
     "name": "Pagseguro Payment Acquirer (REST, Base)",
