@@ -151,20 +151,29 @@ class AccountPaymentOrder(models.Model):
     @api.model
     def _cron_create_transaction(self):
         """ """
-        payment_orders = self.search(
+        all_payment_orders = self.sudo().search(
             [
                 ("state", "=", "open"),
                 ("payment_mode_id.payment_type", "=", "inbound"),
                 ("payment_method_id.code", "=", "sepa_direct_debit"),
             ]
         )
-        # Sepa is compute not stored so filter manually
-        # + filter only to adyen
-        for payment_order in payment_orders.filtered(
-            lambda p: p.sepa
-            and p.payment_method_id.payment_acquirer_id.provider == "adyen"
-        ):
-            payment_order.open2generated()
+        companies = all_payment_orders.mapped("company_id")
+        for company in companies:
+            payment_orders = (
+                all_payment_orders.filtered(
+                    lambda o, c=company: o.company_id == c
+                )
+                .with_company(company)
+                .sudo_tech()
+            )
+            # Sepa is compute not stored so filter manually
+            # + filter only to adyen
+            for payment_order in payment_orders.filtered(
+                lambda p: p.sepa
+                and p.payment_method_id.payment_acquirer_id.provider == "adyen"
+            ):
+                payment_order.open2generated()
 
     def _generate_transaction_adyen(self):
         transaction_data = self._invader_prepare_payment_transaction_data(

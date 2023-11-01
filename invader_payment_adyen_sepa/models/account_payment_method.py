@@ -9,4 +9,5 @@ class AccountPaymentMethod(models.Model):
     payment_acquirer_id = fields.Many2one(
         comodel_name="payment.acquirer",
         string="Acquirer",
+        company_dependent=True,
     )
