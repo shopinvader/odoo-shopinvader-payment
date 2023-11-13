@@ -23,7 +23,7 @@ addon | version | maintainers | summary
 --- | --- | --- | ---
 [invader_invoice_payment](invader_invoice_payment/) | 14.0.1.0.2 |  | Invader addon to make invoice payment
 [invader_payment](invader_payment/) | 14.0.1.0.5 |  | Payment integration for Shopinvader
-[invader_payment_adyen](invader_payment_adyen/) | 14.0.1.0.4 | [![rousseldenis](https://github.com/rousseldenis.png?size=30px)](https://github.com/rousseldenis) | Adds a new payment service for Adyen
+[invader_payment_adyen](invader_payment_adyen/) | 14.0.1.0.5 | [![rousseldenis](https://github.com/rousseldenis.png?size=30px)](https://github.com/rousseldenis) | Adds a new payment service for Adyen
 [invader_payment_adyen_klarna](invader_payment_adyen_klarna/) | 14.0.1.0.2 |  | Adds Klarna payment mode for Adyen
 [invader_payment_adyen_klarna_capture](invader_payment_adyen_klarna_capture/) | 14.0.1.0.2 |  | Klarna payment mode - Capture payment
 [invader_payment_adyen_klarna_capture_delivery](invader_payment_adyen_klarna_capture_delivery/) | 14.0.1.0.1 |  | Klarna payment mode - Capture payment during Picking out validation
