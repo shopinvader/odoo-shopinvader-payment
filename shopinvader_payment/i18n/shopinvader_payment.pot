@@ -108,7 +108,6 @@ msgstr ""
 
 #. module: shopinvader_payment
 #: model_terms:ir.ui.view,arch_db:shopinvader_payment.shopinvader_payment_view_form
-#: model_terms:ir.ui.view,arch_db:shopinvader_payment.shopinvader_payment_view_tree
 msgid "Payment"
 msgstr ""
 
