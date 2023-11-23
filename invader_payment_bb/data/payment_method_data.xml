@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright 2023 KMEE
+  ~ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+  -->
+<odoo>
+    <data>
+
+        <!-- Payment methods -->
+
+        <record id="account_payment_method_bb_pix" model="account.payment.method">
+            <field name="name">PIX-BB</field>
+            <field name="code">pix-bb</field>
+            <field name="payment_type">inbound</field>
+        </record>
+
+    </data>
+</odoo>
