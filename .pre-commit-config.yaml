@@ -5,7 +5,6 @@ exclude: |
   ^shopinvader_locomotive_payment_adyen/|
   ^shopinvader_payment_paypal/|
   ^shopinvader_payment_sips/|
-  ^shopinvader_quotation_payment/|
   ^test_invader_payment/|
   ^test_shopinvader_payment/|
   # END NOT INSTALLABLE ADDONS
