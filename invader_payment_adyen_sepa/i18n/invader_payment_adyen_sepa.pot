@@ -34,6 +34,12 @@ msgid "Adyen Klarna capture Mixin"
 msgstr ""
 
 #. module: invader_payment_adyen_sepa
+#: code:addons/invader_payment_adyen_sepa/models/account_payment_order.py:0
+#, python-format
+msgid "Adyen SEPA"
+msgstr ""
+
+#. module: invader_payment_adyen_sepa
 #: model:ir.model.fields,field_description:invader_payment_adyen_sepa.field_account_payment_line__authorized_transaction_ids
 #: model:ir.model.fields,field_description:invader_payment_adyen_sepa.field_account_payment_order__authorized_transaction_ids
 msgid "Authorized Transactions"
@@ -137,6 +143,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:invader_payment_adyen_sepa.field_account_payment_line__transaction_ids
 #: model_terms:ir.ui.view,arch_db:invader_payment_adyen_sepa.account_payment_order_form
 msgid "Transactions"
+msgstr ""
+
+#. module: invader_payment_adyen_sepa
+#: code:addons/invader_payment_adyen_sepa/models/account_payment_order.py:0
+#, python-format
+msgid "Transactions has been generated correctly."
 msgstr ""
 
 #. module: invader_payment_adyen_sepa
