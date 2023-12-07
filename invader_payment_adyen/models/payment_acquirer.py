@@ -4,23 +4,17 @@ import logging
 
 from Adyen.util import is_valid_hmac_notification
 
-from odoo import _, fields, models
+from odoo import _, models
 
 from ..services.exceptions import AdyenInvalidData
+
+ADYEN_PROVIDER = "adyen"
 
 _logger = logging.getLogger(__name__)
 
 
 class PaymentAcquirer(models.Model):
     _inherit = "payment.acquirer"
-
-    adyen_api_key = fields.Char(groups="base.group_user")
-    adyen_live_endpoint_prefix = fields.Char(
-        groups="base.group_user",
-        help="You need to fill this in when switching to live environment. "
-        "See: https://docs.adyen.com/development-resources/"
-        "live-endpoints#set-up-live-endpoints",
-    )
 
     def _get_adyen_notification_message(self, transaction, notification_item):
         # Keep the function for backward compatibility
@@ -44,7 +38,7 @@ class PaymentAcquirer(models.Model):
             vals.update(
                 {"acquirer_reference": notification_item.get("pspReference")}
             )
-        if transaction.acquirer_id.provider == "adyen":
+        if transaction.acquirer_id.provider == ADYEN_PROVIDER:
             payment_method = False
             if notification_item.get("action"):
                 payment_method = notification_item.get("action")
@@ -110,7 +104,7 @@ class PaymentAcquirer(models.Model):
             _logger.warning(message)
             raise AdyenInvalidData(message)
         acquirer = transaction.acquirer_id
-        if acquirer.provider != "adyen":
+        if acquirer.provider != ADYEN_PROVIDER:
             message = _(
                 "transaction with reference '%s' has wrong provider "
                 "in Adyen automatic response" % psp_reference

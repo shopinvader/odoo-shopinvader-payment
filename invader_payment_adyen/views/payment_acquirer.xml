@@ -10,6 +10,10 @@
                     name="adyen_live_endpoint_prefix"
                     attrs="{'required':[('provider', '=', 'adyen'), ('state', '=', 'enabled')]}"
                 />
+                <field
+                    name="adyen_hmac_key"
+                    attrs="{'required':[('provider', 'ilike', 'adyen'), ('state', '!=', 'disabled')]}"
+                />
             </field>
         </field>
     </record>

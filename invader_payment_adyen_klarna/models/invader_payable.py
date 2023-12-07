@@ -41,7 +41,7 @@ class InvaderPayable(models.AbstractModel):
         """
         Get the shopper of the payable (res.partner) for Klarna
         """
-        return self._get_shopper()
+        return self._get_shopper_partner()
 
     def _get_klarna_billing(self):
         """

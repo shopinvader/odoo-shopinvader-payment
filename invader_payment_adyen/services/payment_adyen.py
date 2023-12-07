@@ -10,6 +10,9 @@ from odoo.addons.base_rest.components.service import (
     to_int,
 )
 from odoo.addons.component.core import AbstractComponent
+from odoo.addons.invader_payment_adyen_abstract.services.payment_adyen import (
+    ADYEN_TRANSACTION_STATUSES,
+)
 
 _logger = logging.getLogger(__name__)
 
@@ -17,16 +20,6 @@ try:
     from cerberus import Validator
 except ImportError as err:
     _logger.debug(err)
-
-# map Adyen transaction statuses to Odoo payment.transaction statuses
-ADYEN_TRANSACTION_STATUSES = {
-    "Authorised": "done",
-    "Refused": "error",
-    "Cancelled": "cancel",
-    "Received": "pending",
-    "RedirectShopper": "draft",
-}
-APP_NAME = "INVADER"
 
 payment_completion_details = [
     "MD",
@@ -77,21 +70,9 @@ def filter_completion_details(details):
 class PaymentServiceAdyen(AbstractComponent):
 
     _name = "payment.service.adyen"
-    _inherit = "base.rest.service"
+    _inherit = "payment.service.adyen.abstract"
     _usage = "payment_adyen"
     _description = "REST Services for Adyen payments"
-
-    @property
-    def payment_service(self):
-        return self.component(usage="invader.payment")
-
-    def _get_adyen_service(self, transaction):
-        """
-        Return an intialized library
-        :param transaction:
-        :return:
-        """
-        return transaction._get_adyen_service()
 
     def _validator_paymentMethods(self):
         res = self.payment_service._invader_get_target_validator()
@@ -116,6 +97,11 @@ class PaymentServiceAdyen(AbstractComponent):
                         "schema": {
                             "name": {"type": "string"},
                             "type": {"type": "string"},
+                            "brands": {
+                                "type": "list",
+                                "required": False,
+                                "schema": {"type": "string"},
+                            },
                         },
                     },
                 },
@@ -141,39 +127,14 @@ class PaymentServiceAdyen(AbstractComponent):
 
         # Adyen part
         acquirer = self.env["payment.acquirer"].browse(payment_mode_id)
-        self.payment_service._check_provider(acquirer, "adyen")
 
         transaction = transaction_obj.create(
             payable._invader_prepare_payment_transaction_data(acquirer)
         )
-        request = self._prepare_adyen_payment_methods_request(transaction)
-        adyen = self._get_adyen_service(transaction)
-        response = adyen.checkout.payment_methods(request)
+        response = transaction.trigger_transaction()
         return self._generate_adyen_response(
-            response, payable, target, transaction, **params
+            response.message, payable, target, transaction, **params
         )
-
-    def _prepare_adyen_payment_methods_request(self, transaction):
-        """
-        https://docs.adyen.com/checkout/drop-in-web#step-1-get-available-payment-methods
-
-        Prepare retrieval of available payment methods
-        :param transaction:
-        :return:
-        """
-
-        currency = transaction.currency_id
-        amount = transaction.amount
-        request = {
-            "merchantAccount": self._get_adyen_merchant_account(transaction),
-            "countryCode": transaction.partner_id.country_id.code,
-            "amount": {
-                "value": self._get_formatted_amount(transaction, amount),
-                "currency": currency.name,
-            },
-            "channel": "Web",
-        }
-        return request
 
     def _validator_payments(self):
         """
@@ -256,7 +217,7 @@ class PaymentServiceAdyen(AbstractComponent):
         request = self._prepare_adyen_payments_request(
             transaction, payment_method
         )
-        adyen = self._get_adyen_service(transaction)
+        adyen = self._get_service(transaction)
         response = adyen.checkout.payments(request)
         self._update_transaction_with_response(transaction, response)
         result_code = response.message.get("resultCode")
@@ -268,7 +229,7 @@ class PaymentServiceAdyen(AbstractComponent):
             )
 
         return self._generate_adyen_response(
-            response, payable, target, transaction, **params
+            response.message, payable, target, transaction, **params
         )
 
     def _prepare_adyen_payments_request(self, transaction, payment_method):
@@ -280,67 +241,6 @@ class PaymentServiceAdyen(AbstractComponent):
         :return:
         """
         return transaction._prepare_adyen_payments_request(payment_method)
-
-    def _prepare_payment_details(self, transaction, **params):
-        """
-        Remove specific entries from params and keep received by Adyen ones
-        Pass saved paymentData on transaction level to request
-        :param transaction:
-        :param params:
-        :return:
-        """
-        params = filter_completion_details(params)
-        request = {
-            "paymentData": transaction.adyen_payment_data,
-            "details": params,
-        }
-        return request
-
-    def _validator_payment_details(self):
-        """
-        Validator of payments service
-        target: see _allowed_payment_target()
-        payment_mode_id: The payment mode used to pay
-        :return: dict
-        """
-        res = self.payment_service._invader_get_target_validator()
-        res.update(
-            {
-                "data": {"type": "dict", "required": True},
-                "transaction_id": {
-                    "coerce": to_int,
-                    "type": "integer",
-                    "required": True,
-                },
-            }
-        )
-        return res
-
-    def _validator_return_payment_details(self):
-        return Validator(
-            {
-                "resultCode": {"type": "string"},
-                "pspReference": {"type": "string"},
-                "action": {"type": "dict"},
-            },
-            allow_unknown=True,
-        )
-
-    def payment_details(self, **params):
-        """
-        https://docs.adyen.com/checkout/drop-in-web#step-5-additional-payment-details
-
-        Intended to manage onAddtionalDetails event from drop-in component
-        :param params:
-        :return:
-        """
-        transaction_id = params.get("transaction_id")
-        transaction = self.env["payment.transaction"].browse(transaction_id)
-        adyen = self._get_adyen_service(transaction)
-        request = self._prepare_payment_details(transaction, **params)
-        response = adyen.checkout.payments_details(request)
-
-        return response
 
     def _validator_paymentResult(self):
         schema = {
@@ -376,7 +276,7 @@ class PaymentServiceAdyen(AbstractComponent):
             params.get("transaction_id")
         )
         # Response will be an AdyenResult object
-        adyen = self._get_adyen_service(transaction)
+        adyen = self._get_service(transaction)
         request = self._prepare_payment_details(transaction, **params)
         response = adyen.checkout.payments_details(request)
         self._update_transaction_with_response(transaction, response)
@@ -406,40 +306,6 @@ class PaymentServiceAdyen(AbstractComponent):
         res["redirect_to"] = return_url
         return res
 
-    def _get_formatted_amount(self, transaction, amount):
-        """
-        The expected amount format by Adyen
-        :param amount: float
-        :return: int
-        """
-        return self.env["invader.payable"]._get_formatted_amount(
-            transaction, amount
-        )
-
-    def _get_adyen_merchant_account(self, transaction):
-        """
-        Return adyen merchant account depending on
-        payment.transaction recordset
-        :param transaction: payment.transaction
-        :return: string
-        """
-
-        return transaction._get_adyen_merchant_account()
-
-    def _update_additional_details(self, response):
-        """
-        Hook to be able to enrich transaction with response
-        additionalData
-        Deprecated. Should be filled on the transaction
-        :param vals:
-        :param response:
-        :return:
-        """
-        _logger.warning(
-            "DEPRECATED: You should use _update_additional_details() on the transaction"
-        )
-        return {}
-
     def _update_transaction_with_response(self, transaction, response):
         """
         Update the transaction with Adyen response
@@ -462,11 +328,9 @@ class PaymentServiceAdyen(AbstractComponent):
         :param payable: invader.payable record
         :return: dict
         """
-
-        message = response.message
         if transaction:
-            message.update({"transaction_id": transaction.id})
-        return message
+            response.update({"transaction_id": transaction.id})
+        return response
 
     def _validator_webhook(self):
         schema = {

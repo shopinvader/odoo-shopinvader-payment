@@ -1,7 +1,12 @@
 # Copyright 2023 ACSONE SA/NV (<http://acsone.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 import os
+from contextlib import contextmanager
 from datetime import timedelta
+from uuid import uuid4
+
+import Adyen
+import mock
 
 from odoo import fields
 from odoo.tests.common import SavepointCase
@@ -43,6 +48,7 @@ class TestCommon(SavepointCase):
         cls.belgium = cls.env.ref("base.be")
         product = cls.env.ref("product.product_product_4").copy()
         product.write({"company_id": cls.company_fr.id})
+        cls.force_mock = not bool(os.environ.get("ADYEN_API_KEY", False))
         cls.acquirer = cls.PaymentAcquirer.create(
             {
                 "name": "Shopinvader Adyen - Unit test",
@@ -180,6 +186,39 @@ class TestCommon(SavepointCase):
                 "date_prefered": "due",
             }
         )
+
+    @contextmanager
+    def _call_adyen_payments(self, pay_request):
+        psp_inside = str(uuid4()).replace("-", "")[:16].upper()
+        fake_response = Adyen.client.AdyenResult()
+        fake_response.details = {}
+        fake_response.message = {
+            "additionalData": {
+                "sepadirectdebit.dateOfSignature": fields.Date.to_string(
+                    fields.Date.today()
+                ),
+                "sepadirectdebit.mandateId": psp_inside,
+                "sepadirectdebit.sequenceType": "OneOff",
+            },
+            "pspReference": psp_inside,
+            "resultCode": "Authorised",
+            "amount": pay_request.get("amount", {}),
+            "merchantReference": pay_request.get("reference"),
+            "paymentMethod": {
+                "type": pay_request.get("paymentMethod", {}).get("type")
+            },
+        }
+        fake_response.psp = str(uuid4()).replace("-", "")[:16].upper()
+        fake_response.status_code = 200
+        if self.force_mock:
+            with mock.patch.object(
+                type(self.adyen.checkout),
+                "payments",
+                return_value=fake_response,
+            ):
+                yield
+        else:
+            yield
 
     def _wizard_fill_payment_lines(self, payment_order):
         AccountPaymentLineCreate = self.AccountPaymentLineCreate.with_context(

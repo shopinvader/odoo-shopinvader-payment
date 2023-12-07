@@ -13,5 +13,6 @@
     "depends": [
         "invader_payment",
         "sale",
+        "queue_job",
     ],
 }

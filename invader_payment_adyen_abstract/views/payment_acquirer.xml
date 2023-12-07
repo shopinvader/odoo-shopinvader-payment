@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="payment_acquirer_form_view" model="ir.ui.view">
+        <field name="name">payment.acquirer.form (in invader_payment_adyen)</field>
+        <field name="model">payment.acquirer</field>
+        <field name="inherit_id" ref="payment.acquirer_form" />
+        <field name="priority" eval="300" />
+        <field name="arch" type="xml">
+            <group name="acquirer_config" position="inside">
+                <group name="adyen_external_abstract" string="Adyen API">
+                    <field
+                        name="return_url_suffix"
+                        attrs="{'required':[('provider', 'ilike', 'adyen'), ('state', '!=', 'disabled')]}"
+                    />
+                    <field name="delay_capture" />
+                </group>
+            </group>
+        </field>
+    </record>
+</odoo>

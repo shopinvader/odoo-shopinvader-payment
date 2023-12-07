@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="payment_acquirer_form_view" model="ir.ui.view">
+        <field name="name">payment.acquirer.form (in invader_payment_adyen)</field>
+        <field name="model">payment.acquirer</field>
+        <field name="inherit_id" ref="payment.acquirer_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='acquirer']" position="inside">
+                <group attrs="{'invisible': [('provider', '!=', 'adyen_web_dropin')]}">
+                    <field
+                        name="adyen_dropin_api_key"
+                        attrs="{'required':[('provider', '=', 'adyen_web_dropin'), ('state', '=', 'enabled')]}"
+                    />
+                    <field
+                        name="adyen_dropin_merchant_account"
+                        attrs="{'required':[('provider', '=', 'adyen_web_dropin'), ('state', '=', 'enabled')]}"
+                    />
+                    <field
+                        name="adyen_dropin_live_endpoint_prefix"
+                        attrs="{'required':[('provider', '=', 'adyen_web_dropin'), ('state', '=', 'enabled')]}"
+                    />
+                    <field
+                        name="adyen_dropin_webhook_hmac"
+                        attrs="{'required':[('provider', '=', 'adyen_web_dropin'), ('state', '=', 'enabled')]}"
+                    />
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

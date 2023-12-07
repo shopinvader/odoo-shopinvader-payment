@@ -1,0 +1,8 @@
+<!-- Copyright 2021 ACSONE SA/NV
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo noupdate="1">
+  <record id="channel_root_adyen_dropin" model="queue.job.channel">
+    <field name="name">root.adyen_dropin</field>
+    <field name="parent_id" ref="queue_job.channel_root" />
+  </record>
+</odoo>

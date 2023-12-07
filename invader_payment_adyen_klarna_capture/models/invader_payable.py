@@ -9,7 +9,7 @@ from odoo.tools.float_utils import float_is_zero
 _logger = logging.getLogger(__name__)
 
 try:
-    import Adyen
+    pass
 except ImportError as err:
     _logger.debug(err)
 
@@ -51,7 +51,7 @@ class InvaderPayable(models.AbstractModel):
         return transaction.acquirer_reference
 
     def _get_klarna_capture_merchant_account(self, transaction):
-        return transaction.acquirer_id.adyen_merchant_account
+        return transaction.acquirer_id._get_adyen_merchant_account()
 
     def _build_klarna_capture_params(self, transaction):
         currency = self._get_klarna_capture_currency(transaction)
@@ -79,37 +79,54 @@ class InvaderPayable(models.AbstractModel):
         """
         currency = self._get_klarna_capture_currency(transaction)
         if not transaction:
+            _logger.error(
+                "Transaction not found for {pay_name}.".format(pay_name=self)
+            )
             return False
-        elif transaction.acquirer_id.provider != "adyen":
+        elif not transaction.acquirer_id.delay_capture:
+            _logger.error(
+                "Transaction {tr_name} is not delayed capture".format(
+                    tr_name=transaction.display_name
+                )
+            )
             return False
         # The "klarna" payment method is used to pay later
         # /!\ "klarna" != "klarna_account" etc
         elif "klarna" not in (transaction.adyen_payment_method or ""):
+            _logger.error(
+                "Transaction {tr_name} doesn't have an klarna payment method.".format(
+                    tr_name=transaction.display_name
+                )
+            )
             return False
         # If the transaction is already into a final state,
         # the capture can't be done.
         elif transaction.state in ("done", "error"):
+            _logger.error(
+                "Transaction {tr_name} is already into a "
+                "final state. Capture cancelled.".format(
+                    tr_name=transaction.display_name
+                )
+            )
             return False
         # Nothing to capture
         elif float_is_zero(
             self._get_klarna_capture_amount(transaction),
             precision_digits=currency.decimal_places or 2,
         ):
+            _logger.error(
+                "Transaction {tr_name} capture cancelled: amount is 0.".format(
+                    tr_name=transaction.display_name
+                )
+            )
             return False
         return True
 
     def _do_klarna_capture(self):
         transaction = fields.first(self._invader_get_transactions())
         if self._is_candidate_for_klarna_capture(transaction):
-            acquirer = transaction.acquirer_id.filtered(
-                lambda a: a.provider == "adyen"
-            )
             values = self._build_klarna_capture_params(transaction)
-            adyen = Adyen.Adyen(
-                platform=transaction._get_platform(),
-                live_endpoint_prefix=acquirer.adyen_live_endpoint_prefix,
-                xapikey=acquirer.adyen_api_key,
-            )
+            adyen = transaction._get_service()
             response = adyen.payment.capture(values)
             if (
                 response.status_code == 200

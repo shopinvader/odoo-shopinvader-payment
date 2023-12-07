@@ -76,20 +76,20 @@ class AccountPaymentLine(models.Model):
             )
         return action
 
+    def _get_transaction_amount(self):
+        return sum(self.mapped("amount_currency"))
+
     def _invader_prepare_payment_transaction_data(self, acquirer_id):
         """
         Self could be a multi-record set.
         We suppose it's already grouped by currency_id and partner_id.
         """
-        line = fields.first(self)
-        vals = {
-            "amount": sum(self.mapped("amount_currency")),
-            "currency_id": line.currency_id.id,
-            "partner_id": line.partner_id.id,
-            "acquirer_id": acquirer_id.id,
-            "payment_order_line_ids": [(6, 0, self.ids)],
-            "payment_order_ids": [(6, 0, self.mapped("order_id").ids)],
-            "reference": " ".join(r._get_internal_ref() for r in self),
-            "adyen_payment_method": ADYEN_SEPA_PAYMENT_METHOD,
-        }
+        vals = super()._invader_prepare_payment_transaction_data(acquirer_id)
+        vals.update(
+            {
+                "payment_order_line_ids": [(6, 0, self.ids)],
+                "payment_order_ids": [(6, 0, self.mapped("order_id").ids)],
+                "adyen_payment_method": ADYEN_SEPA_PAYMENT_METHOD,
+            }
+        )
         return vals
