@@ -18,9 +18,18 @@ class TestCommon(SavepointCase):
             "currency_id": cls.euro.id,
             "country_id": cls.env.ref("base.fr").id,
         }
+        company_fr_data2 = {
+            "name": "French company 2",
+            "currency_id": cls.euro.id,
+            "country_id": cls.env.ref("base.fr").id,
+        }
         cls.company_fr = cls.env["res.company"].create(company_fr_data)
+        cls.company_fr2 = cls.env["res.company"].create(company_fr_data2)
         cls.env.ref("l10n_generic_coa.configurable_chart_template")._load(
             15.0, 15.0, cls.company_fr
+        )
+        cls.env.ref("l10n_generic_coa.configurable_chart_template")._load(
+            15.0, 15.0, cls.company_fr2
         )
         cls.env = cls.env(
             context=dict(
@@ -42,7 +51,13 @@ class TestCommon(SavepointCase):
         cls.AccountPaymentLineCreate = cls.env["account.payment.line.create"]
         cls.belgium = cls.env.ref("base.be")
         product = cls.env.ref("product.product_product_4").copy()
+        product2 = (
+            cls.env.ref("product.product_product_4")
+            .with_company(cls.company_fr2)
+            .copy()
+        )
         product.write({"company_id": cls.company_fr.id})
+        product2.write({"company_id": cls.company_fr2.id})
         cls.acquirer = cls.PaymentAcquirer.create(
             {
                 "name": "Shopinvader Adyen - Unit test",
@@ -79,7 +94,24 @@ class TestCommon(SavepointCase):
                 "partner_id": cls.company_fr.partner_id.id,
             }
         )
+        cls.bank2 = cls.PartnerBank.create(
+            {
+                "acc_number": "BE68 5390 0754 7034",
+                "acc_type": "iban",
+                "partner_id": cls.company_fr2.partner_id.id,
+                "company_id": cls.company_fr2.id,
+            }
+        )
         cls.bank_partner = cls.PartnerBank.create(
+            {
+                "acc_number": "FR7630006000011234567890189",
+                "acc_type": "iban",
+                "partner_id": cls.partner.id,
+            }
+        )
+        cls.bank_partner2 = cls.PartnerBank.with_company(
+            cls.company_fr2
+        ).create(
             {
                 "acc_number": "FR7630006000011234567890189",
                 "acc_type": "iban",
@@ -94,6 +126,14 @@ class TestCommon(SavepointCase):
             }
         )
         cls.mandate.validate()
+        cls.mandate2 = cls.Mandate.with_company(cls.company_fr2).create(
+            {
+                "partner_bank_id": cls.bank_partner2.id,
+                "signature_date": "2015-01-01",
+                "company_id": cls.company_fr2.id,
+            }
+        )
+        cls.mandate2.validate()
         cls.invoice_line_account = cls.AccountAccount.create(
             {
                 "name": "Test account",
@@ -104,7 +144,19 @@ class TestCommon(SavepointCase):
                 "company_id": cls.company_fr.id,
             }
         )
-        payment_method_sepa = cls.PaymentMethod.create(
+        cls.invoice_line_account2 = cls.AccountAccount.create(
+            {
+                "name": "Test account 2",
+                "code": "TEST12",
+                "user_type_id": cls.env.ref(
+                    "account.data_account_type_expenses"
+                ).id,
+                "company_id": cls.company_fr2.id,
+            }
+        )
+        cls.payment_method_sepa = (
+            payment_method_sepa
+        ) = cls.PaymentMethod.create(
             {
                 "name": "SEPA IN",
                 "code": "sepa_direct_debit",
@@ -127,6 +179,19 @@ class TestCommon(SavepointCase):
                 "currency_id": cls.euro.id,
             }
         )
+        cls.journal2 = cls.AccountJournal.with_company(cls.company_fr2).create(
+            {
+                "name": "SEPA Journal",
+                "code": "sepa123",
+                "type": "bank",
+                "company_id": cls.company_fr2.id,
+                "bank_account_id": cls.bank2.id,
+                "outbound_payment_method_ids": [
+                    (6, False, payment_method_sepa.ids)
+                ],
+                "currency_id": cls.euro.id,
+            }
+        )
         cls.AccountJournal.create(
             {
                 "name": "General",
@@ -134,6 +199,19 @@ class TestCommon(SavepointCase):
                 "type": "general",
                 "company_id": cls.company_fr.id,
                 "bank_account_id": cls.bank.id,
+                "outbound_payment_method_ids": [
+                    (6, False, payment_method_sepa.ids)
+                ],
+                "currency_id": cls.euro.id,
+            }
+        )
+        cls.AccountJournal.with_company(cls.company_fr2).create(
+            {
+                "name": "General",
+                "code": "general1236",
+                "type": "general",
+                "company_id": cls.company_fr2.id,
+                "bank_account_id": cls.bank2.id,
                 "outbound_payment_method_ids": [
                     (6, False, payment_method_sepa.ids)
                 ],
@@ -149,6 +227,16 @@ class TestCommon(SavepointCase):
                 "fixed_journal_id": cls.journal.id,
             }
         )
+        cls.payment_mode2 = cls.PaymentMode.create(
+            {
+                "name": "test_mode",
+                "active": True,
+                "payment_method_id": payment_method_sepa.id,
+                "bank_account_link": "fixed",
+                "fixed_journal_id": cls.journal2.id,
+                "company_id": cls.company_fr2.id,
+            }
+        )
         cls.invoice = cls.AccountMove.create(
             {
                 "partner_id": cls.partner.id,
@@ -158,6 +246,7 @@ class TestCommon(SavepointCase):
                 "invoice_date": fields.Date.today(),
                 "company_id": cls.company_fr.id,
                 "currency_id": cls.euro.id,
+                "mandate_id": cls.mandate.id,
                 "invoice_line_ids": [
                     (
                         0,
@@ -173,10 +262,44 @@ class TestCommon(SavepointCase):
                 ],
             }
         )
+        cls.invoice2 = cls.AccountMove.with_company(cls.company_fr2).create(
+            {
+                "partner_id": cls.partner.id,
+                "move_type": "out_invoice",
+                "ref": "myref321-2",
+                "payment_mode_id": cls.payment_mode2.id,
+                "invoice_date": fields.Date.today(),
+                "company_id": cls.company_fr2.id,
+                "currency_id": cls.euro.id,
+                "mandate_id": cls.mandate2.id,
+                "invoice_line_ids": [
+                    (
+                        0,
+                        False,
+                        {
+                            "product_id": product2.id,
+                            "quantity": 1.0,
+                            "price_unit": 100.0,
+                            "name": "product that cost 100",
+                            "account_id": cls.invoice_line_account2.id,
+                        },
+                    )
+                ],
+            }
+        )
         cls.payment_order = cls.AccountPaymentOrder.create(
             {
                 "payment_mode_id": cls.payment_mode.id,
                 "journal_id": cls.journal.id,
+                "date_prefered": "due",
+            }
+        )
+        cls.payment_order2 = cls.AccountPaymentOrder.with_company(
+            cls.company_fr2
+        ).create(
+            {
+                "payment_mode_id": cls.payment_mode2.id,
+                "journal_id": cls.journal2.id,
                 "date_prefered": "due",
             }
         )

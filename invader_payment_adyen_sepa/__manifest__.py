@@ -9,6 +9,7 @@
     "author": "ACSONE SA/NV,Odoo Community Association (OCA)",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "depends": [
+        "base_technical_user",
         "invader_payment_adyen",
         "account_banking_sepa_direct_debit",
         "base_iban",
