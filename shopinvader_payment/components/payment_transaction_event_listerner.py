@@ -6,8 +6,8 @@ import logging
 from odoo.http import request
 
 from odoo.addons.component.core import Component
-from odoo.addons.shopinvader import shopinvader_response
-from odoo.addons.shopinvader.utils import work_on_service_with_partner
+from odoo.addons.shopinvader_restapi import shopinvader_response
+from odoo.addons.shopinvader_restapi.utils import work_on_service_with_partner
 
 _logger = logging.getLogger(__name__)
 

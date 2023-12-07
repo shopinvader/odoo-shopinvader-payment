@@ -5,7 +5,7 @@
 
     <record model="ir.ui.menu" id="account_payment_mode_menu">
         <field name="name">Acquirers</field>
-        <field name="parent_id" ref="shopinvader.menu_shopinvader_config" />
+        <field name="parent_id" ref="shopinvader_restapi.menu_shopinvader_config" />
         <field name="action" ref="payment.action_payment_acquirer" />
         <field name="sequence" eval="20" />
     </record>
