@@ -107,7 +107,7 @@ class PaymentTransaction(models.Model):
 
     def _trigger_adyen_sepa(self):
         self.ensure_one()
-        adyen = self._get_adyen_service()
+        adyen = self._get_service()
         request = self._prepare_adyen_payments_request(payment_method={})
         response = adyen.checkout.payments(request)
         self._update_with_adyen_response(response)

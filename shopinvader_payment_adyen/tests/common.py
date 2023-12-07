@@ -1,19 +1,38 @@
 # Copyright 2020 ACSONE SA/NV (<http://acsone.eu>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+import os
+
 import Adyen
 from Adyen.util import generate_notification_sig
 
 
-class ShopinvaderAdyenCommon(object):
+class ShopinvaderAdyenCommon:
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        cls.adyen = None
         cls.shopinvader_payment = cls.env.ref(
             "shopinvader_payment_adyen.shopinvader_payment_adyen"
         )
-        cls.acquirer = cls.shopinvader_payment.acquirer_id
-        cls.acquirer.adyen_hmac_key = (
+        journal = cls.shopinvader_payment.acquirer_id.journal_id.search(
+            [("code", "=", "ADYEN")], limit=1
+        )
+        cls.shopinvader_payment.acquirer_id.write(
+            {
+                "journal_id": journal.id,
+            }
+        )
+        hmac = (
             "1994F46BDCF6E02FC68EE6252B84F31FCB76CC46771A95C335EBB0BE036A0DBF"
+        )
+        cls.acquirer = cls.shopinvader_payment.acquirer_id
+        cls.acquirer.write(
+            {
+                "adyen_hmac_key": hmac,
+                "adyen_merchant_account": os.environ.get(
+                    "ADYEN_MERCHANT_ACCOUNT", "empty"
+                ),
+            }
         )
 
         cls.data = {"target": "current_cart"}
@@ -40,10 +59,16 @@ class ShopinvaderAdyenCommon(object):
 
     @classmethod
     def _get_adyen_service(cls):
-        adyen = Adyen.Adyen(
-            platform="test", live_endpoint_prefix="prefix", xapikey="TEST"
-        )
-        return adyen
+        if not cls.adyen:
+            live_endpoint_prefix = os.environ.get("ADYEN_API_PREFIX", "prefix")
+            xapikey = os.environ.get("ADYEN_API_KEY", "TEST")
+            adyen = Adyen.Adyen(
+                platform="test",
+                live_endpoint_prefix=live_endpoint_prefix,
+                xapikey=xapikey,
+            )
+            cls.adyen = adyen
+        return cls.adyen
 
     @classmethod
     def _get_notification_item(cls, transaction, success=True):

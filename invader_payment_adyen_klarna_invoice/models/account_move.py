@@ -25,11 +25,11 @@ class AccountMove(models.Model):
         values.update(
             {
                 "quantity": line.quantity,
-                "taxPercentage": self._get_formatted_amount(
-                    transaction, first(line.tax_ids).amount
+                "taxPercentage": transaction._get_formatted_amount(
+                    force_amount=first(line.tax_ids).amount
                 ),
-                "amountIncludingTax": self._get_formatted_amount(
-                    transaction, line.price_unit
+                "amountIncludingTax": transaction._get_formatted_amount(
+                    force_amount=line.price_unit
                 ),
             }
         )
