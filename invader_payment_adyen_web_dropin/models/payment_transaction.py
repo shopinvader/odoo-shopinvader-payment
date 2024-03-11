@@ -166,7 +166,7 @@ class PaymentTransaction(models.Model):
         return super()._parse_transaction_response(response)
 
     def _parse_transaction_response_adyen_dropin(self, response):
-        return response.message
+        return response
 
     def _update_with_response_adyen_dropin(self, response):
         """
