@@ -4,7 +4,7 @@ import logging
 
 from Adyen.util import is_valid_hmac_notification
 
-from odoo import _, models
+from odoo import _, api, models
 
 from ..services.exceptions import AdyenInvalidData
 
@@ -15,6 +15,12 @@ _logger = logging.getLogger(__name__)
 
 class PaymentAcquirer(models.Model):
     _inherit = "payment.acquirer"
+
+    @api.model
+    def _get_adyen_providers(self):
+        providers = super()._get_adyen_providers()
+        providers.append(ADYEN_PROVIDER)
+        return providers
 
     def _get_adyen_notification_message(self, transaction, notification_item):
         # Keep the function for backward compatibility

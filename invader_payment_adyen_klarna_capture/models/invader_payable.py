@@ -51,7 +51,7 @@ class InvaderPayable(models.AbstractModel):
         return transaction.acquirer_reference
 
     def _get_klarna_capture_merchant_account(self, transaction):
-        return transaction.acquirer_id._get_adyen_merchant_account()
+        return transaction._get_adyen_merchant_account()
 
     def _build_klarna_capture_params(self, transaction):
         currency = self._get_klarna_capture_currency(transaction)
@@ -79,12 +79,12 @@ class InvaderPayable(models.AbstractModel):
         """
         currency = self._get_klarna_capture_currency(transaction)
         if not transaction:
-            _logger.error(
+            _logger.info(
                 "Transaction not found for {pay_name}.".format(pay_name=self)
             )
             return False
         elif not transaction.acquirer_id.delay_capture:
-            _logger.error(
+            _logger.info(
                 "Transaction {tr_name} is not delayed capture".format(
                     tr_name=transaction.display_name
                 )
@@ -93,8 +93,18 @@ class InvaderPayable(models.AbstractModel):
         # The "klarna" payment method is used to pay later
         # /!\ "klarna" != "klarna_account" etc
         elif "klarna" not in (transaction.adyen_payment_method or ""):
-            _logger.error(
+            _logger.info(
                 "Transaction {tr_name} doesn't have an klarna payment method.".format(
+                    tr_name=transaction.display_name
+                )
+            )
+            return False
+        elif (
+            transaction.acquirer_id.provider
+            not in transaction.acquirer_id._get_adyen_providers()
+        ):
+            _logger.info(
+                "Transaction {tr_name} doesn't come from Adyen.".format(
                     tr_name=transaction.display_name
                 )
             )
@@ -102,7 +112,7 @@ class InvaderPayable(models.AbstractModel):
         # If the transaction is already into a final state,
         # the capture can't be done.
         elif transaction.state in ("done", "error"):
-            _logger.error(
+            _logger.info(
                 "Transaction {tr_name} is already into a "
                 "final state. Capture cancelled.".format(
                     tr_name=transaction.display_name
@@ -114,7 +124,7 @@ class InvaderPayable(models.AbstractModel):
             self._get_klarna_capture_amount(transaction),
             precision_digits=currency.decimal_places or 2,
         ):
-            _logger.error(
+            _logger.info(
                 "Transaction {tr_name} capture cancelled: amount is 0.".format(
                     tr_name=transaction.display_name
                 )

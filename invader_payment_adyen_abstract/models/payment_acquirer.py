@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 import logging
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
 
@@ -25,3 +25,7 @@ class PaymentAcquirer(models.Model):
     delay_capture = fields.Boolean(
         help="In some case of Adyen payment, a delay capture is possible (Klarna)"
     )
+
+    @api.model
+    def _get_adyen_providers(self):
+        return []

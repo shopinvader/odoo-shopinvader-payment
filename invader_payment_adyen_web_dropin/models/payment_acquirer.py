@@ -39,6 +39,12 @@ class PaymentAcquirer(models.Model):
         "verify-hmac-signatures/#enable-hmac-signatures",
     )
 
+    @api.model
+    def _get_adyen_providers(self):
+        providers = super()._get_adyen_providers()
+        providers.append(ADYEN_PROVIDER)
+        return providers
+
     def _get_feature_support(self):
         res = super()._get_feature_support()
         res["authorize"].append(ADYEN_PROVIDER)

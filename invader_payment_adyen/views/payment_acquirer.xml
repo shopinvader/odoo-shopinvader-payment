@@ -12,7 +12,7 @@
                 />
                 <field
                     name="adyen_hmac_key"
-                    attrs="{'required':[('provider', 'ilike', 'adyen'), ('state', '!=', 'disabled')]}"
+                    attrs="{'required':[('provider', '=', 'adyen'), ('state', '!=', 'disabled')]}"
                 />
             </field>
         </field>

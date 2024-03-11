@@ -8,10 +8,7 @@
         <field name="arch" type="xml">
             <group name="acquirer_config" position="inside">
                 <group name="adyen_external_abstract" string="Adyen API">
-                    <field
-                        name="return_url_suffix"
-                        attrs="{'required':[('provider', 'ilike', 'adyen'), ('state', '!=', 'disabled')]}"
-                    />
+                    <field name="return_url_suffix" />
                     <field name="delay_capture" />
                 </group>
             </group>

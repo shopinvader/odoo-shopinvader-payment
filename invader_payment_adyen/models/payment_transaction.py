@@ -163,27 +163,27 @@ class PaymentTransaction(models.Model):
     def _update_with_adyen_response(self, response):
         """
         Update the transaction with Adyen response
-        :param response: AdyenResult
+        :param response_msg: AdyenResult
         :return:
         """
-        response = response.message
+        response_msg = response.message
         vals = {}
-        vals.update(self._update_additional_details(response))
-        payment_data = response.get("paymentData")
+        vals.update(self._update_additional_details(response_msg))
+        payment_data = response_msg.get("paymentData")
         if payment_data:
             vals.update({"adyen_payment_data": payment_data})
         # In some strange case, we doesn't have this pspReference
-        psp_reference = response.get("pspReference") or getattr(
+        psp_reference = response_msg.get("pspReference") or getattr(
             response, "psp", ""
         )
         if psp_reference:
             vals.update({"acquirer_reference": psp_reference})
-        result_code = response.get("resultCode")
+        result_code = response_msg.get("resultCode")
         if result_code:
             # Log resultCode of Adyen in transaction
             message = self.state_message
             stamp = fields.Datetime.to_string(fields.Datetime.now())
-            adyen_message = "\n" + stamp + ": " + str(response)
+            adyen_message = "\n" + stamp + ": " + str(response_msg)
             if message:
                 message += adyen_message
             else:

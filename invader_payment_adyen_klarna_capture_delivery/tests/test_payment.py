@@ -46,6 +46,7 @@ class TestStockPicking(SavepointComponentCase):
                 "view_template_id": cls.env["ir.ui.view"]
                 .search([("type", "=", "qweb")], limit=1)
                 .id,
+                "delay_capture": True,
             }
         )
         cls.belgium = cls.env.ref("base.be")

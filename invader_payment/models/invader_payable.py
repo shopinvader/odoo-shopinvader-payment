@@ -49,14 +49,21 @@ class InvaderPayable(models.AbstractModel):
         existing_transactions = len(self._invader_get_transactions()) + 1
         values = {
             "acquirer_id": acquirer_id.id,
-            "reference": "{ref}-{nb}".format(
-                ref=self._get_internal_ref(), nb=existing_transactions
-            ),
             "partner_id": self._get_billing_partner().id,
             # "date": fields.Datetime.now(),
             "amount": self._get_transaction_amount(),
             "currency_id": self._get_transaction_currency().id,
         }
+        ref = self._get_internal_ref()
+        # The reference is mandatory but if not filled, the create(...) of the transaction will do it
+        if ref and ref != "/":
+            values.update(
+                {
+                    "reference": "{ref}-{nb}".format(
+                        ref=ref, nb=existing_transactions
+                    )
+                }
+            )
         return_url = acquirer_id._get_filled_url_suffix()
         if return_url:
             values.update({"return_url": return_url})

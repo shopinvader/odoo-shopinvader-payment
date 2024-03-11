@@ -166,7 +166,7 @@ class PaymentTransaction(models.Model):
         return super()._parse_transaction_response(response)
 
     def _parse_transaction_response_adyen_dropin(self, response):
-        return response.message
+        return response
 
     def _update_with_response_adyen_dropin(self, response):
         """
@@ -287,15 +287,27 @@ class PaymentTransaction(models.Model):
                 notif_request_item = notification_item.get(
                     "NotificationRequestItem", {}
                 )
+                domain = []
                 reference = notif_request_item.get("additionalData", {}).get(
                     "checkoutSessionId"
                 )
+                if reference:
+                    domain = [("acquirer_reference", "=", reference)]
                 odoo_ref = notif_request_item.get("merchantReference")
-                # domain = [("acquirer_reference", "=", notif_request_item.get("pspReference"))]
-                domain = [("acquirer_reference", "=", reference)]
                 if odoo_ref:
-                    domain = expression.OR(
+                    domain = expression.AND(
                         [domain, [("reference", "=", odoo_ref)]]
+                    )
+                psp = notif_request_item.get("pspReference")
+                if psp:
+                    domain = expression.AND(
+                        [domain, [("acquirer_reference", "=", psp)]]
+                    )
+                if not psp and not odoo_ref and not reference:
+                    raise exceptions.ValidationError(
+                        _(
+                            "No enough information provided to find the transaction!"
+                        )
                     )
                 domain = expression.AND(
                     [[("acquirer_id.provider", "=", ADYEN_PROVIDER)], domain]
@@ -343,7 +355,6 @@ class PaymentTransaction(models.Model):
             self.write(data)
         # https://docs.adyen.com/development-resources/webhooks/webhook-types/#event-codes
         if event_code == "AUTHORISATION" and success:
-            self._set_transaction_done()
             self._handle_adyen_notification_item_authorized(notification_item)
         elif event_code == "AUTHORISATION" and not success:
             self._handle_adyen_notification_item_capture_failed(
