@@ -25,8 +25,8 @@ class PaymentTransactionStripe(models.Model):
         if not shopinvader_api_payment:
             return super()._stripe_create_checkout_session()
 
-        shopinvader_api_payment_frontend_redirect_url = self.env.context.get(
-            "shopinvader_api_payment_frontend_redirect_url"
+        shopinvader_api_payment_frontend_redirect_url = (
+            self.shopinvader_frontend_redirect_url
         )
         shopinvader_api_payment_base_url = self.env.context.get(
             "shopinvader_api_payment_base_url"

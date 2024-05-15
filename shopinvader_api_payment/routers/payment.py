@@ -178,6 +178,7 @@ class ShopinvaderApiPaymentRouterHelper(models.AbstractModel):
             "amount": payable_obj.amount,
             "currency_id": payable_obj.currency_id,
             "partner_id": payable_obj.partner_id,
+            "shopinvader_frontend_redirect_url": data.frontend_redirect_url,
             # 'token_id': token_id,
             "operation": f"online_{data.flow}" if not is_validation else "validation",
             "tokenize": False,
@@ -199,7 +200,6 @@ class ShopinvaderApiPaymentRouterHelper(models.AbstractModel):
             .sudo()
             .with_context(
                 shopinvader_api_payment=True,
-                shopinvader_api_payment_frontend_redirect_url=data.frontend_redirect_url,
                 shopinvader_api_payment_base_url=urljoin(
                     str(request.url), "providers/"
                 ),
