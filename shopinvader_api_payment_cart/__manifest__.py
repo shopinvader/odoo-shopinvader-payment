@@ -7,8 +7,8 @@
         Adds logic to be able to pay current cart""",
     "version": "16.0.1.0.0",
     "license": "AGPL-3",
-    "author": "ACSONE SA/NV",
-    "website": "https://github.com/shopinvader/odoo-shopinvader",
+    "author": "ACSONE SA/NV,Shopinvader",
+    "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "depends": [
         # Odoo
         "account_payment",

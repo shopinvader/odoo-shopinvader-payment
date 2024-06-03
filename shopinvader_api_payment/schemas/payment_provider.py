@@ -26,7 +26,7 @@ class PaymentProvider(BaseModel):
             )
             if odoo_rec.inline_form_view_id
             else None,
-            "express_checkout_form_view_rendered": express_form_view_id._render_template(
+            "express_checkout_form_view_rendered": express_form_view_id._render_template(  # noqa: E501
                 express_form_view_id.id, rendering_values
             )
             if express_form_view_id

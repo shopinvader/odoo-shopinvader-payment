@@ -5,7 +5,6 @@ from odoo import fields, models
 
 
 class PaymentProvider(models.Model):
-
     _inherit = "payment.provider"
 
     shopinvader_auto_confirm_linked_so = fields.Boolean(

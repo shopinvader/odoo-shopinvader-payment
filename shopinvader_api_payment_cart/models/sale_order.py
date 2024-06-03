@@ -5,7 +5,6 @@ from odoo import models
 
 
 class SaleOrder(models.Model):
-
     _inherit = "sale.order"
 
     def _action_confirm_cart_from_tx(self, tx):

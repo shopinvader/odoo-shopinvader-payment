@@ -17,9 +17,11 @@ from odoo.addons.payment.models.payment_transaction import PaymentTransaction
 
 from ..schemas import (
     PaymentDataWithMethods,
-    PaymentProvider as PaymentProviderSchema,
     TransactionCreate,
     TransactionProcessingValues,
+)
+from ..schemas import (
+    PaymentProvider as PaymentProviderSchema,
 )
 from .utils import Payable
 

@@ -103,7 +103,8 @@ class PaymentTransactionStripe(models.Model):
             )
             # Specify a future usage for the payment intent to:
             # 1. attach the payment method to the created customer
-            # 2. trigger a 3DS check if one if required, while the customer is still present
+            # 2. trigger a 3DS check if one if required, while the customer is still
+            # present
             future_usage = "off_session" if self.tokenize else None
             capture_method = (
                 "manual" if self.provider_id.capture_manually else "automatic"
@@ -130,7 +131,8 @@ class PaymentTransactionStripe(models.Model):
             self.stripe_payment_intent = checkout_session["payment_intent"]
         else:  # 'validation'
             raise NotImplementedError  # TODO: in the future
-            # {CHECKOUT_SESSION_ID} is a template filled by Stripe when the Session is created
+            # {CHECKOUT_SESSION_ID} is a template filled by Stripe when the Session is
+            # created
             # return_url = (
             #     f"{urls.url_join(base_url, StripeController._validation_return_url)}"
             #     f"?reference={urls.url_quote_plus(self.reference)}"

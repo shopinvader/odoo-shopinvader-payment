@@ -1,0 +1,2 @@
+odoo-test-helper
+httpx  # For FastAPI tests

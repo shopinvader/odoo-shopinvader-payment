@@ -5,7 +5,6 @@ from odoo import fields, models
 
 
 class PaymentTransaction(models.Model):
-
     _inherit = "payment.transaction"
 
     shopinvader_frontend_redirect_url = fields.Char(
