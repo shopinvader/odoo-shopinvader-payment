@@ -1,0 +1,46 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* shopinvader_api_payment_cart
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: shopinvader_api_payment_cart
+#: model:ir.model.fields,field_description:shopinvader_api_payment_cart.field_payment_provider__shopinvader_auto_confirm_linked_so
+msgid "Auto-confirm quotations"
+msgstr ""
+
+#. module: shopinvader_api_payment_cart
+#: model:ir.model.fields,help:shopinvader_api_payment_cart.field_payment_provider__shopinvader_auto_confirm_linked_so
+msgid ""
+"If ticked, the linked quotation will be automatically confirmed into a sale "
+"order. If not ticked, the quotation will only be sent to the customer."
+msgstr ""
+
+#. module: shopinvader_api_payment_cart
+#: model:ir.model,name:shopinvader_api_payment_cart.model_payment_provider
+msgid "Payment Provider"
+msgstr ""
+
+#. module: shopinvader_api_payment_cart
+#: model:ir.model,name:shopinvader_api_payment_cart.model_sale_order
+msgid "Sales Order"
+msgstr ""
+
+#. module: shopinvader_api_payment_cart
+#: model:ir.model,name:shopinvader_api_payment_cart.model_shopinvader_api_payment_payment_router_helper
+msgid "ShopInvader API Payment Router Helper"
+msgstr ""
+
+#. module: shopinvader_api_payment_cart
+#: model_terms:ir.ui.view,arch_db:shopinvader_api_payment_cart.payment_provider_form_view
+msgid "Shopinvader Configurations"
+msgstr ""
