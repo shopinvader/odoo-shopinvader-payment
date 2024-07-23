@@ -12,7 +12,6 @@
     "depends": [
         "fastapi",
         "payment",
-        "payment_sips",
         "pydantic",
         "extendable",
         "extendable_fastapi",
