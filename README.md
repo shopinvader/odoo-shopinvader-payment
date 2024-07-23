@@ -21,7 +21,7 @@ Available addons
 ----------------
 addon | version | maintainers | summary
 --- | --- | --- | ---
-[shopinvader_api_payment](shopinvader_api_payment/) | 16.0.1.0.0 |  | Shopinvader services to be able to pay (invoices, carts,...)
+[shopinvader_api_payment](shopinvader_api_payment/) | 16.0.1.1.0 |  | Shopinvader services to be able to pay (invoices, carts,...)
 [shopinvader_api_payment_cart](shopinvader_api_payment_cart/) | 16.0.1.0.0 |  | Adds logic to be able to pay current cart
 [shopinvader_api_payment_provider_custom](shopinvader_api_payment_provider_custom/) | 16.0.1.0.0 |  | Specific routes for custom payments (wire transfers...) from Shopinvader
 [shopinvader_api_payment_provider_sips](shopinvader_api_payment_provider_sips/) | 16.0.1.0.0 |  | Specific routes for SIPS payments from Shopinvader
