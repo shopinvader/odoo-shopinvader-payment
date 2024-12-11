@@ -100,7 +100,7 @@ async def sips_webhook(
             )
         )
         odoo_env[
-            "shopinvader_api_payment_provider_sips.payment_sips_router.helper"
+            "shopinvader_provider_sips.payment_sips_router.helper"
         ]._verify_sips_signature(tx_sudo, data)
         tx_sudo._handle_notification_data("sips", data)
     except Exception:
