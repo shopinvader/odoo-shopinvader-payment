@@ -29,15 +29,9 @@ class ShopinvaderApiPaymentRouterHelper(models.AbstractModel):
         )
         payable_obj = Payable.decode(odoo_env, data.payable)
         if payable_obj.payable_model == "sale.order":
-            sale_order_model = (
-                self.env["ir.model"].sudo().search([("model", "=", "sale.order")])
-            )
             additional_transaction_create_values.update(
                 {
                     "sale_order_ids": [Command.set([payable_obj.payable_id])],
-                    "callback_method": "_action_confirm_cart_from_tx",
-                    "callback_model_id": sale_order_model.id,
-                    "callback_res_id": payable_obj.payable_id,
                 }
             )
         return additional_transaction_create_values

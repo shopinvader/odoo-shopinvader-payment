@@ -18,7 +18,5 @@
         "shopinvader_api_payment",
         "shopinvader_api_cart",
     ],
-    "data": [
-        "views/payment_provider.xml",
-    ],
+    "data": [],
 }
