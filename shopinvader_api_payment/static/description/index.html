@@ -369,7 +369,7 @@ ul.auto-toc {
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !! source digest: sha256:81a3af072b225b5a9d511729fdfff2da3ec9283c7daba022610922c2ad8eec07
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/shopinvader/odoo-shopinvader-payment/tree/16.0/shopinvader_api_payment"><img alt="shopinvader/odoo-shopinvader-payment" src="https://img.shields.io/badge/github-shopinvader%2Fodoo--shopinvader--payment-lightgray.png?logo=github" /></a></p>
+<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/shopinvader/odoo-shopinvader-payment/tree/18.0/shopinvader_api_payment"><img alt="shopinvader/odoo-shopinvader-payment" src="https://img.shields.io/badge/github-shopinvader%2Fodoo--shopinvader--payment-lightgray.png?logo=github" /></a></p>
 <p>Base module for Shopinvader payment services. It defines the
 provider-independent routers.</p>
 <p><strong>Table of contents</strong></p>
@@ -390,33 +390,43 @@ provider-independent routers.</p>
 <p>This addon is the core of the new Shopinvader API Payment addons suite.
 It defines basic services, which will be extended in two axes.</p>
 <ul class="simple">
-<li>The first axe concerns the payable object. Here the methods should work with any abstract payable object (sale order, account invoice, …) but specific logic must be implemented in related addons (see <cite>shopinvader_api_payment_cart</cite> to pay sale orders for eg.)</li>
-<li>The second axe concerns the payment provider. The idea is to develop one addon for each payment provider. Some of them are already available, see <cite>shopinvader_api_payment_sips</cite>, <cite>shopinvader_api_payment_stripe</cite>, <cite>shopinvader_api_payment_custom</cite>. In these addons we add the necessary logic to redirect to the payment provider payment website, the return url …</li>
+<li>The first axe concerns the payable object. Here the methods should
+work with any abstract payable object (sale order, account invoice,
+…) but specific logic must be implemented in related addons (see
+shopinvader_api_payment_cart to pay sale orders for eg.)</li>
+<li>The second axe concerns the payment provider. The idea is to develop
+one addon for each payment provider. Some of them are already
+available, see shopinvader_api_payment_sips,
+shopinvader_api_payment_stripe, shopinvader_api_payment_custom. In
+these addons we add the necessary logic to redirect to the payment
+provider payment website, the return url …</li>
 </ul>
 <p>All payment routes are public. We must thus encode all sensitive info.
-The <cite>Payable</cite> object achieves this. In each service we ensure that the payable
-wasn’t tampered.</p>
+The Payable object achieves this. In each service we ensure that the
+payable wasn’t tampered.</p>
 <p><strong>Concrete Usage</strong></p>
-<p>The idea to use this suite of addons is the following. Assume you have a valid
-payable (see addons of the first axe on how to get them, for eg. <cite>shopinvader_api_payment_cart</cite>
-on how to get the payable of the current cart).</p>
-<p>1. Get all providers that are allowed to pay your payable object.
-You just need to call the GET route <cite>/payment/methods</cite> with your payable for this.</p>
-<p>2. Once you chose the payment method you want to use, create the payment transaction
-calling the POST route <cite>/payment/transactions</cite> with your payable + some
-additional input info (the chosen provider, the frontend redirect url…).
-See the associated <cite>TransactionCreate</cite> Pydantic schema.</p>
-<p>3. The following (and last) step depends on the chosen provider. See more info
-into the dedicated Shopinvader API payment addon.
-However, the idea is often the same: a <cite>redirect_form_html</cite> is returned and
-you should submit this HTML form to call the provider services.</p>
+<p>The idea to use this suite of addons is the following. Assume you have a
+valid payable (see addons of the first axe on how to get them, for eg.
+shopinvader_api_payment_cart on how to get the payable of the current
+cart).</p>
+<p>1. Get all providers that are allowed to pay your payable object. You
+just need to call the GET route /payment/methods with your payable for
+this.</p>
+<p>2. Once you chose the payment method you want to use, create the payment
+transaction calling the POST route /payment/transactions with your
+payable + some additional input info (the chosen provider, the frontend
+redirect url…). See the associated TransactionCreate Pydantic schema.</p>
+<p>3. The following (and last) step depends on the chosen provider. See
+more info into the dedicated Shopinvader API payment addon. However, the
+idea is often the same: a redirect_form_html is returned and you should
+submit this HTML form to call the provider services.</p>
 </div>
 <div class="section" id="bug-tracker">
 <h1><a class="toc-backref" href="#toc-entry-2">Bug Tracker</a></h1>
 <p>Bugs are tracked on <a class="reference external" href="https://github.com/shopinvader/odoo-shopinvader-payment/issues">GitHub Issues</a>.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-<a class="reference external" href="https://github.com/shopinvader/odoo-shopinvader-payment/issues/new?body=module:%20shopinvader_api_payment%0Aversion:%2016.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**">feedback</a>.</p>
+<a class="reference external" href="https://github.com/shopinvader/odoo-shopinvader-payment/issues/new?body=module:%20shopinvader_api_payment%0Aversion:%2018.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**">feedback</a>.</p>
 <p>Do not contact contributors directly about support or help with technical issues.</p>
 </div>
 <div class="section" id="credits">
@@ -437,7 +447,7 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 </div>
 <div class="section" id="maintainers">
 <h2><a class="toc-backref" href="#toc-entry-6">Maintainers</a></h2>
-<p>This module is part of the <a class="reference external" href="https://github.com/shopinvader/odoo-shopinvader-payment/tree/16.0/shopinvader_api_payment">shopinvader/odoo-shopinvader-payment</a> project on GitHub.</p>
+<p>This module is part of the <a class="reference external" href="https://github.com/shopinvader/odoo-shopinvader-payment/tree/18.0/shopinvader_api_payment">shopinvader/odoo-shopinvader-payment</a> project on GitHub.</p>
 <p>You are welcome to contribute.</p>
 </div>
 </div>
