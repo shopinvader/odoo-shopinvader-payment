@@ -23,7 +23,6 @@
             "extendable-pydantic>=1.2.0",
             "pyjwt",
         ],
-    'installable': False,
-},
-    'installable': False,
+    },
+    "installable": False,
 }
