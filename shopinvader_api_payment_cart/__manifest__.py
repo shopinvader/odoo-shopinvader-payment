@@ -19,4 +19,5 @@
         "shopinvader_api_cart",
     ],
     "data": [],
+    'installable': False,
 }
