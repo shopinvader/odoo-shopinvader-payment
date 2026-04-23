@@ -1,6 +1,5 @@
 # Copyright 2024 ACSONE SA (https://acsone.eu).
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
-import json
 
 from fastapi import status
 from requests import Response
@@ -15,8 +14,7 @@ class TestPayCart(TestPaymentCommon):
     def setUpClass(cls):
         super().setUpClass()
 
-        cls.demo_provider = cls.env.ref("payment.payment_provider_demo")
-        cls.demo_provider.write({"state": "test", "is_published": True})
+        cls.init_provider()
 
         cls.cart = cls.env["sale.order"]._create_empty_cart(
             cls.env["res.partner"].create({"name": "Customer"}).id,
@@ -32,6 +30,9 @@ class TestPayCart(TestPaymentCommon):
             company_id=cls.cart.company_id.id,
         )
         cls.encoded_payable = payable.encode(cls.env)
+        cls.user.groups_id |= cls.env.ref(
+            "shopinvader_api_security_sale.shopinvader_sale_user_group"
+        )
 
     def test_get_payment_methods_wrong_payable(self):
         with self._create_test_client(router=payment_router) as test_client:
@@ -71,12 +72,11 @@ class TestPayCart(TestPaymentCommon):
             "payable": self.encoded_payable,
             "flow": "redirect",
             "provider_id": self.demo_provider.id,
+            "payment_method_id": self.demo_method_1.id,
             "frontend_redirect_url": "www.rtbf.be",
         }
         with self._create_test_client(router=payment_router) as test_client:
-            response: Response = test_client.post(
-                "/payment/transactions", content=json.dumps(data)
-            )
+            response: Response = test_client.post("/payment/transactions", json=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         res = response.json()
         self.assertEqual(res["provider_id"], self.demo_provider.id)
