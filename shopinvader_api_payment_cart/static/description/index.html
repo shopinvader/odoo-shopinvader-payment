@@ -369,9 +369,10 @@ ul.auto-toc {
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !! source digest: sha256:b0bf03a6e1d02d7f375dbfc9f9957b200775f1aba47609de020e6f5b244be3e2
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/shopinvader/odoo-shopinvader-payment/tree/16.0/shopinvader_api_payment_cart"><img alt="shopinvader/odoo-shopinvader-payment" src="https://img.shields.io/badge/github-shopinvader%2Fodoo--shopinvader--payment-lightgray.png?logo=github" /></a></p>
-<p>This addon adds logic to payments, specifically concerning the sale orders.
-The order confirmation process on payment is handled by the <cite>sale_cart</cite> module.</p>
+<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/shopinvader/odoo-shopinvader-payment/tree/18.0/shopinvader_api_payment_cart"><img alt="shopinvader/odoo-shopinvader-payment" src="https://img.shields.io/badge/github-shopinvader%2Fodoo--shopinvader--payment-lightgray.png?logo=github" /></a></p>
+<p>This addon adds logic to payments, specifically concerning the sale
+orders. The order confirmation process on payment is handled by the
+sale_cart module.</p>
 <p><strong>Table of contents</strong></p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
@@ -388,15 +389,18 @@ The order confirmation process on payment is handled by the <cite>sale_cart</cit
 <div class="section" id="usage">
 <h1><a class="toc-backref" href="#toc-entry-1">Usage</a></h1>
 <p><strong>Get the encoded payable info for a cart</strong></p>
-<p>As the routes on the cart router are private, the user needs to be authenticated to retrieve the cart payable info.
-Call one of the routes <cite>/current/payable/</cite> or <cite>/{uuid}/payable</cite> to retrieve the payable token that will be needed in all public payment routes of the <cite>shopinvader_api_payment</cite> core addon.</p>
+<p>As the routes on the cart router are private, the user needs to be
+authenticated to retrieve the cart payable info. Call one of the routes
+/current/payable/ or /{uuid}/payable to retrieve the payable token that
+will be needed in all public payment routes of the
+shopinvader_api_payment core addon.</p>
 </div>
 <div class="section" id="bug-tracker">
 <h1><a class="toc-backref" href="#toc-entry-2">Bug Tracker</a></h1>
 <p>Bugs are tracked on <a class="reference external" href="https://github.com/shopinvader/odoo-shopinvader-payment/issues">GitHub Issues</a>.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-<a class="reference external" href="https://github.com/shopinvader/odoo-shopinvader-payment/issues/new?body=module:%20shopinvader_api_payment_cart%0Aversion:%2016.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**">feedback</a>.</p>
+<a class="reference external" href="https://github.com/shopinvader/odoo-shopinvader-payment/issues/new?body=module:%20shopinvader_api_payment_cart%0Aversion:%2018.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**">feedback</a>.</p>
 <p>Do not contact contributors directly about support or help with technical issues.</p>
 </div>
 <div class="section" id="credits">
@@ -417,7 +421,7 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 </div>
 <div class="section" id="maintainers">
 <h2><a class="toc-backref" href="#toc-entry-6">Maintainers</a></h2>
-<p>This module is part of the <a class="reference external" href="https://github.com/shopinvader/odoo-shopinvader-payment/tree/16.0/shopinvader_api_payment_cart">shopinvader/odoo-shopinvader-payment</a> project on GitHub.</p>
+<p>This module is part of the <a class="reference external" href="https://github.com/shopinvader/odoo-shopinvader-payment/tree/18.0/shopinvader_api_payment_cart">shopinvader/odoo-shopinvader-payment</a> project on GitHub.</p>
 <p>You are welcome to contribute.</p>
 </div>
 </div>
