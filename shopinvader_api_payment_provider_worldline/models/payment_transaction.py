@@ -22,7 +22,7 @@ class PaymentTransaction(models.Model):
             shopinvader_api_base_url, "/shopinvader/payment/providers/worldline/return"
         )
         return_url_params = urls.url_encode({"provider_id": str(self.provider_id.id)})
-        payload["hostedCheckoutSpecificInput"][
-            "returnUrl"
-        ] = f"{return_url}?{return_url_params}"
+        payload["hostedCheckoutSpecificInput"]["returnUrl"] = (
+            f"{return_url}?{return_url_params}"
+        )
         return payload
