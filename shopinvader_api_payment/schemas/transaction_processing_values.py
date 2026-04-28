@@ -16,3 +16,4 @@ class TransactionProcessingValues(StrictExtendableBaseModel):
     currency_id: int
     partner_id: int
     redirect_form_html: str | None = None
+    return_url: str | None = None

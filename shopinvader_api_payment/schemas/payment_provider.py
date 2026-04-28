@@ -2,10 +2,9 @@
 # @author Stéphane Bidoul <stephane.bidoul@acsone.eu>
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-
 from pydantic import BaseModel
 
-from .payment_icon import PaymentIcon
+from .payment_method import PaymentMethod
 
 
 class PaymentProvider(BaseModel):
@@ -15,7 +14,7 @@ class PaymentProvider(BaseModel):
     state: str
     inline_form_view_rendered: str | None
     express_checkout_form_view_rendered: str | None
-    payment_icons: list[PaymentIcon] = []
+    payment_methods: list[PaymentMethod] = []
 
     @classmethod
     def _get_rendered_views(cls, odoo_rec, rendering_values=None):
@@ -34,7 +33,7 @@ class PaymentProvider(BaseModel):
         }
 
     @classmethod
-    def from_payment_provider(cls, odoo_rec):
+    def from_payment_provider(cls, odoo_rec, methods):
         # TODO: should we add more rendering values, for eg.
         # the ones returned by _get_default_payment_link_values() on
         # SO's and invoices?
@@ -51,8 +50,9 @@ class PaymentProvider(BaseModel):
             express_checkout_form_view_rendered=rendered_views.get(
                 "express_checkout_form_view_rendered"
             ),
-            payment_icons=[
-                PaymentIcon.from_payment_icon(icon)
-                for icon in odoo_rec.payment_icon_ids
+            payment_methods=[
+                PaymentMethod.from_payment_method(method)
+                for method in odoo_rec.payment_method_ids
+                if method in methods
             ],
         )
