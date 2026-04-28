@@ -5,14 +5,16 @@ from extendable_pydantic import StrictExtendableBaseModel
 from pydantic import Base64Bytes
 
 
-class PaymentIcon(StrictExtendableBaseModel):
+class PaymentMethod(StrictExtendableBaseModel):
+    id: int
     name: str | None
     sequence: int | None
     image: Base64Bytes | None
 
     @classmethod
-    def from_payment_icon(cls, odoo_rec):
+    def from_payment_method(cls, odoo_rec):
         return cls.model_construct(
+            id=odoo_rec.id,
             name=odoo_rec.name or None,
             sequence=odoo_rec.sequence or None,
             image=odoo_rec.image or None,

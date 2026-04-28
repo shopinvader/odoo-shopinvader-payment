@@ -12,6 +12,7 @@ from .payment_data import PaymentInput
 class TransactionCreate(PaymentInput):
     flow: Literal["redirect"]  # future: redirect|token
     provider_id: int
+    payment_method_id: int
     # payment_token_id: int (future)
 
     # A URL in the frontend where the user will be redirected to after
