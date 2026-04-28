@@ -3,9 +3,9 @@
 
 {
     "name": "Shopinvader Api Payment Provider Stripe",
-    "summary": """
-        Specific routes for Stripe payments from Shopinvader""",
-    "version": "16.0.1.0.0",
+    "summary": "Specific routes for Stripe payments from Shopinvader",
+    "version": "18.0.1.0.0",
+    "development_status": "Alpha",
     "license": "AGPL-3",
     "author": "ACSONE SA/NV,Shopinvader",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
@@ -15,6 +15,5 @@
         "payment_stripe",
     ],
     "data": [],
-    "demo": [],
-    "installable": False,
+    "installable": True,
 }

@@ -10,13 +10,14 @@ from urllib.parse import quote_plus
 from fastapi import Depends, Request
 from fastapi.responses import RedirectResponse
 
-from odoo import api
-
-from odoo.addons.fastapi.dependencies import odoo_env
 from odoo.addons.payment_stripe.controllers.main import (
     StripeController as OdooStripeController,
 )
 from odoo.addons.shopinvader_api_payment.routers import payment_router
+from odoo.addons.shopinvader_api_payment.routers.payment import (
+    PaymentHelper,
+    payment_helper,
+)
 from odoo.addons.shopinvader_api_payment.routers.utils import (
     add_query_params_in_url,
     tx_state_to_redirect_status,
@@ -28,7 +29,7 @@ _logger = logging.getLogger(__name__)
 @payment_router.get("/payment/providers/stripe/checkout_return")
 def stripe_return_from_checkout(
     request: Request,
-    odoo_env: Annotated[api.Environment, Depends(odoo_env)],
+    helper: Annotated[PaymentHelper, Depends(payment_helper)],
 ) -> RedirectResponse:
     """Process the notification data sent by Stripe after redirection from checkout.
 
@@ -39,24 +40,40 @@ def stripe_return_from_checkout(
     data = dict(request.query_params)
 
     # Retrieve the tx based on the tx reference included in the return url
-    tx_sudo = (
-        odoo_env["payment.transaction"]
-        .sudo()
-        ._get_tx_from_notification_data("stripe", data)
-    )
+    tx_sudo = helper._get_tx_from_notification_data("stripe", data)
 
-    # Fetch the PaymentIntent, Charge and PaymentMethod objects from Stripe
-    payment_intent = tx_sudo.provider_id._stripe_make_request(
-        f"payment_intents/{tx_sudo.stripe_payment_intent}", method="GET"
-    )
-    _logger.info(
-        "received payment_intents response:\n%s", pprint.pformat(payment_intent)
-    )
-    OdooStripeController._include_payment_intent_in_notification_data(
-        payment_intent, data
-    )
+    if tx_sudo.operation != "validation":
+        # Fetch the PaymentIntent and PaymentMethod objects from Stripe.
+        payment_intent = tx_sudo.provider_id._stripe_make_request(
+            f"payment_intents/{data.get('payment_intent')}",
+            payload={"expand[]": "payment_method"},  # Expand all required objects.
+            method="GET",
+        )
+        secret_keys = tx_sudo._get_specific_secret_keys()
+        logged_intent = {
+            k: v for k, v in payment_intent.items() if k not in secret_keys
+        }
+        _logger.info(
+            "Received payment_intents response:\n%s", pprint.pformat(logged_intent)
+        )
+        OdooStripeController._include_payment_intent_in_notification_data(
+            payment_intent, data
+        )
+    else:
+        # Fetch the SetupIntent and PaymentMethod objects from Stripe.
+        setup_intent = tx_sudo.provider_id._stripe_make_request(
+            f"setup_intents/{data.get('setup_intent')}",
+            payload={"expand[]": "payment_method"},  # Expand all required objects.
+            method="GET",
+        )
+        _logger.info(
+            "Received setup_intents response:\n%s", pprint.pformat(setup_intent)
+        )
+        OdooStripeController._include_setup_intent_in_notification_data(
+            setup_intent, data
+        )
 
-    # Handle the notification data crafted with Stripe API objects
+    # Handle the notification data crafted with Stripe API's objects.
     tx_sudo._handle_notification_data("stripe", data)
 
     # Redirect the user to the status page
