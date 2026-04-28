@@ -11,24 +11,39 @@ from fastapi import Depends, Request
 from fastapi.responses import RedirectResponse
 from werkzeug.exceptions import Forbidden
 
-from odoo import _, api, models
+from odoo import _
 from odoo.exceptions import ValidationError
 
-from odoo.addons.fastapi.dependencies import odoo_env
 from odoo.addons.payment_worldline.controllers.main import WorldlineController
 from odoo.addons.shopinvader_api_payment.routers import payment_router
+from odoo.addons.shopinvader_api_payment.routers.payment import payment_helper
 from odoo.addons.shopinvader_api_payment.routers.utils import (
     add_query_params_in_url,
     tx_state_to_redirect_status,
 )
+from odoo.addons.shopinvader_router_helper import VirtualModel
 
 _logger = logging.getLogger(__name__)
+
+
+class PaymentHelper(VirtualModel):
+    _inherit = "shopinvader_api_payment.payment_router.helper"
+
+    def _verify_worldline_signature(self, tx_sudo, received_signature, data):
+        """Verify the Worldline signature."""
+        try:
+            WorldlineController._verify_notification_signature(
+                data, received_signature, tx_sudo
+            )
+        except Forbidden as ex:
+            _logger.exception(ex)
+            raise ValidationError(_("Unable to verify worldline signature")) from ex
 
 
 @payment_router.get("/payment/providers/worldline/return")
 async def worldline_return(
     request: Request,
-    odoo_env: Annotated[api.Environment, Depends(odoo_env)],
+    helper: Annotated[PaymentHelper, Depends(payment_helper)],
 ) -> RedirectResponse:
     """Handle SIPS return.
 
@@ -48,7 +63,7 @@ async def worldline_return(
     hosted_checkout_id = params.get("hostedCheckoutId")
     provider_id = int(params.get("provider_id", 0))
 
-    provider = odoo_env["payment.provider"].sudo().browse(provider_id).exists()
+    provider = helper.env["payment.provider"].sudo().browse(provider_id).exists()
     if not provider or provider.code != "worldline":
         _logger.warning("Received payment data with invalid provider id.")
         raise Forbidden()
@@ -62,11 +77,8 @@ async def worldline_return(
     )
     notification_data = checkout_session_data.get("createdPaymentOutput", {})
 
-    tx_sudo = (
-        odoo_env["payment.transaction"]
-        .sudo()
-        ._get_tx_from_notification_data("worldline", notification_data)
-    )
+    tx_sudo = helper._get_tx_from_notification_data("worldline", notification_data)
+
     reference = tx_sudo.display_name
     frontend_redirect_url = tx_sudo.shopinvader_frontend_redirect_url
     try:
@@ -87,7 +99,7 @@ async def worldline_return(
 @payment_router.post("/payment/providers/worldline/webhook")
 async def worldline_webhook(
     request: Request,
-    odoo_env: Annotated[api.Environment, Depends(odoo_env)],
+    helper: Annotated[PaymentHelper, Depends(payment_helper)],
 ):
     """Handle Wordline webhook."""
     data = await request.json()
@@ -95,35 +107,11 @@ async def worldline_webhook(
         "webhook notification received from SIPS with data:\n%s", pprint.pformat(data)
     )
     try:
-        tx_sudo = (
-            odoo_env["payment.transaction"]
-            .sudo()
-            ._get_tx_from_notification_data(
-                "worldline",
-                data,
-            )
-        )
+        tx_sudo = helper._get_tx_from_notification_data("worldline", data)
         received_signature = request.headers.get("X-GCS-Signature")
         body = await request.body()
-        odoo_env[
-            "shopinvader_provider_worldline.payment_worldline_router.helper"
-        ]._verify_worldline_signature(tx_sudo, received_signature, body)
+        helper._verify_worldline_signature(tx_sudo, received_signature, body)
         tx_sudo._handle_notification_data("worldline", data)
     except Exception:
         _logger.exception("unable to handle worldline notification data", exc_info=True)
     return ""
-
-
-class ShopinvaderApiPaymentProviderWordlineRouterHelper(models.AbstractModel):
-    _name = "shopinvader_provider_worldline.payment_worldline_router.helper"
-    _description = "ShopInvader API Payment Provider Worldline Router Helper"
-
-    def _verify_worldline_signature(self, tx_sudo, received_signature, data):
-        """Verify the Worldline signature."""
-        try:
-            WorldlineController._verify_notification_signature(
-                data, received_signature, tx_sudo
-            )
-        except Forbidden as ex:
-            _logger.exception(ex)
-            raise ValidationError(_("Unable to verify worldline signature")) from ex
