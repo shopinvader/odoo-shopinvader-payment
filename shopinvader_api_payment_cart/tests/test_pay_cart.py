@@ -1,6 +1,5 @@
 # Copyright 2024 ACSONE SA (https://acsone.eu).
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
-import json
 
 from fastapi import status
 from requests import Response
@@ -74,9 +73,7 @@ class TestPayCart(TestPaymentCommon):
             "frontend_redirect_url": "www.rtbf.be",
         }
         with self._create_test_client(router=payment_router) as test_client:
-            response: Response = test_client.post(
-                "/payment/transactions", content=json.dumps(data)
-            )
+            response: Response = test_client.post("/payment/transactions", json=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         res = response.json()
         self.assertEqual(res["provider_id"], self.demo_provider.id)
