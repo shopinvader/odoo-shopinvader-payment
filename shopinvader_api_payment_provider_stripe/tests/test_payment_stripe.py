@@ -59,8 +59,7 @@ class TestPaymentStripe(TestPaymentCommon):
         data = {
             "payable": self.encoded_payable,
             "flow": "redirect",
-            "provider_id": self.stripe_provider.id,
-            "payment_method_id": self.stripe_method_1.id,
+            "method_id": self.stripe_method_1.id,
             "frontend_redirect_url": "https://www.example.com",
         }
         payment_method_response = {
