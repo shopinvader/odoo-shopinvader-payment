@@ -9,10 +9,11 @@ from extendable_pydantic import StrictExtendableBaseModel
 
 class TransactionProcessingValues(StrictExtendableBaseModel):
     flow: Literal["redirect"]
-    provider_id: int
+    provider_id: int  # This is the real payment provider id here
     provider_code: str
     reference: str  # transaction reference
     amount: float
     currency_id: int
     partner_id: int
     redirect_form_html: str | None = None
+    return_url: str | None = None
