@@ -46,24 +46,25 @@ class TestPaymentCart(TestPaymentCommon):
             self.payable_rec.currency_id.format(self.payable_rec.amount),
         )
         providers = res["providers"]
-        self.assertEqual(len(providers), 1)
-        provider = providers[0]
-        self.assertEqual(provider["id"], self.demo_provider.id)
-        methods = provider["payment_methods"]
-        self.assertEqual(len(methods), 2)
-        method_ids = {method["id"] for method in methods}
-        self.assertIn(self.demo_method_1.id, method_ids)
-        self.assertIn(self.demo_method_2.id, method_ids)
+        self.assertEqual(len(providers), 2)
+        self.assertEqual(providers[0]["id"], self.demo_method_2.id)
+        self.assertEqual(providers[1]["id"], self.demo_method_1.id)
 
-    def test_create_payment_transaction(self):
+        brands = providers[0]["payment_icons"]
+        self.assertEqual(len(brands), 3)
+        brand_names = {brand["name"] for brand in brands}
+        self.assertIn(self.demo_2_brand_1.name, brand_names)
+        self.assertIn(self.demo_2_brand_2.name, brand_names)
+        self.assertIn(self.demo_2_brand_3.name, brand_names)
+
+    def test_create_payment_transaction_from_method_id(self):
         """
         Create payment transaction having chosen demo provider
         """
         data = {
             "payable": self.encoded_payable,
             "flow": "redirect",
-            "provider_id": self.demo_provider.id,
-            "payment_method_id": self.demo_method_1.id,
+            "method_id": self.demo_method_1.id,
             "frontend_redirect_url": "www.rtbf.be",
         }
         with self._create_test_client(router=payment_router) as test_client:
@@ -83,3 +84,50 @@ class TestPaymentCart(TestPaymentCommon):
                 [("reference", "=", self.payable_rec.name)]
             )
         )
+
+    def test_create_payment_transaction_from_deprecated_provider_id(self):
+        """
+        Create payment transaction having chosen demo provider
+        """
+        data = {
+            "payable": self.encoded_payable,
+            "flow": "redirect",
+            "provider_id": self.demo_method_1.id,
+            "frontend_redirect_url": "www.rtbf.be",
+        }
+        with self._create_test_client(router=payment_router) as test_client:
+            response: Response = test_client.post("/payment/transactions", json=data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.text)
+        res = response.json()
+        self.assertEqual(res["provider_id"], self.demo_provider.id)
+        self.assertEqual(res["provider_code"], self.demo_provider.code)
+        self.assertEqual(res["reference"], self.payable_rec.name)
+        self.assertEqual(res["amount"], self.payable_rec.amount)
+        self.assertEqual(res["currency_id"], self.payable_rec.currency_id.id)
+        self.assertEqual(res["partner_id"], self.payable_rec.partner_id.id)
+
+        # Ensure a payment transaction was created
+        self.assertTrue(
+            self.env["payment.transaction"].search(
+                [("reference", "=", self.payable_rec.name)]
+            )
+        )
+
+        def test_create_payment_transaction_without_method(self):
+            """
+            Create payment transaction having chosen demo provider
+            """
+            data = {
+                "payable": self.encoded_payable,
+                "flow": "redirect",
+                "frontend_redirect_url": "www.rtbf.be",
+            }
+            with self._create_test_client(router=payment_router) as test_client:
+                response: Response = test_client.post(
+                    "/payment/transactions", json=data
+                )
+            self.assertEqual(
+                response.status_code,
+                status.HTTP_422_UNPROCESSABLE_ENTITY,
+                response.text,
+            )

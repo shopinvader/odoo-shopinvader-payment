@@ -12,6 +12,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from odoo import api
 
 from odoo.addons.fastapi.dependencies import odoo_env
+from odoo.addons.payment.models.payment_method import PaymentMethod
 from odoo.addons.payment.models.payment_provider import PaymentProvider
 from odoo.addons.payment.models.payment_transaction import PaymentTransaction
 from odoo.addons.shopinvader_router_helper import VirtualModel
@@ -49,6 +50,7 @@ class PaymentHelper(VirtualModel):
         self,
         data: TransactionCreate,
         provider_sudo: PaymentProvider,
+        method_sudo: PaymentMethod,
     ) -> dict:
         payable_obj = self._decode_payable(data.payable)
         additional_transaction_create_values = (
@@ -70,8 +72,8 @@ class PaymentHelper(VirtualModel):
         )
 
         return {
-            "provider_id": data.provider_id,
-            "payment_method_id": data.payment_method_id,
+            "provider_id": provider_sudo.id,
+            "payment_method_id": method_sudo.id,
             "reference": tx_reference,
             "amount": payable_obj.amount,
             "currency_id": payable_obj.currency_id,
@@ -96,9 +98,12 @@ class PaymentHelper(VirtualModel):
         self,
         data: TransactionCreate,
         provider_sudo: PaymentProvider,
+        method_sudo: PaymentMethod,
         request: Request,
     ) -> dict:
-        transaction_values = self._get_tx_create_values(data, provider_sudo)
+        transaction_values = self._get_tx_create_values(
+            data, provider_sudo, method_sudo
+        )
         tx_sudo = (
             self.env["payment.transaction"]
             .sudo()
@@ -130,7 +135,14 @@ class PaymentHelper(VirtualModel):
             _logger.info("Could not decode payable")
             raise HTTPException(403) from e
 
-    def _get_providers_methods(self, payable_obj: Payable):
+    def _get_provider_for_method(self, method: PaymentMethod) -> PaymentProvider | None:
+        provider = method.provider_ids.filtered(lambda p: p.state != "disabled")
+        return provider[0] if provider else None
+
+    def _get_brands_for_method(self, method: PaymentMethod) -> list[PaymentMethod]:
+        return method.brand_ids
+
+    def _get_payment_provider_method_brands(self, payable_obj: Payable):
         # This method is similar to Odoo's PaymentPortal.payment_pay
         availability_report = {}
         providers_sudo = (
@@ -153,7 +165,13 @@ class PaymentHelper(VirtualModel):
                 report=availability_report,
             )
         )
-        return providers_sudo, payment_methods_sudo
+        for method in payment_methods_sudo:
+            provider = method.provider_ids.filtered(lambda p: p.state != "disabled")
+            provider = self._get_provider_for_method(method)
+            if not provider:
+                continue
+            brands = self._get_brands_for_method(method)
+            yield provider, method, brands
 
     def _handle_payment_flow(
         self,
@@ -171,29 +189,25 @@ class PaymentHelper(VirtualModel):
         payable_obj: Payable,
         request: Request,
     ) -> TransactionProcessingValues:
-        providers_sudo, payment_methods_sudo = self._get_providers_methods(payable_obj)
-        provider_sudo = providers_sudo.filtered(lambda p: p.id == data.provider_id)
-        if not provider_sudo:
-            _logger.info(
-                "Invalid provider %s for partner %s",
-                data.provider_id,
-                payable_obj.partner_id,
-            )
-            raise HTTPException(403)
-
-        payment_method_sudo = payment_methods_sudo.filtered(
-            lambda m: m.id == data.payment_method_id
+        payment_provider_method_brands_sudo = self._get_payment_provider_method_brands(
+            payable_obj
         )
-        if not payment_method_sudo:
+        method_id = data.method_id or data.provider_id
+        provider_sudo = None
+        for method_provider_sudo, method_sudo, _ in payment_provider_method_brands_sudo:
+            if method_sudo.id == method_id:
+                provider_sudo = method_provider_sudo
+                break
+        else:
             _logger.info(
                 "Invalid payment method %s for partner %s",
-                data.payment_method_id,
+                method_id,
                 payable_obj.partner_id,
             )
             raise HTTPException(403)
 
         # Create the transaction
-        tx_sudo = self._create_transaction(data, provider_sudo, request)
+        tx_sudo = self._create_transaction(data, provider_sudo, method_sudo, request)
         tx_sudo._log_sent_message()
 
         return self._get_tx_processing_values(
@@ -222,13 +236,18 @@ def pay(
     objects (/cart/current/payable for e.g.).
     """
     payable_obj = helper._decode_payable(payable)
-    providers_sudo, payment_methods_sudo = helper._get_providers_methods(payable_obj)
+    payment_provider_method_brands_sudo = helper._get_payment_provider_method_brands(
+        payable_obj
+    )
 
     return PaymentDataWithMethods(
         payable=payable,
         payable_reference=payable_obj.payable_reference,
         amount=payable_obj.amount,
-        currency_code=helper.env["res.currency"].browse(payable_obj.currency_id).name,
+        currency_code=helper.env["res.currency"]
+        .browse(payable_obj.currency_id)
+        .sudo()
+        .name,
         # We assume that the payable model has a currency field.
         # This shouldn't be a big assumption
         amount_formatted=helper.env[payable_obj.payable_model]
@@ -236,8 +255,10 @@ def pay(
         .browse(payable_obj.payable_id)
         .currency_id.format(payable_obj.amount),
         providers=[
-            PaymentProviderSchema.from_payment_provider(provider, payment_methods_sudo)
-            for provider in providers_sudo
+            PaymentProviderSchema.from_payment_provider_method_brands(
+                provider, method, brands
+            )
+            for provider, method, brands in payment_provider_method_brands_sudo
         ],
     )
 
