@@ -59,8 +59,7 @@ class TestPaymentMonetico(TestPaymentCommon, MoneticoCommon):
         data = {
             "payable": self.encoded_payable,
             "flow": "redirect",
-            "provider_id": self.monetico_provider.id,
-            "payment_method_id": self.monetico_method_1.id,
+            "method_id": self.monetico_method_1.id,
             "frontend_redirect_url": "https://www.example.com",
         }
 
