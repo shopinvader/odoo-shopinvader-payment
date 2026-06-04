@@ -45,12 +45,21 @@ class TestPaymentCommon(FastAPITransactionCase):
 
         cls.demo_method_2 = cls.env.ref("payment.payment_method_card")
 
+        cls.demo_2_brand_1 = cls.env.ref("payment.payment_method_amex")
+        cls.demo_2_brand_2 = cls.env.ref("payment.payment_method_caixa")
+        cls.demo_2_brand_3 = cls.env.ref("payment.payment_method_cartes_bancaires")
+
         cls.demo_provider.payment_method_ids = [
             cls.demo_method_1.id,
             cls.demo_method_2.id,
         ]
-        cls.demo_method_1.write({"active": True})
-        cls.demo_method_2.write({"active": True})
+        (
+            cls.demo_method_1
+            | cls.demo_method_2
+            | cls.demo_2_brand_1
+            | cls.demo_2_brand_2
+            | cls.demo_2_brand_3
+        ).write({"active": True})
 
     def setUp(self) -> None:
         super().setUp()
