@@ -44,8 +44,7 @@ class TestPaymentCustom(TestPaymentCommon):
         data = {
             "payable": self.encoded_payable,
             "flow": "redirect",
-            "provider_id": self.custom_provider.id,
-            "payment_method_id": self.custom_method.id,
+            "method_id": self.custom_method.id,
             "frontend_redirect_url": "www.rtbf.be",
         }
         with self._create_test_client(router=payment_router) as test_client:
