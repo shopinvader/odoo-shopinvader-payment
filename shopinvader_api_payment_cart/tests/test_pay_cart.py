@@ -61,8 +61,9 @@ class TestPayCart(TestPaymentCommon):
             self.cart.currency_id.format(self.cart.amount_total),
         )
         providers = res["providers"]
-        self.assertEqual(len(providers), 1)
-        self.assertEqual(providers[0]["id"], self.demo_provider.id)
+        self.assertEqual(len(providers), 2)
+        self.assertEqual(providers[0]["id"], self.demo_method_2.id)
+        self.assertEqual(providers[1]["id"], self.demo_method_1.id)
 
     def test_create_payment_transaction(self):
         """
@@ -71,8 +72,7 @@ class TestPayCart(TestPaymentCommon):
         data = {
             "payable": self.encoded_payable,
             "flow": "redirect",
-            "provider_id": self.demo_provider.id,
-            "payment_method_id": self.demo_method_1.id,
+            "method_id": self.demo_method_1.id,
             "frontend_redirect_url": "www.rtbf.be",
         }
         with self._create_test_client(router=payment_router) as test_client:
