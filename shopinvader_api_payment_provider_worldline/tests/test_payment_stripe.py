@@ -61,8 +61,7 @@ class TestPaymentWorldline(TestPaymentCommon):
         data = {
             "payable": self.encoded_payable,
             "flow": "redirect",
-            "provider_id": self.worldline_provider.id,
-            "payment_method_id": self.worldline_method_1.id,
+            "method_id": self.worldline_method_1.id,
             "frontend_redirect_url": "https://www.example.com",
         }
 
