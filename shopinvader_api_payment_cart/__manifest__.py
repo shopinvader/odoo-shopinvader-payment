@@ -3,9 +3,9 @@
 
 {
     "name": "Shopinvader Api Payment Cart",
-    "summary": """
-        Adds logic to be able to pay current cart""",
-    "version": "16.0.1.1.0",
+    "summary": "Adds logic to be able to pay current cart",
+    "version": "18.0.1.0.0",
+    "development_status": "Alpha",
     "license": "AGPL-3",
     "author": "ACSONE SA/NV,Shopinvader",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
@@ -19,5 +19,5 @@
         "shopinvader_api_cart",
     ],
     "data": [],
-    "installable": False,
+    "installable": True,
 }
