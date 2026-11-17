@@ -1,7 +1,6 @@
 exclude: |
   (?x)
   # NOT INSTALLABLE ADDONS
-  ^shopinvader_api_payment/|
   ^shopinvader_api_payment_cart/|
   ^shopinvader_api_payment_provider_custom/|
   ^shopinvader_api_payment_provider_stripe/|

@@ -3,26 +3,21 @@
 
 {
     "name": "Shopinvader Api Payment",
-    "summary": """
-        Shopinvader services to be able to pay (invoices, carts,...)""",
-    "version": "16.0.1.1.0",
+    "summary": "Shopinvader services to be able to pay (invoices, carts,...)",
+    "version": "18.0.1.0.0",
+    "development_status": "Alpha",
     "license": "AGPL-3",
     "author": "ACSONE SA/NV,Shopinvader",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
     "depends": [
-        "fastapi",
         "payment",
-        "pydantic",
-        "extendable",
+        "shopinvader_router_helper",
         "extendable_fastapi",
     ],
     "external_dependencies": {
         "python": [
-            "fastapi",
-            "pydantic>=2.0.0",
-            "extendable-pydantic>=1.2.0",
             "pyjwt",
         ],
     },
-    "installable": False,
+    "installable": True,
 }
