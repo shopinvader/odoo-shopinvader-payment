@@ -3,9 +3,10 @@
 
 {
     "name": "Shopinvader Api Payment Provider Custom",
-    "summary": """
-        Specific routes for custom payments (wire transfers...) from Shopinvader""",
-    "version": "16.0.1.0.0",
+    "summary": "Specific routes for custom payments (wire transfers...) "
+    "from Shopinvader",
+    "version": "18.0.1.0.0",
+    "development_status": "Alpha",
     "license": "AGPL-3",
     "author": "ACSONE SA/NV,Shopinvader",
     "website": "https://github.com/shopinvader/odoo-shopinvader-payment",
@@ -15,6 +16,5 @@
         "payment_custom",
     ],
     "data": [],
-    "demo": [],
-    "installable": False,
+    "installable": True,
 }
