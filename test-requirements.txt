@@ -1,2 +1,6 @@
 odoo-test-helper
 httpx2  # For FastAPI tests
+httpx  # For FastAPI tests
+
+odoo-addon-shopinvader_api_payment @ git+https://github.com/shopinvader/odoo-shopinvader-payment@refs/pull/104/head#subdirectory=shopinvader_api_payment
+odoo-addon-payment_monetico @ git+https://github.com/OCA/l10n-france@refs/pull/774/head#subdirectory=payment_monetico

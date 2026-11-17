@@ -1,0 +1,1 @@
+Monetico integration for Shopinvader
